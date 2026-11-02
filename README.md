@@ -1,3 +1,17 @@
+# Coronas de Ceniza — MOBA 3D en el navegador (móvil y escritorio)
+
+**Juega:** https://esparramador.github.io/Agente-creador-de-mundos-y-juegos-3D/ (se publica desde `main` con GitHub Pages).
+Demo estilo League of Legends / Wild Rift hecha en HTML5 + three.js: 15 campeones originales, 3 mapas, bots, jungla y objetivos épicos. Diseño en `design/`, código en `game/`, arte 3D de Blender en `tools/blender/` y `art/`.
+
+```bash
+npm ci --prefix game && node game/tools/bundle.mjs   # → game/dist/coronas-de-ceniza.html (doble clic) y game/dist/web/
+node --test game/tests/game.test.mjs                  # simulación
+python3 game/tests/e2e_browser.py                     # navegador real (Playwright)
+```
+Licencias de los modelos: `game/assets/models/LICENSES.md`. Guía en castellano: `LEEME.md`. El estudio de agentes que lo construye es el de abajo.
+
+---
+
 <p align="center">
   <h1 align="center">Claude Code Game Studios</h1>
   <p align="center">

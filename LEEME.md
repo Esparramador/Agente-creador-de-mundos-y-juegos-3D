@@ -1,5 +1,7 @@
 # Mi Estudio de Juegos
 
+> **Juega a Coronas de Ceniza:** https://esparramador.github.io/Agente-creador-de-mundos-y-juegos-3D/ — móvil (táctil) y escritorio. Se publica solo desde `main` (`.github/workflows/deploy-pages.yml`).
+
 Estudio de desarrollo de videojuegos con IA, basado en
 [Claude Code Game Studios](https://github.com/donchitos/claude-code-game-studios) v1.2.0 (licencia MIT).
 
