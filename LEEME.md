@@ -10,6 +10,14 @@ Estudio de desarrollo de videojuegos con IA, basado en
 - **14 reglas** de código y **62 plantillas** de documentos.
 - **Batería de pruebas** `studio-tests/run_capability_tests.py` (263 comprobaciones), que se ejecuta en CI en cada push.
 
+## Proyecto: «Coronas de Ceniza» (demo MOBA)
+- Concepto: `design/gdd/game-concept.md` · Índice de sistemas: `design/gdd/systems-index.md`
+- 15 campeones: `design/gdd/champion-roster.md` (generado) y `assets/data/champions.json`
+- 3 mapas: `design/gdd/maps.md` y `assets/data/maps.json` · Objetos: `assets/data/items.json`
+- Dinámicas y flujo de partida: `design/gdd/match-flow.md`, `combat-core.md`, `progression-economy.md`
+- Interfaz: `ui-hud-controls.md` · IA de bots: `bots-ai.md` · Alcance e hitos: `production/demo-scope.md`, `production/epics/EPICS.md`
+- Para editar campeones: `tools/champions_src.py` y luego `python3 tools/build_design.py`
+
 ## Cómo empezar
 ```bash
 npm i -g @anthropic-ai/claude-code

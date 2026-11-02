@@ -1,0 +1,71 @@
+[
+  {
+    "id": "grieta_ceniza",
+    "name": "La Grieta de Ceniza",
+    "mode": "5v5 clásico",
+    "size": [
+      14000,
+      14000
+    ],
+    "lanes": 3,
+    "towers_per_lane": 3,
+    "inhibitors": 3,
+    "nexus": true,
+    "objectives": [
+      "Dragón Elemental (min 5, cada 5 min)",
+      "Heraldo de Forja (min 8)",
+      "Señor de la Ceniza (min 20)"
+    ],
+    "jungle_camps": 12,
+    "target_minutes": [
+      25,
+      35
+    ],
+    "win": "Destruir el Nexo enemigo"
+  },
+  {
+    "id": "puente_niebla",
+    "name": "Puente de la Niebla",
+    "mode": "5v5 ARAM (un carril)",
+    "size": [
+      12000,
+      3200
+    ],
+    "lanes": 1,
+    "towers_per_lane": 4,
+    "inhibitors": 1,
+    "nexus": true,
+    "objectives": [
+      "Reliquias de vida cada 60 s"
+    ],
+    "jungle_camps": 0,
+    "target_minutes": [
+      15,
+      22
+    ],
+    "win": "Destruir el Nexo enemigo; selección aleatoria; sin regreso a base"
+  },
+  {
+    "id": "ruinas_eclipse",
+    "name": "Ruinas del Eclipse",
+    "mode": "3v3 dominio",
+    "size": [
+      9000,
+      9000
+    ],
+    "lanes": 2,
+    "towers_per_lane": 2,
+    "inhibitors": 0,
+    "nexus": true,
+    "objectives": [
+      "3 altares de captura (puntos)",
+      "Avatar del Eclipse (min 10)"
+    ],
+    "jungle_camps": 6,
+    "target_minutes": [
+      12,
+      18
+    ],
+    "win": "Llegar a 500 puntos o destruir el Nexo"
+  }
+]

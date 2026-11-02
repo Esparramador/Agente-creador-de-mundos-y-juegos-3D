@@ -8,6 +8,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: sudo apt-get install -y jq
+      - run: python3 tools/build_design.py --check
       - run: python3 studio-tests/run_capability_tests.py --junit result.xml
       - uses: actions/upload-artifact@v4
         if: always()

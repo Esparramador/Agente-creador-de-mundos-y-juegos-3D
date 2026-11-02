@@ -1,0 +1,118 @@
+[
+  {
+    "id": "espada_larga",
+    "name": "Espada Larga",
+    "cost": 350,
+    "stats": {
+      "ad": 10
+    },
+    "unique": null
+  },
+  {
+    "id": "tomo_amplificador",
+    "name": "Tomo Amplificador",
+    "cost": 435,
+    "stats": {
+      "ap": 20
+    },
+    "unique": null
+  },
+  {
+    "id": "cinturon_gigante",
+    "name": "Cinturón de Gigante",
+    "cost": 900,
+    "stats": {
+      "hp": 350
+    },
+    "unique": null
+  },
+  {
+    "id": "botas",
+    "name": "Botas",
+    "cost": 300,
+    "stats": {
+      "ms": 25
+    },
+    "unique": null
+  },
+  {
+    "id": "filo_del_ocaso",
+    "name": "Filo del Ocaso",
+    "cost": 3000,
+    "stats": {
+      "ad": 55,
+      "crit": 0.2
+    },
+    "unique": "Golpes críticos +35% daño."
+  },
+  {
+    "id": "arco_de_tormenta",
+    "name": "Arco de Tormenta",
+    "cost": 2900,
+    "stats": {
+      "ad": 35,
+      "as": 0.35
+    },
+    "unique": "Cada 3er ataque encadena un rayo (60 mágico)."
+  },
+  {
+    "id": "baculo_de_ceniza",
+    "name": "Báculo de Ceniza",
+    "cost": 3100,
+    "stats": {
+      "ap": 90
+    },
+    "unique": "+30% de poder de habilidad total."
+  },
+  {
+    "id": "orbe_del_vacio",
+    "name": "Orbe del Vacío",
+    "cost": 2800,
+    "stats": {
+      "ap": 70,
+      "mpen": 0.3
+    },
+    "unique": "Penetración mágica 30%."
+  },
+  {
+    "id": "coraza_de_hondaforja",
+    "name": "Coraza de Hondaforja",
+    "cost": 2900,
+    "stats": {
+      "hp": 400,
+      "armor": 60
+    },
+    "unique": "Refleja 25% del daño de ataques recibidos."
+  },
+  {
+    "id": "manto_onirico",
+    "name": "Manto Onírico",
+    "cost": 2800,
+    "stats": {
+      "hp": 350,
+      "mr": 60
+    },
+    "unique": "+2% vida máx./s fuera de combate."
+  },
+  {
+    "id": "hacha_de_colmillo",
+    "name": "Hacha de Colmillo",
+    "cost": 3200,
+    "stats": {
+      "ad": 45,
+      "hp": 300,
+      "ah": 20
+    },
+    "unique": "Tras usar una habilidad, el siguiente ataque inflige +100% AD base."
+  },
+  {
+    "id": "incensario_dorado",
+    "name": "Incensario Dorado",
+    "cost": 2300,
+    "stats": {
+      "ap": 45,
+      "heal_power": 0.12
+    },
+    "unique": "Curar o escudar a un aliado le da +25% vel. ataque 4 s."
+  }
+]
