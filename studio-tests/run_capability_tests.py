@@ -169,7 +169,8 @@ def l3_scripts():
 
 # ---------------------------------------------------------------- sandbox
 def make_sandbox():
-    d = Path(tempfile.mkdtemp(prefix="ccgs-test-"))
+    # resolve(): en macOS /tmp es un enlace a /private/tmp y los hooks comparan rutas literales
+    d = Path(tempfile.mkdtemp(prefix="ccgs-test-")).resolve()
     shutil.copytree(ROOT, d / "p", ignore=shutil.ignore_patterns(".git"))
     p = d / "p"
     run("git init -q -b main && git -c user.email=t@t -c user.name=t add -A && git -c user.email=t@t -c user.name=t commit -qm init", cwd=p)
