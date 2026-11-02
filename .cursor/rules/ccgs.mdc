@@ -1,0 +1,5 @@
+---
+description: Estudio de agentes CCGS — leer AGENTS.md
+alwaysApply: true
+---
+Lee y sigue AGENTS.md en la raíz: para actuar como un agente lee .claude/agents/<nombre>.md; para ejecutar /skill lee .claude/skills/<skill>/SKILL.md.
