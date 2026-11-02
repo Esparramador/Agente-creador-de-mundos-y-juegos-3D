@@ -119,6 +119,11 @@ def main():
     (DATA / "champions.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     (DATA / "items.json").write_text(json.dumps([dict(id=i, name=n, cost=c, stats=s, unique=u) for i, n, c, s, u in ITEMS], ensure_ascii=False, indent=2), encoding="utf-8")
     (DATA / "maps.json").write_text(json.dumps(MAPS, ensure_ascii=False, indent=2), encoding="utf-8")
+    gs = ROOT / "game/src"; gs.mkdir(parents=True, exist_ok=True)
+    (gs / "data.js").write_text("// GENERADO por tools/build_design.py — no editar.\n"
+        + "export const CHAMPIONS = " + json.dumps(out, ensure_ascii=False) + ";\n"
+        + "export const ITEMS = " + (DATA / "items.json").read_text(encoding="utf-8") + ";\n"
+        + "export const MAPS = " + (DATA / "maps.json").read_text(encoding="utf-8") + ";\n", encoding="utf-8")
     (ROOT / "design/gdd").mkdir(parents=True, exist_ok=True)
     (ROOT / "design/gdd/champion-roster.md").write_text(roster_md(CHAMPIONS, burst), encoding="utf-8")
     print("Generado: assets/data/champions.json, items.json, maps.json, design/gdd/champion-roster.md")

@@ -175,3 +175,9 @@ $RECYCLE.BIN/
 # the project root. Anchored so a reports/ folder elsewhere stays tracked.
 /reports/
 /test-results/
+
+# Blender
+*.blend1
+*.blend2
+# Juego
+game/node_modules/

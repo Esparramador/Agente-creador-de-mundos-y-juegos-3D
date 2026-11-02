@@ -1,0 +1,12 @@
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+const names = ['ka_Knight','ka_Barbarian','ka_Mage','ka_Rogue','ks_Skeleton_Warrior','ks_Skeleton_Mage','ks_Skeleton_Rogue','ks_Skeleton_Minion','guerrero','guerrero_2','ceo_crafter','lord_tuetano','mini_dragon_blue','lagarto','paula','personaje','tree','cypress','kk_bush'];
+const r = new THREE.WebGLRenderer({antialias:true}); r.setSize(1600,900); document.body.appendChild(r.domElement);
+const sc = new THREE.Scene(); sc.background = new THREE.Color(0x334455);
+sc.add(new THREE.HemisphereLight(0xffffff,0x444444,2.5)); const dl=new THREE.DirectionalLight(0xffffff,2); dl.position.set(3,5,4); sc.add(dl);
+const cam = new THREE.PerspectiveCamera(30,16/9,0.1,100); cam.position.set(0,4,26); cam.lookAt(0,2,0);
+const L = new GLTFLoader(); L.setMeshoptDecoder(MeshoptDecoder); let done=0; window.info={};
+names.forEach((n,i)=>L.load(`models/${n}.glb`, g=>{ const o=g.scene; const box=new THREE.Box3().setFromObject(o); const s=box.getSize(new THREE.Vector3()); const k=2/Math.max(s.y,0.01);
+  o.scale.setScalar(k); const b2=new THREE.Box3().setFromObject(o); o.position.x += (i%10-4.5)*2.6-(b2.min.x+b2.max.x)/2; o.position.y += (i<10?3.2:0)-b2.min.y; o.position.z -= (b2.min.z+b2.max.z)/2;
+  sc.add(o); window.info[n]={size:[s.x,s.y,s.z].map(v=>+v.toFixed(2)),anims:g.animations.map(a=>a.name).join(',')}; if(++done===names.length){ r.render(sc,cam); window.ready=true; } }, undefined, e=>{window.info[n]='ERR '+e; if(++done===names.length){r.render(sc,cam);window.ready=true;}}));

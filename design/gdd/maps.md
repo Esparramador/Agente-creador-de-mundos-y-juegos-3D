@@ -11,7 +11,7 @@ Cada mapa es un tablero táctico distinto: guerra de desgaste en la Grieta, pele
 ### Elementos comunes
 | Estructura | Vida | Daño | Reglas |
 |---|---|---|---|
-| Torre exterior | 5000 | 152 (+9/min) | +40% de daño por cada golpe seguido a un campeón; prioriza al campeón que ataca a un aliado |
+| Torre exterior | 5000 (×0,7 en ARAM) | 152 (+9/min) | +40% de daño por cada golpe seguido a un campeón; prioriza al campeón que ataca a un aliado |
 | Torre interior | 3600 | 170 | Solo es atacable si cayó la exterior |
 | Torre de inhibidor | 3300 | 170 | — |
 | Inhibidor | 4000 | — | Al caer, el rival genera súper-súbditos; reaparece a los 5 min |
@@ -77,7 +77,7 @@ Cada mapa es un tablero táctico distinto: guerra de desgaste en la Grieta, pele
   - 3 **altares**: Norte, Centro y Sur.
 - **Altares:**
   - Se capturan quedándose dentro, sin enemigos, durante 6 s.
-  - Cada altar controlado da 1 punto cada 2 s al equipo.
+  - Cada altar controlado da 1 punto cada 2,5 s al equipo.
   - Con 2 altares, las torres enemigas pierden un 20% de armadura.
 - **Avatar del Eclipse** (minuto 10, cada 4 min): al matarlo, el equipo convierte durante 30 s todos los puntos que gana en dobles.
 - **Victoria:** 500 puntos o destruir el Nexo.
@@ -86,7 +86,7 @@ Cada mapa es un tablero táctico distinto: guerra de desgaste en la Grieta, pele
 ## Formulas
 - Oleadas por minuto = 2. Oro por oleada completa ≈ 125 (195 con asedio).
 - Daño de torre a un campeón tras n golpes seguidos = base × (1 + 0,4 × n), con un máximo de ×2,2.
-- Puntos en Ruinas por segundo = 0,5 × altares controlados (× 2 con el Avatar).
+- Puntos en Ruinas por segundo = 0,4 × altares controlados (× 2 con el Avatar).
 
 ## Edge Cases
 - **Empate en Ruinas** (ambos equipos llegan a 500 en el mismo tick): gana el equipo con más altares; si persiste, muerte súbita en el altar central.

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coronas de Ceniza — Demo</title>
+<style>
+  :root { --gold: #c9a227; --bg: #0b0f13; --panel: #141b22; --txt: #e8e6e3; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #000; color: var(--txt); font-family: 'Segoe UI', Roboto, sans-serif; overflow: hidden; user-select: none; }
+  canvas#game, canvas#world { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+  canvas#game { cursor: crosshair; z-index: 1; }
+  .screen { position: fixed; inset: 0; display: none; overflow: auto; background: radial-gradient(ellipse at top, #2a1f12 0%, #0b0f13 60%); padding: 24px 32px; z-index: 5; }
+  .screen.on { display: block; }
+  .overlay { position: fixed; inset: 0; display: none; background: #000b; z-index: 10; align-items: center; justify-content: center; }
+  .overlay.on { display: flex; }
+  .panel { background: var(--panel); border: 1px solid var(--gold); border-radius: 8px; padding: 18px 22px; max-height: 90vh; overflow: auto; box-shadow: 0 0 40px #000; }
+  h1 { font-family: Georgia, serif; color: var(--gold); letter-spacing: 3px; margin: 0 0 4px; font-size: 44px; text-shadow: 0 0 20px #c9a22755; }
+  h2 { color: var(--gold); font-family: Georgia, serif; margin: 18px 0 8px; font-size: 20px; }
+  .sub { color: #aaa; margin-bottom: 14px; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .card { background: #182029; border: 2px solid #2b3742; border-radius: 6px; padding: 10px 12px; cursor: pointer; transition: .12s; }
+  .card:hover { border-color: #8d7a3a; transform: translateY(-2px); }
+  .card.sel { border-color: var(--gold); background: #2a2715; box-shadow: 0 0 12px #c9a22766; }
+  .map-card { width: 250px; }
+  .map-card b { color: var(--gold); }
+  .champ-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .champ { padding: 8px; text-align: center; }
+  .champ .ico { width: 54px; height: 54px; border-radius: 50%; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 26px; color: #fff; border: 3px solid #0006; }
+  .champ small { color: #9aa; display: block; font-size: 11px; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 430px; gap: 20px; }
+  .detail { position: sticky; top: 0; }
+  .ab { margin: 6px 0; padding: 6px 8px; background: #0e1419; border-left: 3px solid var(--gold); font-size: 13px; }
+  .ab b { color: #ffd54f; }
+  button, select { background: #1f2a33; color: var(--txt); border: 1px solid var(--gold); border-radius: 4px; padding: 8px 14px; font-size: 14px; cursor: pointer; }
+  button:hover { background: #2c3a45; }
+  button.big { font-size: 20px; padding: 12px 40px; background: linear-gradient(#c9a227, #8a6d12); color: #111; font-weight: bold; border: none; }
+  button.big:disabled { background: #555; color: #999; cursor: not-allowed; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { padding: 5px 8px; border-bottom: 1px solid #2b3742; text-align: left; }
+  th { color: var(--gold); }
+  .t0 { color: #64b5f6; } .t1 { color: #ef5350; } .cb .t1 { color: #ff9800; }
+  .shop-grid { display: grid; grid-template-columns: repeat(3, 230px); gap: 8px; }
+  .item { padding: 8px; font-size: 12px; }
+  .item b { color: #ffd54f; font-size: 13px; }
+  .item.rec { border-color: #4caf50; }
+  .item.off { opacity: .5; }
+  .kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px solid #888; border-radius: 3px; background: #222; font-family: monospace; text-align: center; }
+  #tutorial { position: fixed; left: 12px; top: 80px; z-index: 4; background: #0b0f13dd; border: 1px solid var(--gold); padding: 10px 14px; border-radius: 6px; font-size: 14px; display: none; max-width: 330px; }
+  #tutorial .done { color: #69f0ae; text-decoration: line-through; }
+  .muted { color: #8a9; font-size: 12px; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; background: #263238; margin: 2px; font-size: 12px; }
+</style>
+</head>
+<body>
+<canvas id="world"></canvas>
+<canvas id="game"></canvas>
+
+<!-- MENÚ PRINCIPAL / SELECCIÓN -->
+<div id="menu" class="screen on">
+  <h1>CORONAS DE CENIZA</h1>
+  <div class="sub">Demo MOBA · 15 campeones · 3 mapas · contra bots</div>
+  <div class="layout">
+    <div>
+      <h2>1 · Elige el modo</h2>
+      <div class="row" id="maps"></div>
+      <h2>2 · Dificultad de los bots</h2>
+      <div class="row" id="diffs"></div>
+      <h2>3 · Elige tu campeón <span class="muted" id="aramNote"></span></h2>
+      <div class="champ-grid" id="champs"></div>
+    </div>
+    <div class="detail">
+      <div class="panel" id="detail"><i>Selecciona un campeón para ver sus habilidades.</i></div>
+      <h2>Hechizos de invocador</h2>
+      <div class="row"><label>D <select id="sum0"></select></label><label>F <select id="sum1"></select></label></div>
+      <div style="margin-top:18px" class="row">
+        <button class="big" id="play" disabled>JUGAR</button>
+        <button id="optsBtn">Opciones</button><button id="helpBtn">Controles</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANTALLA DE CARGA -->
+<div id="loading" class="screen"><h1>Cargando partida…</h1><div id="loadInfo"></div></div>
+
+<!-- TIENDA -->
+<div id="shop" class="overlay"><div class="panel"><h2>Tienda <span class="muted" id="shopGold"></span></h2><div class="muted" id="shopNote"></div><div class="shop-grid" id="shopItems"></div>
+  <h2>Inventario <span class="muted">(clic para vender al 70%)</span></h2><div class="row" id="shopInv"></div><p><button onclick="UI.toggleShop(false)">Cerrar (P / Esc)</button></p></div></div>
+
+<!-- MARCADOR -->
+<div id="score" class="overlay"><div class="panel" style="min-width:820px"><h2>Marcador</h2><div id="scoreBody"></div></div></div>
+
+<!-- PAUSA / OPCIONES -->
+<div id="pause" class="overlay"><div class="panel" style="min-width:520px">
+  <h2 id="pauseTitle">Pausa</h2>
+  <div id="optsBody"></div>
+  <p class="row"><button id="resumeBtn">Continuar</button><button id="surrBtn">Rendirse</button><button id="quitBtn">Salir al menú</button></p>
+</div></div>
+
+<!-- AYUDA -->
+<div id="help" class="overlay"><div class="panel" style="max-width:760px"><h2>Controles</h2><div id="helpBody"></div><p><button onclick="document.getElementById('help').classList.remove('on')">Cerrar</button></p></div></div>
+
+<!-- FIN -->
+<div id="end" class="screen"><h1 id="endTitle"></h1><div id="endBody"></div><p><button class="big" onclick="location.reload()">Volver al menú</button></p></div>
+
+<div id="tutorial"></div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
