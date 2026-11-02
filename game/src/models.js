@@ -32,7 +32,11 @@ export const MODEL_MAP = {
 };
 
 export const MODEL_FILES = ['ka_Knight', 'ka_Barbarian', 'ka_Mage', 'ka_Rogue', 'ks_Skeleton_Warrior', 'ks_Skeleton_Mage', 'ks_Skeleton_Rogue',
-  'ks_Skeleton_Minion', 'personaje', 'lagarto', 'mini_dragon_blue', 'lord_tuetano', 'guerrero', 'guerrero_2', 'tree', 'cypress', 'kk_bush'];
+  'ks_Skeleton_Minion', 'personaje', 'lagarto', 'mini_dragon_blue', 'lord_tuetano', 'guerrero', 'guerrero_2', 'tree', 'cypress', 'kk_bush',
+  // hechos en Blender (tools/blender/build_structures.py)
+  'struct_tower', 'struct_inhib', 'struct_nexus', 'struct_fountain', 'prop_ward'];
+// Escenarios hechos en Blender (tools/blender/build_maps.py): se carga solo el del mapa en juego
+export const MAP_FILES = { grieta_ceniza: 'map_grieta_ceniza', puente_niebla: 'map_puente_niebla', ruinas_eclipse: 'map_ruinas_eclipse' };
 
 const TEAM_TINT = [0x64b5f6, 0xef5350];
 export function UNIT_MODELS(u) {
@@ -49,6 +53,7 @@ export function UNIT_MODELS(u) {
     return u.big ? { model: 'ks_Skeleton_Warrior', h: 1.9, tint: 0x8d6e63, anims: SKEL } : { model: 'ks_Skeleton_Minion', h: 1.0, tint: 0xa1887f, anims: SKEL };
   }
   if (u.kind === 'pet') return { model: 'personaje', h: 1.0, tint: TEAM_TINT[u.team], anims: ROBOT };
-  if (u.kind === 'ward') return { model: 'cypress', h: 0.9, tint: 0xffee58, anims: {} };
+  if (u.kind === 'ward') return { model: 'prop_ward', h: 0.95, team: u.team, anims: {} };
+  if (u.structure) return { model: { tower: 'struct_tower', inhib: 'struct_inhib', nexus: 'struct_nexus' }[u.kind], h: { tower: 5.65, inhib: 2.6, nexus: 5.0 }[u.kind], team: u.team, structure: true, anims: {} };
   return { model: null };
 }

@@ -1,55 +1,382 @@
 {
-  "_doc": "Especificación técnica de los modelos 3D de Coronas de Ceniza. La lee game/tools/validate_models.mjs. Documento humano: production/handoff/BLENDER-3D-HANDOFF.md",
-  "units": "1 m de Blender = 1 unidad three.js = 100 unidades de juego",
-  "axes": "glTF Y-arriba, el modelo mira hacia +Z (en Blender: mira hacia -Y antes de exportar con +Y Up), origen en los pies (y=0)",
-  "categories": {
-    "champion": { "tris": [6000, 20000], "height": [1.5, 3.4], "textureMax": 2048, "bonesMax": 80, "requiredClips": ["Idle", "Run", "Attack", "Cast", "Death"], "recommendedClips": ["Attack2", "Cast_Q", "Cast_W", "Cast_E", "Cast_R", "Hit", "Recall", "Victory", "Taunt"] },
-    "minion":   { "tris": [1500, 6000],  "height": [0.9, 2.8], "textureMax": 1024, "bonesMax": 60, "requiredClips": ["Idle", "Run", "Attack", "Death"], "recommendedClips": ["Hit"] },
-    "monster":  { "tris": [2000, 12000], "height": [0.8, 2.6], "textureMax": 1024, "bonesMax": 70, "requiredClips": ["Idle", "Attack", "Death"], "recommendedClips": ["Run", "Hit", "Roar"] },
-    "epic":     { "tris": [8000, 30000], "height": [2.2, 4.5], "textureMax": 2048, "bonesMax": 120, "requiredClips": ["Idle", "Attack", "Death"], "recommendedClips": ["Roar", "Spawn", "Hit", "Attack2"] },
-    "structure":{ "tris": [500, 8000],   "height": [1.0, 7.0], "textureMax": 1024, "bonesMax": 0, "requiredClips": [], "recommendedClips": ["Destroy"] },
-    "prop":     { "tris": [20, 3000],    "height": [0.2, 7.0], "textureMax": 512,  "bonesMax": 0, "requiredClips": [], "recommendedClips": [] }
+ "_doc": "Especificación técnica de los modelos 3D de Coronas de Ceniza. La lee game/tools/validate_models.mjs. Documento humano: production/handoff/BLENDER-3D-HANDOFF.md",
+ "units": "1 m de Blender = 1 unidad three.js = 100 unidades de juego",
+ "axes": "glTF Y-arriba, el modelo mira hacia +Z (en Blender: mira hacia -Y antes de exportar con +Y Up), origen en los pies (y=0)",
+ "categories": {
+  "champion": {
+   "tris": [
+    6000,
+    20000
+   ],
+   "height": [
+    1.5,
+    3.4
+   ],
+   "textureMax": 2048,
+   "bonesMax": 80,
+   "requiredClips": [
+    "Idle",
+    "Run",
+    "Attack",
+    "Cast",
+    "Death"
+   ],
+   "recommendedClips": [
+    "Attack2",
+    "Cast_Q",
+    "Cast_W",
+    "Cast_E",
+    "Cast_R",
+    "Hit",
+    "Recall",
+    "Victory",
+    "Taunt"
+   ]
   },
-  "assets": {
-    "champ_brannoc": { "category": "champion", "height": 1.9, "replaces": "ka_Knight (tinte)" },
-    "champ_morgra":  { "category": "champion", "height": 2.4, "replaces": "ka_Barbarian (tinte verde)" },
-    "champ_ossuar":  { "category": "champion", "height": 2.7, "replaces": "ks_Skeleton_Warrior" },
-    "champ_kaelith": { "category": "champion", "height": 2.2, "replaces": "ka_Knight (tinte dorado)" },
-    "champ_tharok":  { "category": "champion", "height": 2.4, "replaces": "ka_Barbarian (tinte rojo)" },
-    "champ_yssra":   { "category": "champion", "height": 2.2, "replaces": "ka_Rogue (tinte cian)" },
-    "champ_vaelor":  { "category": "champion", "height": 2.2, "replaces": "ka_Mage (tinte naranja)" },
-    "champ_nyxe":    { "category": "champion", "height": 1.7, "replaces": "ka_Mage (tinte rosa)" },
-    "champ_zerath":  { "category": "champion", "height": 2.3, "replaces": "ks_Skeleton_Mage (tinte violeta)" },
-    "champ_lyra":    { "category": "champion", "height": 2.2, "replaces": "ka_Rogue" },
-    "champ_gearix":  { "category": "champion", "height": 1.7, "replaces": "personaje (robot three.js)" },
-    "champ_sable":   { "category": "champion", "height": 2.2, "replaces": "ks_Skeleton_Rogue (tinte oscuro)" },
-    "champ_rakhar":  { "category": "champion", "height": 2.0, "replaces": "lagarto (tinte)" },
-    "champ_elowen":  { "category": "champion", "height": 2.1, "replaces": "ka_Mage (tinte verde)" },
-    "champ_aurik":   { "category": "champion", "height": 2.3, "replaces": "ka_Knight (tinte dorado)", "extraModel": "champ_aurik_dragon" },
-    "champ_aurik_dragon": { "category": "champion", "height": 3.2, "replaces": "mini_dragon_blue" },
-    "minion_melee":  { "category": "minion", "height": 1.2, "replaces": "ks_Skeleton_Minion", "teamVariants": true },
-    "minion_caster": { "category": "minion", "height": 1.2, "replaces": "ks_Skeleton_Mage", "teamVariants": true },
-    "minion_siege":  { "category": "minion", "height": 1.7, "replaces": "ks_Skeleton_Warrior", "teamVariants": true },
-    "minion_super":  { "category": "minion", "height": 2.2, "replaces": "ks_Skeleton_Warrior", "teamVariants": true },
-    "minion_ram":    { "category": "minion", "height": 2.6, "replaces": "ks_Skeleton_Warrior" },
-    "monster_golem": { "category": "monster", "height": 2.0, "replaces": "ks_Skeleton_Warrior" },
-    "monster_bestia":{ "category": "monster", "height": 1.8, "replaces": "ks_Skeleton_Warrior" },
-    "monster_lobo":  { "category": "monster", "height": 1.2, "replaces": "ks_Skeleton_Minion" },
-    "monster_ave":   { "category": "monster", "height": 1.0, "replaces": "ks_Skeleton_Minion" },
-    "monster_roca":  { "category": "monster", "height": 1.6, "replaces": "ks_Skeleton_Warrior" },
-    "monster_sapo":  { "category": "monster", "height": 1.4, "replaces": "ks_Skeleton_Warrior" },
-    "epic_dragon":   { "category": "epic", "height": 3.6, "replaces": "mini_dragon_blue", "variants": ["Ceniza", "Marea", "Raíz", "Forja"] },
-    "epic_heraldo":  { "category": "epic", "height": 2.4, "replaces": "lord_tuetano" },
-    "epic_senor":    { "category": "epic", "height": 3.2, "replaces": "lord_tuetano" },
-    "epic_avatar":   { "category": "epic", "height": 2.4, "replaces": "lord_tuetano" },
-    "struct_tower":  { "category": "structure", "height": 5.8, "replaces": "primitivas + busto guerrero", "teamVariants": true },
-    "struct_inhib":  { "category": "structure", "height": 2.6, "replaces": "primitivas", "teamVariants": true },
-    "struct_nexus":  { "category": "structure", "height": 5.0, "replaces": "primitivas", "teamVariants": true },
-    "struct_fountain": { "category": "structure", "height": 1.0, "replaces": "primitivas", "teamVariants": true },
-    "prop_bush":     { "category": "prop", "height": 0.8, "replaces": "kk_bush" },
-    "prop_tree":     { "category": "prop", "height": 3.5, "replaces": "tree" },
-    "prop_cypress":  { "category": "prop", "height": 3.2, "replaces": "cypress" },
-    "prop_rock":     { "category": "prop", "height": 1.5, "replaces": "dodecaedro generado" },
-    "prop_ward":     { "category": "prop", "height": 0.9, "replaces": "cypress (tinte amarillo)" }
+  "minion": {
+   "tris": [
+    1500,
+    6000
+   ],
+   "height": [
+    0.9,
+    2.8
+   ],
+   "textureMax": 1024,
+   "bonesMax": 60,
+   "requiredClips": [
+    "Idle",
+    "Run",
+    "Attack",
+    "Death"
+   ],
+   "recommendedClips": [
+    "Hit"
+   ]
+  },
+  "monster": {
+   "tris": [
+    2000,
+    12000
+   ],
+   "height": [
+    0.8,
+    2.6
+   ],
+   "textureMax": 1024,
+   "bonesMax": 70,
+   "requiredClips": [
+    "Idle",
+    "Attack",
+    "Death"
+   ],
+   "recommendedClips": [
+    "Run",
+    "Hit",
+    "Roar"
+   ]
+  },
+  "epic": {
+   "tris": [
+    8000,
+    30000
+   ],
+   "height": [
+    2.2,
+    4.5
+   ],
+   "textureMax": 2048,
+   "bonesMax": 120,
+   "requiredClips": [
+    "Idle",
+    "Attack",
+    "Death"
+   ],
+   "recommendedClips": [
+    "Roar",
+    "Spawn",
+    "Hit",
+    "Attack2"
+   ]
+  },
+  "structure": {
+   "tris": [
+    500,
+    8000
+   ],
+   "height": [
+    1.0,
+    7.0
+   ],
+   "textureMax": 1024,
+   "bonesMax": 0,
+   "requiredClips": [],
+   "recommendedClips": [
+    "Destroy"
+   ]
+  },
+  "prop": {
+   "tris": [
+    20,
+    3000
+   ],
+   "height": [
+    0.2,
+    7.0
+   ],
+   "textureMax": 512,
+   "bonesMax": 0,
+   "requiredClips": [],
+   "recommendedClips": []
+  },
+  "environment": {
+   "tris": [
+    10000,
+    150000
+   ],
+   "height": [
+    0,
+    20
+   ],
+   "textureMax": 2048,
+   "bonesMax": 0,
+   "requiredClips": [],
+   "recommendedClips": []
   }
+ },
+ "assets": {
+  "champ_brannoc": {
+   "category": "champion",
+   "height": 1.9,
+   "replaces": "ka_Knight (tinte)"
+  },
+  "champ_morgra": {
+   "category": "champion",
+   "height": 2.4,
+   "replaces": "ka_Barbarian (tinte verde)"
+  },
+  "champ_ossuar": {
+   "category": "champion",
+   "height": 2.7,
+   "replaces": "ks_Skeleton_Warrior"
+  },
+  "champ_kaelith": {
+   "category": "champion",
+   "height": 2.2,
+   "replaces": "ka_Knight (tinte dorado)"
+  },
+  "champ_tharok": {
+   "category": "champion",
+   "height": 2.4,
+   "replaces": "ka_Barbarian (tinte rojo)"
+  },
+  "champ_yssra": {
+   "category": "champion",
+   "height": 2.2,
+   "replaces": "ka_Rogue (tinte cian)"
+  },
+  "champ_vaelor": {
+   "category": "champion",
+   "height": 2.2,
+   "replaces": "ka_Mage (tinte naranja)"
+  },
+  "champ_nyxe": {
+   "category": "champion",
+   "height": 1.7,
+   "replaces": "ka_Mage (tinte rosa)"
+  },
+  "champ_zerath": {
+   "category": "champion",
+   "height": 2.3,
+   "replaces": "ks_Skeleton_Mage (tinte violeta)"
+  },
+  "champ_lyra": {
+   "category": "champion",
+   "height": 2.2,
+   "replaces": "ka_Rogue"
+  },
+  "champ_gearix": {
+   "category": "champion",
+   "height": 1.7,
+   "replaces": "personaje (robot three.js)"
+  },
+  "champ_sable": {
+   "category": "champion",
+   "height": 2.2,
+   "replaces": "ks_Skeleton_Rogue (tinte oscuro)"
+  },
+  "champ_rakhar": {
+   "category": "champion",
+   "height": 2.0,
+   "replaces": "lagarto (tinte)"
+  },
+  "champ_elowen": {
+   "category": "champion",
+   "height": 2.1,
+   "replaces": "ka_Mage (tinte verde)"
+  },
+  "champ_aurik": {
+   "category": "champion",
+   "height": 2.3,
+   "replaces": "ka_Knight (tinte dorado)",
+   "extraModel": "champ_aurik_dragon"
+  },
+  "champ_aurik_dragon": {
+   "category": "champion",
+   "height": 3.2,
+   "replaces": "mini_dragon_blue"
+  },
+  "minion_melee": {
+   "category": "minion",
+   "height": 1.2,
+   "replaces": "ks_Skeleton_Minion",
+   "teamVariants": true
+  },
+  "minion_caster": {
+   "category": "minion",
+   "height": 1.2,
+   "replaces": "ks_Skeleton_Mage",
+   "teamVariants": true
+  },
+  "minion_siege": {
+   "category": "minion",
+   "height": 1.7,
+   "replaces": "ks_Skeleton_Warrior",
+   "teamVariants": true
+  },
+  "minion_super": {
+   "category": "minion",
+   "height": 2.2,
+   "replaces": "ks_Skeleton_Warrior",
+   "teamVariants": true
+  },
+  "minion_ram": {
+   "category": "minion",
+   "height": 2.6,
+   "replaces": "ks_Skeleton_Warrior"
+  },
+  "monster_golem": {
+   "category": "monster",
+   "height": 2.0,
+   "replaces": "ks_Skeleton_Warrior"
+  },
+  "monster_bestia": {
+   "category": "monster",
+   "height": 1.8,
+   "replaces": "ks_Skeleton_Warrior"
+  },
+  "monster_lobo": {
+   "category": "monster",
+   "height": 1.2,
+   "replaces": "ks_Skeleton_Minion"
+  },
+  "monster_ave": {
+   "category": "monster",
+   "height": 1.0,
+   "replaces": "ks_Skeleton_Minion"
+  },
+  "monster_roca": {
+   "category": "monster",
+   "height": 1.6,
+   "replaces": "ks_Skeleton_Warrior"
+  },
+  "monster_sapo": {
+   "category": "monster",
+   "height": 1.4,
+   "replaces": "ks_Skeleton_Warrior"
+  },
+  "epic_dragon": {
+   "category": "epic",
+   "height": 3.6,
+   "replaces": "mini_dragon_blue",
+   "variants": [
+    "Ceniza",
+    "Marea",
+    "Raíz",
+    "Forja"
+   ]
+  },
+  "epic_heraldo": {
+   "category": "epic",
+   "height": 2.4,
+   "replaces": "lord_tuetano"
+  },
+  "epic_senor": {
+   "category": "epic",
+   "height": 3.2,
+   "replaces": "lord_tuetano"
+  },
+  "epic_avatar": {
+   "category": "epic",
+   "height": 2.4,
+   "replaces": "lord_tuetano"
+  },
+  "struct_tower": {
+   "category": "structure",
+   "height": 5.8,
+   "replaces": "primitivas + busto guerrero",
+   "teamVariants": true
+  },
+  "struct_inhib": {
+   "category": "structure",
+   "height": 2.6,
+   "replaces": "primitivas",
+   "teamVariants": true
+  },
+  "struct_nexus": {
+   "category": "structure",
+   "height": 5.0,
+   "replaces": "primitivas",
+   "teamVariants": true
+  },
+  "struct_fountain": {
+   "category": "structure",
+   "height": 1.0,
+   "replaces": "primitivas",
+   "teamVariants": true
+  },
+  "prop_bush": {
+   "category": "prop",
+   "height": 0.8,
+   "replaces": "kk_bush"
+  },
+  "prop_tree": {
+   "category": "prop",
+   "height": 3.5,
+   "replaces": "tree"
+  },
+  "prop_cypress": {
+   "category": "prop",
+   "height": 3.2,
+   "replaces": "cypress"
+  },
+  "prop_rock": {
+   "category": "prop",
+   "height": 1.5,
+   "replaces": "dodecaedro generado"
+  },
+  "prop_ward": {
+   "category": "prop",
+   "height": 0.9,
+   "replaces": "cypress (tinte amarillo)"
+  },
+  "map_grieta_ceniza": {
+   "category": "environment",
+   "height": 6.8,
+   "replaces": "suelo pintado por código",
+   "done": "tools/blender/build_maps.py"
+  },
+  "map_puente_niebla": {
+   "category": "environment",
+   "height": 13.5,
+   "replaces": "suelo pintado por código",
+   "done": "tools/blender/build_maps.py"
+  },
+  "map_ruinas_eclipse": {
+   "category": "environment",
+   "height": 6.3,
+   "replaces": "suelo pintado por código",
+   "done": "tools/blender/build_maps.py"
+  }
+ }
 }

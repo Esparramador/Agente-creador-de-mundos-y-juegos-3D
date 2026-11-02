@@ -16,7 +16,8 @@ if (!html.includes(tag)) throw new Error('index.html: falta la etiqueta del scri
 
 // modelos usados por el juego (lista en src/models.js)
 const modelsSrc = readFileSync(join(root, 'src/models.js'), 'utf8');
-const files = JSON.parse(modelsSrc.match(/MODEL_FILES = (\[[^\]]*\])/s)[1].replace(/'/g, '"'));
+const files = [...modelsSrc.match(/MODEL_FILES = \[([^\]]*)\]/s)[1].matchAll(/'([\w-]+)'/g)].map(x => x[1]);
+files.push(...[...modelsSrc.match(/MAP_FILES = \{([^}]*)\}/s)[1].matchAll(/: '([\w-]+)'/g)].map(x => x[1]));
 const models = Object.fromEntries(files.map(n => [n, readFileSync(join(root, 'assets/models', n + '.glb')).toString('base64')]));
 
 mkdirSync(join(root, 'dist/web/assets/models'), { recursive: true });

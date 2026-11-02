@@ -60,7 +60,8 @@ export function check(info, assetId) {
   const c = SPEC.categories[a.category];
   if (info.tris < c.tris[0]) out.warnings.push(`pocos triángulos (${info.tris} < ${c.tris[0]}): ¿falta detalle?`);
   if (info.tris > c.tris[1]) out.errors.push(`demasiados triángulos (${info.tris} > ${c.tris[1]})`);
-  if (!info.quantized) {
+  if (a.category === 'environment') { /* escenario: origen = esquina del mapa (coordenadas de juego) y relieve bajo 0 por diseño */ }
+  else if (!info.quantized) {
     const tol = Math.max(0.15 * a.height, 0.1);
     if (Math.abs(info.height - a.height) > tol) out.warnings.push(`altura ${info.height} m (objetivo ${a.height} m; el juego reescala, pero revisa proporciones)`);
     if (Math.abs(info.minY) > 0.03) out.errors.push(`el origen no está en los pies: minY = ${info.minY} (debe ser 0)`);

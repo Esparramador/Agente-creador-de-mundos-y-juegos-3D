@@ -6,6 +6,16 @@
 
 ---
 
+## Ya hecho en Blender (2026-11-02)
+| Asset | Script | Estado |
+|---|---|---|
+| 3 mapas (terreno, carriles, río, acantilados/abismo, rocas, matorrales, decorado, bases, fosos épicos, altares) | `tools/blender/build_maps.py` | ✓ En el juego (`map_*.glb`), con renders y planos en `design/levels/` |
+| Torre, inhibidor, nexo y fuente (material «Team» recoloreado por equipo) | `tools/blender/build_structures.py` | ✓ En el juego (`struct_*.glb`) |
+| Guardián | `tools/blender/build_structures.py` | ✓ En el juego (`prop_ward.glb`) |
+| 15 campeones, súbditos, monstruos y épicos | — | Pendiente (§4–§7): necesitan malla base de calidad + rig + animación |
+
+Para mejorar los mapas a mano, abre `art/blender/maps/<id>.blend`. Si cambias las posiciones jugables, edita `game/src/maps.js` y regenera (ver `design/levels/README.md`); si solo cambias el decorado, exporta con el mismo nombre.
+
 ## 0. Cómo empezar la sesión (copia este mensaje en Claude Code)
 
 ```text
@@ -198,7 +208,7 @@ Modelar personajes de calidad solo con primitivas por script no da un resultado 
 | `epic_heraldo` | Bestia de forja con ojo central | Al morir deja el ojo (prop aparte) |
 | `epic_senor` | Señor de la Ceniza: gran cabeza con tentáculos de ascua (evolución de tu `lord_tuetano`) | Spawn sale del suelo |
 | `epic_avatar` | Avatar del Eclipse: figura de luz violeta y dorada | Emisivo |
-| `struct_tower` (×2) | Torre de piedra de 5,8 m con cristal de equipo. Tus bustos `guerrero` y `guerrero_2` como remate | Destroy: colapso; mantener ≤ 8 k (los bustos tienen 18 k y hay que reducirlos) |
+| `struct_tower` (✓ versión low-poly de Blender) | Torre de piedra de 5,8 m con cristal de equipo. Tus bustos `guerrero`/`guerrero_2` custodian ahora el Nexo | Destroy: colapso; mantener ≤ 8 k (los bustos tienen 18 k y hay que reducirlos) |
 | `struct_inhib`, `struct_nexus`, `struct_fountain` (×2) | Cristal flotante sobre anillo de piedra / gran cristal hexagonal / fuente con plataforma | Brillo del color de equipo |
 | `prop_bush`, `prop_tree`, `prop_cypress`, `prop_rock`, `prop_ward` | Vegetación, rocas y guardián (un farol con ojo) | Una variante por mapa (ceniza, hielo y templo) |
 
@@ -247,6 +257,10 @@ Un modelo está **terminado** cuando:
 | `tools/blender/export_glb.py` | Exporta a `game/assets/models/final/<id>.glb` y valida |
 | `tools/blender/render_preview.py` | Renders de evidencia |
 | `tools/blender/integrate_model.sh` | Valida, optimiza (meshopt + WebP) y copia a `game/assets/models/` |
+| `tools/blender/build_maps.py` | Construye los 3 mapas desde `assets/data/map_layouts.json` (.blend + .glb + renders) |
+| `tools/blender/build_structures.py` | Torre, inhibidor, nexo, fuente y guardián |
+| `tools/blender/annotate_maps.py` | Planos anotados en `design/levels/renders/*_plano.png` |
+| `game/tools/export_maps.mjs` | Geometría de la simulación → `assets/data/map_layouts.json` |
 | `tools/blender/selftest_pipeline.py` | Autoprueba del flujo y ejemplo de rig y animación por script |
 | `game/tools/preview/anim_check.js` | Comprueba en navegador que los clips de un `.glb` mueven huesos |
 | `game/tools/bundle.mjs` | Genera `dist/coronas-de-ceniza.html` (modelos incrustados) y `dist/web/` |

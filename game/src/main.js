@@ -194,9 +194,11 @@ function say(txt) { if (G.player) R.texts.push({ x: G.player.x, y: G.player.y - 
 
 // ---------------- entrada ----------------
 canvas.addEventListener('contextmenu', e => e.preventDefault());
-canvas.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; if (held.left && onMinimap(mouse.x, mouse.y)) { const [x, y] = miniToWorld(mouse.x, mouse.y); R.cam.locked = false; R.cam.x = x; R.cam.y = y; } });
+// posición del ratón en el mundo y unidad bajo el cursor, al momento (no solo una vez por fotograma)
+function updateMouseWorld() { if (!R) return; [mouse.wx, mouse.wy] = R.s2w(mouse.x, mouse.y); hover = pickUnit(mouse.wx, mouse.wy); }
+canvas.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; updateMouseWorld(); if (held.left && onMinimap(mouse.x, mouse.y)) { const [x, y] = miniToWorld(mouse.x, mouse.y); R.cam.locked = false; R.cam.x = x; R.cam.y = y; } });
 canvas.addEventListener('mousedown', e => {
-  if (!G) return; const p = G.player;
+  if (!G) return; const p = G.player; mouse.x = e.clientX; mouse.y = e.clientY; updateMouseWorld();
   if (e.button === 2) { if (pending) { pending = null; R.rangeHint = 0; return; } held.right = true; held.rightT = performance.now(); rightClick(false); return; }
   if (e.button !== 0) return;
   held.left = true;
@@ -213,7 +215,7 @@ let rebinding = null;
 addEventListener('keydown', e => {
   if (rebinding) { S.keys[rebinding] = e.code; rebinding = null; save(); renderOptions(); e.preventDefault(); return; }
   if (!G || $('menu').classList.contains('on')) return;
-  const K = S.keys, code = e.code, p = G.player;
+  const K = S.keys, code = e.code, p = G.player; updateMouseWorld();
   if (code === 'Escape') { e.preventDefault(); if ($('shop').classList.contains('on')) return UI.toggleShop(false); if (pending) { pending = null; R.rangeHint = 0; return; } return togglePause(); }
   if (paused) return;
   if (code === K.score) { e.preventDefault(); $('score').classList.add('on'); renderScore(); return; }

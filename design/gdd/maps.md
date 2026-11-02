@@ -94,6 +94,7 @@ Cada mapa es un tablero táctico distinto: guerra de desgaste en la Grieta, pele
 - **Dragón en combate cuando le toca reaparecer:** se aplaza hasta que termine el combate.
 
 ## Dependencies
+Diseño de nivel detallado, planos y renders de Blender: `design/levels/`.
 `combat-core.md` y `progression-economy.md`. Los diseños de nivel detallados (blockout) se harán con `/team-level`.
 
 ## Tuning Knobs

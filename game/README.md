@@ -6,7 +6,7 @@ Abre `game/dist/coronas-de-ceniza.html` en el navegador (doble clic; no requiere
 En desarrollo: `python3 -m http.server` desde `game/` y abre `http://localhost:8000`.
 
 ## Gráficos 3D
-Usa three.js con modelos glTF reales de los repos del autor (KayKit CC0, dragón, bustos, lagarto). Las unidades están animadas y hay sombras y niebla de guerra. Si no hay WebGL o se desactiva en Opciones, el juego pasa a 2D. Asignación de modelos: `src/models.js`. Modelos definitivos con Blender: `production/handoff/BLENDER-3D-HANDOFF.md`.
+Los escenarios de los 3 mapas y las estructuras están modelados en Blender (`tools/blender/`, diseño en `design/levels/`). Usa three.js con modelos glTF reales de los repos del autor (KayKit CC0, dragón, bustos, lagarto). Las unidades están animadas y hay sombras y niebla de guerra. Si no hay WebGL o se desactiva en Opciones, el juego pasa a 2D. Asignación de modelos: `src/models.js`. Modelos definitivos con Blender: `production/handoff/BLENDER-3D-HANDOFF.md`.
 
 ## Contenido
 - 15 campeones con pasiva y 4 habilidades.

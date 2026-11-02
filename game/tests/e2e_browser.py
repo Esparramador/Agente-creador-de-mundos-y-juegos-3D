@@ -22,6 +22,10 @@ def js(pg, code): return pg.evaluate(code)
 def fast(pg, seconds): js(pg, f"() => {{ const G = __cdc.G; for (let i = 0; i < {int(seconds * 30)}; i++) G.step(); }}")
 def ready(pg):  # el jugador está vivo y libre de control de masas antes de cada acción comprobada
     js(pg, "() => { const G = __cdc.G, p = G.player; if (!p.alive) G.respawn(p); p.cc = []; p.channel = null; p.dash = null; p.hp = p.st.maxHp; }")
+def frames(pg, n=2):  # espera a que se dibujen n fotogramas nuevos (la cámara ya sigue al jugador)
+    js(pg, "() => { window.__f0 = __cdc.r3d ? __cdc.r3d.t : 0; }")
+    if js(pg, "() => !!__cdc.r3d"): pg.wait_for_function(f"() => __cdc.r3d.t > window.__f0 + {n} * 0.0001 && performance.now() > 0", timeout=60000); time.sleep(0.2)
+    for _ in range(n): pg.evaluate("() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))")
 def nonblack(pg):
     # 3D: triángulos dibujados por WebGL en el último fotograma; 2D: píxeles no negros del lienzo
     return js(pg, """() => { if (__cdc.r3d) return __cdc.r3d.r.info.render.triangles;
@@ -57,7 +61,7 @@ with sync_playwright() as p:
     new_game(pg, 'grieta_ceniza', 'kaelith')
     check('Grieta: el lienzo dibuja el mapa', nonblack(pg) > 200)
     m3 = js(pg, "() => { const r = __cdc.r3d; if (!r) return null; let skinned = 0; for (const o of r.objs.values()) if (o.userData.mixer) skinned++; return { models: Object.keys(r.templates).length, objs: r.objs.size, skinned, champ: r.objs.get(__cdc.G.player.id)?.userData.spec.model } }")
-    check('3D: 17 modelos glTF cargados y campeones animados', m3 and m3['models'] == 17 and m3['skinned'] >= 5 and m3['champ'] == 'ka_Knight', str(m3))
+    check('3D: 23 modelos glTF (17 + 5 estructuras Blender + mapa Blender) y campeones animados', m3 and m3['models'] == 23 and m3['skinned'] >= 5 and m3['champ'] == 'ka_Knight', str(m3))
     st = js(pg, "() => { const G = __cdc.G; return { n: G.champs.length, name: G.player.name, team: G.player.team, role: G.player.role } }")
     check('Grieta: 10 campeones y jugador Kaelith', st['n'] == 10 and st['name'] == 'Kaelith', str(st))
     pg.screenshot(path=str(SHOTS / '02_grieta_inicio.png'))
@@ -70,12 +74,14 @@ with sync_playwright() as p:
     pg.keyboard.press('Control+q'); check('Ctrl+Q sube la Q', js(pg, "() => __cdc.G.player.ranks.Q") == 1)
     # moverse con clic derecho
     x0 = js(pg, "() => __cdc.G.player.x")
-    pg.mouse.move(1150, 250); pg.mouse.click(1150, 250, button='right'); time.sleep(1.2)
-    check('clic derecho mueve al campeón', js(pg, "() => __cdc.G.player.x") > x0 + 100)
+    pg.mouse.move(1150, 250); pg.mouse.click(1150, 250, button='right')
+    try: pg.wait_for_function(f"() => __cdc.G.player.x > {x0} + 100", timeout=60000); moved = True
+    except Exception: moved = False
+    check('clic derecho mueve al campeón', moved, str(js(pg, "() => ({ x: __cdc.G.player.x, mv: __cdc.G.player.moveTo })")))
     # viajar al carril: teletransportar cerca de la oleada y avanzar el tiempo
     fast(pg, 70)
     js(pg, "() => { const G = __cdc.G, p = G.player, m = G.units.find(u => u.alive && u.kind === 'minion' && u.team === 1); p.x = m.x - 300; p.y = m.y + 300; }")
-    time.sleep(0.3)
+    frames(pg, 3)
     # atacar a un súbdito enemigo con clic derecho sobre él
     pos = js(pg, "() => { const G = __cdc.G, R = __cdc.R, p = G.player; const m = G.units.filter(u => u.alive && u.kind === 'minion' && u.team === 1).sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y))[0]; return R.w2s(m.x, m.y); }")
     pg.mouse.move(pos[0], pos[1]); time.sleep(0.1); pg.mouse.click(pos[0], pos[1], button='right'); time.sleep(0.2)
@@ -86,7 +92,8 @@ with sync_playwright() as p:
     check('Q se lanza (entra en enfriamiento)', js(pg, "() => (__cdc.G.player.cds.Q || 0) > 0 || __cdc.G.player.recast.Q > __cdc.G.t"))
     pg.screenshot(path=str(SHOTS / '04_grieta_combate.png'))
     # guardián, Destello, volver a base
-    ready(pg)
+    ready(pg); frames(pg, 2)
+    pg.mouse.move(800, 430)
     pg.keyboard.press('4'); time.sleep(0.1)
     check('tecla 4 coloca un guardián', js(pg, "() => __cdc.G.units.some(u => u.kind === 'ward' && u.team === __cdc.G.player.team)"))
     ready(pg)

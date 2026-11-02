@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
-import { MODEL_MAP, UNIT_MODELS, MODEL_FILES } from './models.js';
+import { MODEL_MAP, UNIT_MODELS, MODEL_FILES, MAP_FILES } from './models.js';
 
 const S = 0.01; // juego -> mundo
 const TEAM = [0x42a5f5, 0xef5350, 0xbcaaa4], TEAM_CB = [0x42a5f5, 0xff9800, 0xbcaaa4];
@@ -28,14 +28,15 @@ export class World3D {
   // ---------- carga de modelos ----------
   async load(onProgress) {
     const L = new GLTFLoader(); L.setMeshoptDecoder(MeshoptDecoder);
-    const names = MODEL_FILES; let n = 0;
+    const mapFile = MAP_FILES[this.g.map.id]; const names = [...MODEL_FILES, ...(mapFile ? [mapFile] : [])]; let n = 0;
     await Promise.all(names.map(async name => {
       let buf;
       const emb = (typeof window !== 'undefined' && window.__MODELS) ? window.__MODELS[name] : null;
       if (emb) { const bin = atob(emb); buf = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i); buf = buf.buffer; }
       else buf = await (await fetch(`assets/models/${name}.glb`)).arrayBuffer();
       const gltf = await new Promise((res, rej) => L.parse(buf, '', res, rej));
-      gltf.scene.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = false; o.frustumCulled = false; } });
+      const isMap = name.startsWith('map_');
+      gltf.scene.traverse(o => { if (o.isMesh) { o.castShadow = !isMap || !/terreno/.test(o.name); o.receiveShadow = isMap; o.frustumCulled = isMap; } });
       this.templates[name] = gltf.scene; this.anims[name] = gltf.animations;
       onProgress && onProgress(++n, names.length, name);
     }));
@@ -49,7 +50,18 @@ export class World3D {
     const sun = this.sun = new THREE.DirectionalLight(0xfff1d6, 2.4);
     sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024); const sc = sun.shadow.camera; sc.left = -30; sc.right = 30; sc.top = 30; sc.bottom = -30; sc.near = 1; sc.far = 120;
     sun.shadow.bias = -0.0005; this.scene.add(sun, sun.target);
-    // terreno pintado
+    const mapModel = this.templates[MAP_FILES[m.id]];
+    if (mapModel) {
+      this.scene.add(mapModel);   // terreno, caminos, río, acantilados, rocas y matorrales modelados en Blender
+      this.brushCount = g.brushes.length; this.rocks = new Map(); for (const o of g.obstacles) this.rocks.set(o, null);
+      this.rockMat = new THREE.MeshStandardMaterial({ color: 0x6d675f, roughness: 1, flatShading: true });
+      const rim = new THREE.Mesh(new THREE.PlaneGeometry(W * 4, H * 4), new THREE.MeshBasicMaterial({ color: 0x07090b })); rim.rotation.x = -Math.PI / 2; rim.position.set(W / 2, m.bounds ? -9.5 : -0.3, H / 2); this.scene.add(rim);
+    } else this.paintedGround(W, H);
+    this.commonWorld(W, H);
+  }
+  paintedGround(W, H) {
+    const g = this.g, m = g.map;
+    // terreno pintado (respaldo si falta el .glb del mapa)
     const tc = document.createElement('canvas'); const res = 2048; tc.width = res; tc.height = Math.round(res * m.H / m.W);
     const x = tc.getContext('2d'); const k = tc.width / m.W; x.scale(k, k);
     x.fillStyle = m.bg; x.fillRect(0, 0, m.W, m.H);
@@ -68,9 +80,7 @@ export class World3D {
     // borde exterior
     const rim = new THREE.Mesh(new THREE.PlaneGeometry(W * 3, H * 3), new THREE.MeshBasicMaterial({ color: 0x07090b })); rim.rotation.x = -Math.PI / 2; rim.position.set(W / 2, -0.02, H / 2); this.scene.add(rim);
     if (m.bounds) for (const zz of [m.bounds.y0 - 70, m.bounds.y1 + 70]) { const rail = new THREE.Mesh(new THREE.BoxGeometry(W, 0.6, 0.4), new THREE.MeshStandardMaterial({ color: 0x8a9aa4 })); rail.position.set(W / 2, 0.3, zz * S); rail.castShadow = true; this.scene.add(rail); }
-    // rocas (también las temporales se sincronizan en render)
     this.rockMat = new THREE.MeshStandardMaterial({ color: 0x6d675f, roughness: 1, flatShading: true }); this.rocks = new Map();
-    // matorrales: arbustos y árboles de tus modelos
     for (const b of g.brushes) this.addBrush(b);
     this.brushCount = g.brushes.length;
     // árboles decorativos fuera de carriles (bordes del mapa)
@@ -79,10 +89,11 @@ export class World3D {
       const px = rnd() * m.W, py = rnd() * m.H; if (this.nearLane(px, py, 900) || g.obstacles.some(o => Math.hypot(o.x - px, o.y - py) < o.r + 200) || m.fountain.some(([a, b]) => Math.hypot(a - px, b - py) < 1800)) continue;
       const t = this.instance(rnd() < 0.6 ? 'tree' : 'cypress', 2.2 + rnd() * 1.6); t.position.set(px * S, 0, py * S); t.rotation.y = rnd() * 6; this.scene.add(t);
     }
-    // fuentes
-    m.fountain.forEach(([fx, fy], t) => { const f = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.6, 0.4, 24), new THREE.MeshStandardMaterial({ color: 0x9e9e9e }));
-      f.position.set(fx * S, 0.2, fy * S); f.receiveShadow = true; this.scene.add(f);
-      const c = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 0.1, 24), new THREE.MeshStandardMaterial({ color: this.teamCol(t), emissive: this.teamCol(t), emissiveIntensity: 0.9 })); c.position.set(fx * S, 0.45, fy * S); this.scene.add(c);
+  }
+  commonWorld(W, H) {
+    const g = this.g, m = g.map;
+    // fuentes (modelo de Blender con el color del equipo)
+    m.fountain.forEach(([fx, fy], t) => { const f = this.instance('struct_fountain', 2.9, null, t); f.position.set(fx * S, 0, fy * S); this.scene.add(f);
       const l = new THREE.PointLight(this.teamCol(t), 30, 12); l.position.set(fx * S, 2, fy * S); this.scene.add(l); });
     // altares
     for (const a of g.altars) { const ring = new THREE.Mesh(new THREE.TorusGeometry(3, 0.12, 8, 48), new THREE.MeshStandardMaterial({ color: 0xdddddd, emissive: 0x222222 })); ring.rotation.x = Math.PI / 2; ring.position.set(a.x * S, 0.05, a.y * S); this.scene.add(ring); a.mesh = ring;
@@ -102,12 +113,13 @@ export class World3D {
     for (let i = 0; i < n; i++) { const a = rnd() * 6.28, d = Math.sqrt(rnd()) * b.r * 0.85; const o = this.instance('kk_bush', 1.0 + rnd() * 0.7); o.position.set((b.x + Math.cos(a) * d) * S, 0, (b.y + Math.sin(a) * d) * S); o.rotation.y = rnd() * 6; grp.add(o); }
     this.scene.add(grp);
   }
-  instance(name, height, tint) {
+  instance(name, height, tint, team) {
     const tpl = this.templates[name]; if (!tpl) return new THREE.Group();
     const o = (this.anims[name] && this.anims[name].length) ? cloneSkinned(tpl) : tpl.clone();
     if (!tpl.userData.h) { const b = new THREE.Box3().setFromObject(tpl); tpl.userData.h = b.max.y - b.min.y; tpl.userData.minY = b.min.y; }
     const k = height / tpl.userData.h; const wrap = new THREE.Group(); o.scale.multiplyScalar(k); o.position.y = -tpl.userData.minY * k; wrap.add(o);
     if (tint != null) o.traverse(m => { if (m.isMesh) { m.material = m.material.clone(); m.material.color.lerp(new THREE.Color(tint), 0.45); } });
+    if (team != null) o.traverse(m => { if (m.isMesh && m.material && m.material.name === 'Team') { const c = this.teamCol(team); m.material = m.material.clone(); m.material.color.setHex(c); m.material.emissive.setHex(c); m.material.emissiveIntensity = 0.9; m.userData.team = true; } });
     wrap.userData.inner = o; return wrap;
   }
 
@@ -116,16 +128,28 @@ export class World3D {
     const spec = UNIT_MODELS(u);
     const grp = new THREE.Group(); let model = null, mixer = null, actions = {};
     if (spec.model) {
-      model = this.instance(spec.model, spec.h, spec.tint); if (u.kind !== 'champ' && !u.epicType) model.traverse(o => { if (o.isMesh) o.castShadow = false; }); if (spec.sx) model.scale.x = model.scale.z = spec.sx; grp.add(model);
+      model = this.instance(spec.model, spec.h, spec.tint, spec.team); if (u.kind !== 'champ' && !u.epicType) model.traverse(o => { if (o.isMesh) o.castShadow = false; }); if (spec.sx) model.scale.x = model.scale.z = spec.sx; grp.add(model);
       const clips = this.anims[spec.model] || [];
       if (clips.length) { mixer = new THREE.AnimationMixer(model.userData.inner); for (const c of clips) actions[c.name] = mixer.clipAction(c); }
-    } else grp.add(this.structureMesh(u));
+    }
+    if (spec.structure) this.decorateStructure(grp, u);
+    else if (!spec.model) grp.add(this.structureMesh(u));
     // anillo de equipo
     if (!u.structure) { const ring = new THREE.Mesh(this.ringGeo, new THREE.MeshBasicMaterial({ color: u.isPlayer ? 0x66ff66 : this.teamCol(u.team), transparent: true, opacity: u.kind === 'champ' ? 0.9 : 0.5, depthWrite: false }));
       ring.rotation.x = -Math.PI / 2; ring.position.y = 0.04; ring.scale.setScalar(u.r * S * 1.25); grp.add(ring); grp.userData.ring = ring; }
     if (u.kind === 'champ') { const l = new THREE.PointLight(this.teamCol(u.team), u.isPlayer ? 6 : 3, 4); l.position.y = 1.5; grp.add(l); }
     grp.userData = { ...grp.userData, spec, mixer, actions, cur: null, model, u };
     this.scene.add(grp); this.objs.set(u.id, grp); return grp;
+  }
+  decorateStructure(grp, u) {
+    const col = this.teamCol(u.team);
+    const light = new THREE.PointLight(col, u.kind === 'nexus' ? 25 : 8, u.kind === 'nexus' ? 12 : 7); light.position.y = u.kind === 'tower' ? 5 : 3; grp.add(light);
+    if (u.kind === 'nexus') for (const side of [-1, 1]) {   // tus bustos guerreros custodian el Nexo
+      const bust = this.instance(u.team === 0 ? 'guerrero' : 'guerrero_2', 1.6, u.team === 0 ? 0x90caf9 : null);
+      const ang = Math.atan2(this.g.map.W / 2 - u.x, this.g.map.H / 2 - u.y);
+      bust.position.set(Math.sin(ang + side * 0.6) * 2.8, 0, Math.cos(ang + side * 0.6) * 2.8); bust.rotation.y = ang; grp.add(bust);
+    }
+    grp.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   }
   structureMesh(u) {
     const grp = new THREE.Group(), col = this.teamCol(u.team);
@@ -202,7 +226,8 @@ export class World3D {
       obj.visible = true;
       let y = 0; const air = u.cc.find(c => c.kind === 'airborne'); if (air) y = Math.min(1, air.t) * 1.2;
       obj.position.set(u.x * S, y, u.y * S);
-      if (u.structure) { const gem = obj.children[0]?.userData?.gem; obj.children[0].scale.y = u.alive ? 1 : 0.25; if (gem) { gem.visible = u.alive; gem.rotation.y += dt; } continue; }
+      if (u.structure) { const mdl = obj.userData.model || obj.children[0]; if (mdl) mdl.scale.y = u.alive ? 1 : 0.22;
+        obj.traverse(o => { if (o.isMesh && o.userData.team) o.visible = u.alive; }); if (obj.userData.ring) obj.userData.ring.visible = false; continue; }
       // forma dragón de Aurik
       if (u.cid === 'aurik') { const dragon = u.buffs.some(b => b.key === 'dragon'); if (dragon !== obj.userData.dragon) { obj.userData.dragon = dragon; this.swapModel(obj, u, dragon ? { model: 'mini_dragon_blue', h: 3.2, anims: {} } : UNIT_MODELS(u)); } }
       const stealth = u.buffs.some(b => b.stealth); this.setOpacity(obj, stealth ? 0.35 : 1);
