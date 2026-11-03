@@ -1,0 +1,323 @@
+{
+ "asset": "champ_aurik_dragon",
+ "pack": "quaternius",
+ "base": "lowpoly-animated-monsters/FBX/Dragon.fbx",
+ "categoria": "champion",
+ "altura_objetivo_m": 3.2,
+ "fecha": "2026-11-03 11:51",
+ "puertas": {
+  "huesos": {
+   "n": 27,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": 7,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.042,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.22,
+    "aristas_max": 1.564,
+    "aristas_ok": true,
+    "suela_min_m": -0.0114,
+    "suela_max_m": 0.0023,
+    "ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.042,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.22,
+    "aristas_max": 1.564,
+    "aristas_ok": true,
+    "suela_min_m": -0.0114,
+    "suela_max_m": 0.0023,
+    "ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.137,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.598,
+    "aristas_max": 2.34,
+    "aristas_ok": true,
+    "suela_min_m": -0.0194,
+    "suela_max_m": 0.2643,
+    "ok": true
+   },
+   "Cast": {
+    "desviacion_diagonal_max": 0.033,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.677,
+    "aristas_max": 2.434,
+    "aristas_ok": true,
+    "suela_min_m": -0.0081,
+    "suela_max_m": 0.0023,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.046,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.562,
+    "aristas_max": 2.399,
+    "aristas_ok": true,
+    "suela_min_m": -0.0567,
+    "suela_max_m": 0.6165,
+    "ok": true
+   },
+   "Hit": {
+    "desviacion_diagonal_max": 0.039,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.22,
+    "aristas_max": 1.586,
+    "aristas_ok": true,
+    "suela_min_m": -0.0081,
+    "suela_max_m": 0.0023,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 45,
+  "huesos": 27,
+  "nombres_huesos": [
+   "Root",
+   "BodyRoot",
+   "Body",
+   "Neck",
+   "Head",
+   "Face",
+   "Nose",
+   "Shoulder.L",
+   "Wing1.L",
+   "Wing2.L",
+   "Wing3.L",
+   "Wing4.L",
+   "Shoulder.R",
+   "Wing1.R",
+   "Wing2.R",
+   "Wing3.R",
+   "Wing4.R",
+   "UpperLeg.L",
+   "LowerLeg.L",
+   "Feet.L",
+   "UpperLeg.R",
+   "LowerLeg.R",
+   "Feet.R",
+   "Tail1",
+   "Tail2",
+   "Tail3",
+   "Tail4"
+  ],
+  "acciones": [
+   "Dragon_Attack",
+   "Dragon_Attack2",
+   "Dragon_Death",
+   "Dragon_Flying",
+   "Dragon_Hit"
+  ],
+  "mallas_con_piel": [
+   "Dragon"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 4,
+ "tinte": {
+  "color": "#ffca28",
+  "mezcla": 0.55,
+  "materiales": 4
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Dragon_Flying",
+   "fotogramas": [
+    1,
+    41
+   ],
+   "segundos": 1.667
+  },
+  "Run": {
+   "origen": "Dragon_Flying",
+   "fotogramas": [
+    1,
+    41
+   ],
+   "segundos": 1.667
+  },
+  "Attack": {
+   "origen": "Dragon_Attack",
+   "fotogramas": [
+    1,
+    22
+   ],
+   "segundos": 0.875
+  },
+  "Cast": {
+   "origen": "Dragon_Attack2",
+   "fotogramas": [
+    1,
+    41
+   ],
+   "segundos": 1.667
+  },
+  "Death": {
+   "origen": "Dragon_Death",
+   "fotogramas": [
+    1,
+    30
+   ],
+   "segundos": 1.208
+  },
+  "Hit": {
+   "origen": "Dragon_Hit",
+   "fotogramas": [
+    1,
+    41
+   ],
+   "segundos": 1.667
+  }
+ },
+ "escala": {
+  "altura_origen_m": 3.852,
+  "factor": 0.8307,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 3.2,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": 0.0,
+  "altura_m": 3.2,
+  "subido_m": 0.0
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -1.416,
+    -1.541,
+    0.0
+   ],
+   [
+    1.416,
+    1.541,
+    3.2
+   ]
+  ],
+  "diagonal_m": 5.269,
+  "altura_m": 3.2,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 5.481
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.833,
+  "ruta": "game/assets/models/final/champ_aurik_dragon.glb",
+  "bytes": 275512,
+  "min_y_sin_piel": -0.0,
+  "raiz_ajustada_m": 0.0589
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/27)"
+  ],
+  "three": {
+   "huesos": 27,
+   "mallasConEsqueleto": 4,
+   "caja_con_piel_m": [
+    2.832,
+    3.2,
+    3.083
+   ],
+   "suelo_con_piel_y": 0.0589,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 1.667,
+     "pistas": 81,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 1.667,
+     "pistas": 81,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 0.875,
+     "pistas": 81,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Cast",
+     "segundos": 1.667,
+     "pistas": 81,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 1.208,
+     "pistas": 81,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Hit",
+     "segundos": 1.667,
+     "pistas": 81,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 3.7295,
+    "Run": 3.7295,
+    "Attack": 4.3563,
+    "Cast": 3.6565,
+    "Death": 5.59,
+    "Hit": 3.6565
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ champ_aurik_dragon.glb como champ_aurik_dragon · 1104 tris · 2.658 m · 27 huesos · clips: Idle, Run, Attack, Cast, Death, Hit",
+   "    aviso  pocos triángulos (1104 < 6000): ¿falta detalle?",
+   "    aviso  altura 2.658 m (objetivo 3.2 m; el juego reescala, pero revisa proporciones)",
+   "    aviso  clips recomendados que faltan: Attack2, Cast_Q, Cast_W, Cast_E, Cast_R, Recall, Victory, Taunt"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/champ_aurik_dragon.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Cast",
+   "Death"
+  ]
+ },
+ "segundos": 2.7
+}

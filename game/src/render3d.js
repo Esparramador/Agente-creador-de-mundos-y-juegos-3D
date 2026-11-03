@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
-import { MODEL_MAP, UNIT_MODELS, MODEL_FILES, MAP_FILES } from './models.js';
+import { MODEL_MAP, UNIT_MODELS, MODEL_FILES, MAP_FILES, AURIK_DRAGON } from './models.js';
 
 const S = 0.01; // juego -> mundo
 const TEAM = [0x42a5f5, 0xef5350, 0xbcaaa4], TEAM_CB = [0x42a5f5, 0xff9800, 0xbcaaa4];
@@ -13,16 +13,21 @@ const TEAM = [0x42a5f5, 0xef5350, 0xbcaaa4], TEAM_CB = [0x42a5f5, 0xff9800, 0xbc
 export class World3D {
   constructor(canvas, game, settings) {
     this.g = game; this.s = settings; this.canvas = canvas;
-    this.r = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-    this.r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-    this.r.shadowMap.enabled = true; this.r.shadowMap.type = THREE.PCFSoftShadowMap;
+    // CONTRATO con B (main.js): settings.mobile baja antialias, densidad de píxeles y sombras en móvil
+    this.r = new THREE.WebGLRenderer({ canvas, antialias: !settings.mobile, powerPreference: 'high-performance' });
+    this.r.setPixelRatio(Math.min(window.devicePixelRatio || 1, settings.mobile ? 1.25 : 1.5));
+    this.r.shadowMap.enabled = !settings.mobile; this.r.shadowMap.type = THREE.PCFSoftShadowMap;
     this.r.outputColorSpace = THREE.SRGBColorSpace; this.r.toneMapping = THREE.ACESFilmicToneMapping; this.r.toneMappingExposure = 1.05;
     this.scene = new THREE.Scene(); this.scene.background = new THREE.Color(0x0b0f13);
     this.cam = new THREE.PerspectiveCamera(38, 1, 0.5, 400);
     this.objs = new Map(); this.templates = {}; this.anims = {}; this.pool = { zone: [], proj: [], fx: [] }; this.used = { zone: 0, proj: 0, fx: 0 };
     this.ray = new THREE.Raycaster(); this.plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); this.tmpV = new THREE.Vector3();
     this.t = 0;
+    // CONTRATO con G (vfx.js): ganchos opcionales. onUnitSpawn(obj, u) al crear la malla de una unidad,
+    // onUnitDeath(obj, u) al pasar a 'death', onCast(obj, u, k) al entrar en 'cast' (k = tecla de la habilidad o null).
+    this.onUnitSpawn = null; this.onUnitDeath = null; this.onCast = null;
   }
+  getObj(u) { return this.objs.get(u.id) || null; }
   teamCol(t) { return (this.s.colorblind ? TEAM_CB : TEAM)[t] ?? 0xffffff; }
 
   // ---------- carga de modelos ----------
@@ -139,17 +144,23 @@ export class World3D {
       ring.rotation.x = -Math.PI / 2; ring.position.y = 0.04; ring.scale.setScalar(u.r * S * 1.25); grp.add(ring); grp.userData.ring = ring; }
     if (u.kind === 'champ') { const l = new THREE.PointLight(this.teamCol(u.team), u.isPlayer ? 6 : 3, 4); l.position.y = 1.5; grp.add(l); }
     grp.userData = { ...grp.userData, spec, mixer, actions, cur: null, model, u };
-    this.scene.add(grp); this.objs.set(u.id, grp); return grp;
+    this.scene.add(grp); this.objs.set(u.id, grp); this.onUnitSpawn?.(grp, u); return grp;
   }
   decorateStructure(grp, u) {
     const col = this.teamCol(u.team);
     const light = new THREE.PointLight(col, u.kind === 'nexus' ? 25 : 8, u.kind === 'nexus' ? 12 : 7); light.position.y = u.kind === 'tower' ? 5 : 3; grp.add(light);
-    if (u.kind === 'nexus') for (const side of [-1, 1]) {   // tus bustos guerreros custodian el Nexo
-      const bust = this.instance(u.team === 0 ? 'guerrero' : 'guerrero_2', 1.6, u.team === 0 ? 0x90caf9 : null);
+    if (u.kind === 'nexus') for (const side of [-1, 1]) {   // estandartes del equipo custodian el Nexo (sustituyen a los bustos del autor)
       const ang = Math.atan2(this.g.map.W / 2 - u.x, this.g.map.H / 2 - u.y);
-      bust.position.set(Math.sin(ang + side * 0.6) * 2.8, 0, Math.cos(ang + side * 0.6) * 2.8); bust.rotation.y = ang; grp.add(bust);
+      const b = this.banner(col); b.position.set(Math.sin(ang + side * 0.6) * 2.8, 0, Math.cos(ang + side * 0.6) * 2.8); b.rotation.y = ang; grp.add(b);
     }
     grp.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  }
+  banner(col) {
+    const g = new THREE.Group();
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 3.2, 8), new THREE.MeshStandardMaterial({ color: 0x5d4037, roughness: 0.9 })); pole.position.y = 1.6;
+    const cloth = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.6), new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 0.5, side: THREE.DoubleSide, roughness: 0.8 }));
+    cloth.position.set(0.5, 2.3, 0); const tip = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.3, 6), new THREE.MeshStandardMaterial({ color: 0xffd54f, metalness: 0.6 })); tip.position.y = 3.35;
+    g.add(pole, cloth, tip); g.traverse(o => { if (o.isMesh) o.castShadow = true; }); return g;
   }
   structureMesh(u) {
     const grp = new THREE.Group(), col = this.teamCol(u.team);
@@ -160,7 +171,6 @@ export class World3D {
       const top = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.6, 0.5, 8), stone); top.position.y = 4;
       const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.45), crystal); gem.position.y = 4.9; grp.userData.gem = gem;
       grp.add(base, col1, top, gem);
-      const bust = this.instance(u.team === 0 ? 'guerrero' : 'guerrero_2', 1.0, u.team === 0 ? 0x90caf9 : null); bust.position.set(0, 4.25, 0); bust.rotation.y = u.team === 0 ? -Math.PI * 0.75 : Math.PI * 0.25; grp.add(bust);
       const light = new THREE.PointLight(col, 8, 7); light.position.y = 5; grp.add(light);
     } else if (u.kind === 'inhib') {
       const ring = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.18, 8, 24), stone); ring.rotation.x = Math.PI / 2; ring.position.y = 0.2;
@@ -189,9 +199,13 @@ export class World3D {
     else if (u.lastCast && g.t - u.lastCast < 0.45) st = 'cast';
     else if (u.windup || (u.lastAtk && g.t - u.lastAtk < 0.3)) st = 'attack';
     else if (moving) st = 'run';
-    if (d.state !== st) { d.state = st; this.play(obj, A[st] || A.idle, st === 'death' || st === 'attack' || st === 'cast'); }
+    if (d.state !== st) {
+      d.state = st; this.play(obj, A[st] || A.idle, st === 'death' || st === 'attack' || st === 'cast');
+      if (st === 'death') this.onUnitDeath?.(obj, u);
+      if (st === 'cast') this.onCast?.(obj, u, u.lastCastKey ?? u.castKey ?? null);
+    }
     if (d.mixer) d.mixer.update(dt * (st === 'attack' ? Math.max(1, u.st.as * 1.4) : 1));
-    else if (d.model) { // animación por código para modelos sin esqueleto
+    else if (d.model && !d.spec.structure) { // animación por código solo para modelos sin esqueleto (guardianes)
       const m = d.model; m.position.y = st === 'run' ? Math.abs(Math.sin(this.t * 10)) * 0.12 : Math.sin(this.t * 2) * 0.03;
       m.rotation.x = st === 'attack' ? -0.25 : st === 'death' ? -1.4 : 0;
     }
@@ -225,11 +239,13 @@ export class World3D {
       let obj = this.objs.get(u.id) || this.makeUnitObj(u); seen.add(u.id);
       obj.visible = true;
       let y = 0; const air = u.cc.find(c => c.kind === 'airborne'); if (air) y = Math.min(1, air.t) * 1.2;
+      const fly = obj.userData.spec?.fly; if (fly && u.alive) y += fly + Math.sin(this.t * 2 + u.id) * fly * 0.15;   // voladores: planean
       obj.position.set(u.x * S, y, u.y * S);
       if (u.structure) { const mdl = obj.userData.model || obj.children[0]; if (mdl) mdl.scale.y = u.alive ? 1 : 0.22;
         obj.traverse(o => { if (o.isMesh && o.userData.team) o.visible = u.alive; }); if (obj.userData.ring) obj.userData.ring.visible = false; continue; }
       // forma dragón de Aurik
-      if (u.cid === 'aurik') { const dragon = u.buffs.some(b => b.key === 'dragon'); if (dragon !== obj.userData.dragon) { obj.userData.dragon = dragon; this.swapModel(obj, u, dragon ? { model: 'mini_dragon_blue', h: 3.2, anims: {} } : UNIT_MODELS(u)); } }
+      if (u.cid === 'aurik') { const dragon = u.buffs.some(b => b.key === 'dragon'); if (dragon !== obj.userData.dragon) { obj.userData.dragon = dragon; this.swapModel(obj, u, dragon ? AURIK_DRAGON : UNIT_MODELS(u)); } }
+      if (u.kind === 'champ' && u.skin !== obj.userData.skin) { obj.userData.skin = u.skin; if (!obj.userData.dragon) this.swapModel(obj, u, UNIT_MODELS(u)); }
       const stealth = u.buffs.some(b => b.stealth); this.setOpacity(obj, stealth ? 0.35 : 1);
       if (obj.userData.ring) obj.userData.ring.material.color.setHex(u === hover ? 0xffffff : u.isPlayer ? 0x66ff66 : this.teamCol(u.team));
       this.animate(obj, u, dt);
@@ -255,7 +271,7 @@ export class World3D {
   }
   swapModel(obj, u, spec) {
     const d = obj.userData; if (d.model) obj.remove(d.model);
-    d.model = this.instance(spec.model, spec.h, spec.tint); obj.add(d.model); d.spec = { ...d.spec, ...spec, anims: spec.anims };
+    d.model = this.instance(spec.model, spec.h, spec.tint); obj.add(d.model); d.spec = { ...d.spec, ...spec, anims: spec.anims, fly: spec.fly || 0 };
     const clips = this.anims[spec.model] || []; d.mixer = clips.length ? new THREE.AnimationMixer(d.model.userData.inner) : null; d.actions = {}; d.cur = null; d.state = null;
     if (d.mixer) for (const c of clips) d.actions[c.name] = d.mixer.clipAction(c);
   }

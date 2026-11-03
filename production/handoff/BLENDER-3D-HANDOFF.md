@@ -12,9 +12,42 @@
 | 3 mapas (terreno, carriles, río, acantilados/abismo, rocas, matorrales, decorado, bases, fosos épicos, altares) | `tools/blender/build_maps.py` | ✓ En el juego (`map_*.glb`), con renders y planos en `design/levels/` |
 | Torre, inhibidor, nexo y fuente (material «Team» recoloreado por equipo) | `tools/blender/build_structures.py` | ✓ En el juego (`struct_*.glb`) |
 | Guardián | `tools/blender/build_structures.py` | ✓ En el juego (`prop_ward.glb`) |
-| 15 campeones, súbditos, monstruos y épicos | — | Pendiente (§4–§7): necesitan malla base de calidad + rig + animación |
+| 15 campeones (+ aspecto `champ_rakhar_lagarto` y `champ_aurik_dragon`), 5 súbditos, 6 monstruos de campamento y 4 épicos | `tools/blender/champs_kaykit.py`, `monsters_quaternius.py`, `retarget_lagarto.py` (receta: `assets/data/model_builds.json`) | ✓ En el juego (03/11/2026): 32 `.glb` con esqueleto propio, armas en la mano y clips del contrato; validador 32/32, Khronos 0 errores, tiras revisadas en `production/qa/evidence/modelos/` |
 
 Para mejorar los mapas a mano, abre `art/blender/maps/<id>.blend`. Si cambias las posiciones jugables, edita `game/src/maps.js` y regenera (ver `design/levels/README.md`); si solo cambias el decorado, exporta con el mismo nombre.
+
+## 0 bis. Cómo se hicieron los modelos definitivos (03/11/2026) y cómo rehacer uno
+
+```bash
+B=/Applications/Blender.app/Contents/MacOS/Blender      # Blender 5.2, FUERA del sandbox, siempre con --python-exit-code 1
+"$B" -b --factory-startup --python-exit-code 1 --python tools/blender/champs_kaykit.py -- champ_kaelith   # o `all`, o `a,b,c`
+"$B" -b --factory-startup --python-exit-code 1 --python tools/blender/monsters_quaternius.py -- epic_dragon
+"$B" -b --factory-startup --python-exit-code 1 --python tools/blender/retarget_lagarto.py --            # champ_rakhar_lagarto
+bash tools/blender/integrate_model.sh champ_kaelith && node game/tools/bundle.mjs
+```
+
+- **Receta por asset** en `assets/data/model_builds.json`: base (glb KayKit de `game/assets/models/src/` o FBX de
+  `Agente/assets-libres/quaternius/`), `scale` (multiplicadores sobre la altura de `model_specs.json`), `tint`/`tintMix`
+  (se mezcla en el color base del material: ya no se tinta en el juego), `props` (`keep` = armas y accesorios REALES del
+  propio glb KayKit, `borrow` = de otro glb KayKit al mismo hueso, `make` = primitivas en el marco medido de un nodo de
+  referencia; `_marcos` documenta esos marcos), `clips` (clip del juego → clip real; una lista concatena, p. ej. el
+  Attack de Lyra = `Ranged_Bow_Draw` + `Ranged_Bow_Release`), `yaw`, `flying`, `decimate`, `gates` (tolerancias propias).
+- **Clips que no están en el glb base** salen de KayKit Character Animations 1.1 (`Rig_Medium`, mismos nombres de hueso
+  deformador que Adventurers/Skeletons; diferencia de reposo medida: 0°).
+- **Puertas anti-deformación** (abortan y quedan en `production/qa/evidence/modelos/salida/<id>.json`): 0 vértices sin
+  peso (los huérfanos se reparan con el grupo del vecino y se cuenta), ≤ 4 influencias (se limita y normaliza), ≤ 80
+  huesos, diagonal de la caja con piel de cada clip dentro de ±15 % del primer fotograma de Idle (Death ±60 %),
+  estiramiento de aristas de la malla evaluada (p99 ≤ 4×, máx ≤ 12×), suela a ±1 cm en Idle y nunca bajo el suelo en el
+  resto (pies clavados corrigiendo la raíz fotograma a fotograma), Khronos 0 errores y `validate_models.mjs` ✓.
+- **Tira de evidencia** por modelo: `production/qa/evidence/modelos/<id>.png` = reposo frente · reposo lado · Idle ·
+  Run · Attack · Cast · Death con suelo y flecha de frente (−Y). Se mira antes de dar el modelo por bueno.
+- **Inventario real de los packs** (huesos y clips leídos de los archivos): `production/qa/evidence/modelos/inventario-packs.json`.
+- **Trampas resueltas** (están comentadas en el código): los materiales FBX de Quaternius llegan con alpha 0 (invisibles);
+  las acciones FBX traen canales del OBJETO que pisan escala/giro al exportar; la escala y el origen van en un empty raíz
+  porque el exportador pierde la traslación del propio armature; el exportador recoloca los vértices con piel al mover
+  la raíz (ganancia medida ≈ 1,3–1,9) y el script converge en dos pasadas hasta que la caja sin piel (la que usa el juego
+  y el validador) queda en y = 0; `validate_models.mjs` no ejecuta su bloque principal con espacios en la ruta (se usan
+  sus funciones exportadas).
 
 ## 0. Cómo empezar la sesión (copia este mensaje en Claude Code)
 
@@ -59,7 +92,7 @@ Los modelos provisionales vienen de tus repositorios de GitHub. Los originales s
 | `tree`, `cypress`, `kk_bush` | `ceo-empire` | Tuyos / CC0 | Matorrales, árboles y guardianes |
 | `ceo_crafter`, `paula` | `ceo-empire`, `Shopy-Crafter` | Tuyos | **No se usan:** son de estética moderna y no encajan con la fantasía |
 
-Informe del validador sobre los provisionales: `node game/tools/validate_models.mjs --current`. Solo cumplen 3 de 16. Los fallos son demasiados triángulos, el origen fuera de los pies y la falta de clips de combate. Eso es lo que hay que resolver.
+(Histórico: los provisionales no cumplían: 3 de 16.) Los fallos son demasiados triángulos, el origen fuera de los pies y la falta de clips de combate. Eso es lo que hay que resolver.
 
 **Dónde se decide qué modelo usa cada unidad:** solo en `game/src/models.js` (`MODEL_MAP`, `UNIT_MODELS` y `MODEL_FILES`). El render (`game/src/render3d.js`) no necesita cambios para modelos nuevos.
 

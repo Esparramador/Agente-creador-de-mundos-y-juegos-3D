@@ -1,0 +1,364 @@
+{
+ "asset": "minion_super",
+ "pack": "kaykit",
+ "base": "ks_Skeleton_Warrior",
+ "categoria": "minion",
+ "altura_objetivo_m": 2.2,
+ "fecha": "2026-11-03 11:51",
+ "puertas": {
+  "huesos": {
+   "n": 41,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 3,
+   "limitado_desde": null,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.006,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.26,
+    "aristas_max": 1.525,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.122,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.335,
+    "aristas_max": 1.793,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0904,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.047,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.304,
+    "aristas_max": 1.612,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0175,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.308,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.429,
+    "aristas_max": 1.895,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0865,
+    "ok": true
+   },
+   "Hit": {
+    "desviacion_diagonal_max": 0.088,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.254,
+    "aristas_max": 1.662,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0005,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_glb": {
+  "canales_objeto_quitados": 0,
+  "objetos": 11,
+  "huesos": 41,
+  "acciones": [
+   "1H_Melee_Attack_Chop",
+   "2H_Melee_Attack_Chop",
+   "Cheer",
+   "Death_A",
+   "Hit_A",
+   "Idle",
+   "Idle_Combat",
+   "Interact",
+   "Running_A",
+   "Sit_Chair_Idle",
+   "Skeletons_Awaken_Standing",
+   "Spellcast_Shoot",
+   "Unarmed_Melee_Attack_Punch_A",
+   "Walking_A"
+  ],
+  "mallas_con_piel": [
+   "Skeleton_Warrior_ArmLeft",
+   "Skeleton_Warrior_ArmRight",
+   "Skeleton_Warrior_Body",
+   "Skeleton_Warrior_Cloak",
+   "Skeleton_Warrior_Eyes",
+   "Skeleton_Warrior_Head",
+   "Skeleton_Warrior_Jaw",
+   "Skeleton_Warrior_LegLeft",
+   "Skeleton_Warrior_LegRight"
+  ]
+ },
+ "props": {
+  "conservados": [
+   "Skeleton_Warrior_Helmet"
+  ],
+  "prestados": [
+   "Escudo"
+  ],
+  "construidos": []
+ },
+ "tinte": {
+  "color": null,
+  "mezcla": 0.45,
+  "materiales": 0
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Idle",
+   "fotogramas": [
+    0,
+    32
+   ],
+   "segundos": 1.067
+  },
+  "Run": {
+   "origen": "Running_A",
+   "fotogramas": [
+    0,
+    24
+   ],
+   "segundos": 0.8
+  },
+  "Attack": {
+   "origen": "1H_Melee_Attack_Chop",
+   "fotogramas": [
+    0,
+    32
+   ],
+   "segundos": 1.067
+  },
+  "Death": {
+   "origen": "Death_A",
+   "fotogramas": [
+    0,
+    24
+   ],
+   "segundos": 0.8
+  },
+  "Hit": {
+   "origen": "Hit_A",
+   "fotogramas": [
+    0,
+    20
+   ],
+   "segundos": 0.667
+  }
+ },
+ "decimado": {
+  "ratio": 0.85,
+  "triangulos_antes": 5104,
+  "triangulos_despues": 4333
+ },
+ "escala": {
+  "altura_origen_m": 2.591,
+  "factor": 0.8492,
+  "multiplicadores": [
+   1.4,
+   1.4,
+   1.0
+  ],
+  "altura_final_m": 2.2,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": -0.0,
+  "altura_m": 1.84,
+  "subido_m": 0.0
+ },
+ "pies_clavados": {
+  "Idle": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.11,
+    0.15
+   ],
+   "despues_cm": [
+    -0.0,
+    0.03
+   ]
+  },
+  "Run": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -7.92,
+    9.04
+   ],
+   "despues_cm": [
+    -0.0,
+    9.04
+   ]
+  },
+  "Attack": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.07,
+    3.93
+   ],
+   "despues_cm": [
+    -0.0,
+    3.93
+   ]
+  },
+  "Death": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -9.21,
+    13.96
+   ],
+   "despues_cm": [
+    -0.0,
+    15.83
+   ]
+  },
+  "Hit": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.06,
+    0.04
+   ],
+   "despues_cm": [
+    -0.0,
+    0.05
+   ]
+  }
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -1.365,
+    -0.574,
+    0.0
+   ],
+   [
+    0.945,
+    0.509,
+    1.84
+   ]
+  ],
+  "diagonal_m": 3.145,
+  "altura_m": 1.84,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 2.644
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.0,
+  "ruta": "game/assets/models/final/minion_super.glb",
+  "bytes": 539164,
+  "min_y_sin_piel": 0.0,
+  "raiz_ajustada_m": 0.0
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 9,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/43)",
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/44)",
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/45)",
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/46)",
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/47)",
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/48)"
+  ],
+  "three": {
+   "huesos": 41,
+   "mallasConEsqueleto": 9,
+   "caja_con_piel_m": [
+    2.729,
+    2.2,
+    1.735
+   ],
+   "suelo_con_piel_y": 0,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 1.067,
+     "pistas": 123,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 0.8,
+     "pistas": 123,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 1.067,
+     "pistas": 123,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 0.8,
+     "pistas": 123,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Hit",
+     "segundos": 0.667,
+     "pistas": 123,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 0.0539,
+    "Run": 1.4279,
+    "Attack": 1.0219,
+    "Death": 3.5315,
+    "Hit": 0.716
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ minion_super.glb como minion_super · 5425 tris · 2.2 m · 41 huesos · clips: Idle, Run, Attack, Death, Hit"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/minion_super.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Death"
+  ]
+ },
+ "segundos": 2.1
+}

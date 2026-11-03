@@ -1,0 +1,538 @@
+{
+ "asset": "champ_rakhar_lagarto",
+ "pack": "ual_retarget",
+ "base": "game/assets/models/src/lagarto.glb",
+ "categoria": "champion",
+ "altura_objetivo_m": 2.0,
+ "fecha": "2026-11-03 11:50",
+ "puertas": {
+  "huesos": {
+   "n": 60,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": null,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.0,
+    "tolerancia": 0.25,
+    "aristas_p99": 1.603,
+    "aristas_max": 4.426,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": -0.0,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.095,
+    "tolerancia": 0.25,
+    "aristas_p99": 1.823,
+    "aristas_max": 5.724,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 0.0642,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.082,
+    "tolerancia": 0.25,
+    "aristas_p99": 1.715,
+    "aristas_max": 4.9,
+    "aristas_ok": true,
+    "suela_min_m": 0.0347,
+    "suela_max_m": 0.0348,
+    "ok": true
+   },
+   "Cast": {
+    "desviacion_diagonal_max": 0.065,
+    "tolerancia": 0.25,
+    "aristas_p99": 1.647,
+    "aristas_max": 4.899,
+    "aristas_ok": true,
+    "suela_min_m": 0.0348,
+    "suela_max_m": 0.0348,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.087,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.814,
+    "aristas_max": 5.252,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 0.0414,
+    "ok": true
+   },
+   "Hit": {
+    "desviacion_diagonal_max": 0.016,
+    "tolerancia": 0.25,
+    "aristas_p99": 1.636,
+    "aristas_max": 4.386,
+    "aristas_ok": true,
+    "suela_min_m": 0.0514,
+    "suela_max_m": 0.0514,
+    "ok": true
+   },
+   "Cast_E": {
+    "desviacion_diagonal_max": 0.124,
+    "tolerancia": 0.25,
+    "aristas_p99": 2.137,
+    "aristas_max": 6.527,
+    "aristas_ok": true,
+    "suela_min_m": 0.0383,
+    "suela_max_m": 0.3705,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "retarget": {
+  "huesos": {
+   "fuente": 65,
+   "destino": 60,
+   "emparejados": 22,
+   "sin_pareja_destino": [
+    "Root",
+    "Cola01",
+    "Cola02",
+    "Cola03",
+    "Cola04",
+    "Cola05",
+    "Pelvis",
+    "L_CalfTwist01",
+    "L_CalfTwist02",
+    "L_ThighTwist01",
+    "L_ThighTwist02",
+    "R_CalfTwist01",
+    "R_CalfTwist02",
+    "R_ThighTwist01",
+    "R_ThighTwist02",
+    "L_ForearmTwist01",
+    "L_ForearmTwist02",
+    "L_Dedo1_1",
+    "L_Dedo1_2",
+    "L_Dedo2_1",
+    "L_Dedo2_2",
+    "L_Dedo3_1",
+    "L_Dedo3_2",
+    "L_UpperarmTwist01",
+    "L_UpperarmTwist02",
+    "NeckTwist02",
+    "Gafas",
+    "Mandibula",
+    "R_ForearmTwist01",
+    "R_ForearmTwist02",
+    "R_Dedo1_1",
+    "R_Dedo1_2",
+    "R_Dedo2_1",
+    "R_Dedo2_2",
+    "R_Dedo3_1",
+    "R_Dedo3_2",
+    "R_UpperarmTwist01",
+    "R_UpperarmTwist02"
+   ]
+  },
+  "reposos_distintos_grados_top": [
+   [
+    "R_Foot",
+    166.1
+   ],
+   [
+    "L_Foot",
+    154.08
+   ],
+   [
+    "R_Clavicle",
+    131.16
+   ],
+   [
+    "L_Upperarm",
+    124.15
+   ],
+   [
+    "L_ToeBase",
+    122.76
+   ],
+   [
+    "L_Hand",
+    113.95
+   ],
+   [
+    "R_Forearm",
+    106.21
+   ],
+   [
+    "L_Clavicle",
+    105.02
+   ]
+  ],
+  "raiz_movimiento": {
+   "destino": "Hip",
+   "fuente": "pelvis",
+   "escala_traslacion": 0.3477
+  },
+  "reposo_alineado_grados": {
+   "L_Hand": 63.0,
+   "R_Hand": 108.4,
+   "L_Foot": 112.8
+  },
+  "pies_clavados": {
+   "Death01": {
+    "error_antes_max_cm": 21.05,
+    "error_despues_max_cm": 0.0
+   },
+   "Hit_Chest": {
+    "error_antes_max_cm": 10.19,
+    "error_despues_max_cm": 0.0
+   },
+   "Idle_Loop": {
+    "error_antes_max_cm": 7.55,
+    "error_despues_max_cm": 0.0
+   },
+   "Punch_Jab": {
+    "error_antes_max_cm": 12.9,
+    "error_despues_max_cm": 0.0
+   },
+   "Roll": {
+    "error_antes_max_cm": 30.59,
+    "error_despues_max_cm": 0.0
+   },
+   "Spell_Simple_Shoot": {
+    "error_antes_max_cm": 7.25,
+    "error_despues_max_cm": 0.0
+   },
+   "Sprint_Loop": {
+    "error_antes_max_cm": 10.55,
+    "error_despues_max_cm": 0.0
+   }
+  },
+  "malla_vs_rig_desvio_m": 0.0,
+  "hoja_control": "/Users/joansg/Desktop/Agente J.Bond/Agente/proyectos/coronas-de-ceniza/production/qa/evidence/modelos/salida/retarget_champ_rakhar_lagarto/champ_rakhar_lagarto_control.png",
+  "errores_resueltos": [
+   "tripo_node_9009bbe9-36a3-4dce-a48c-645edeeba9fb colgaba del rig: desemparentada (la mueve el modificador)"
+  ]
+ },
+ "base_glb": {
+  "huesos": 60,
+  "mallas_con_piel": [
+   "tripo_node_9009bbe9-36a3-4dce-a48c-645edeeba9fb"
+  ],
+  "acciones_retarget": [
+   "Death01",
+   "Hit_Chest",
+   "Idle_Loop",
+   "Punch_Jab",
+   "Roll",
+   "Spell_Simple_Shoot",
+   "Sprint_Loop"
+  ]
+ },
+ "materiales_saneados": 1,
+ "tinte": {
+  "color": "#d84315",
+  "mezcla": 0.3,
+  "materiales": 1
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Idle_Loop",
+   "fotogramas": [
+    0,
+    60
+   ],
+   "segundos": 2.5
+  },
+  "Run": {
+   "origen": "Sprint_Loop",
+   "fotogramas": [
+    0,
+    16
+   ],
+   "segundos": 0.667
+  },
+  "Attack": {
+   "origen": "Punch_Jab",
+   "fotogramas": [
+    0,
+    21
+   ],
+   "segundos": 0.875
+  },
+  "Cast": {
+   "origen": "Spell_Simple_Shoot",
+   "fotogramas": [
+    0,
+    12
+   ],
+   "segundos": 0.5
+  },
+  "Death": {
+   "origen": "Death01",
+   "fotogramas": [
+    0,
+    58
+   ],
+   "segundos": 2.417
+  },
+  "Hit": {
+   "origen": "Hit_Chest",
+   "fotogramas": [
+    0,
+    8
+   ],
+   "segundos": 0.333
+  },
+  "Cast_E": {
+   "origen": "Roll",
+   "fotogramas": [
+    0,
+    35
+   ],
+   "segundos": 1.458
+  }
+ },
+ "decimado": {
+  "ratio": 0.55,
+  "triangulos_antes": 29960,
+  "triangulos_despues": 16478
+ },
+ "escala": {
+  "altura_origen_m": 1.0,
+  "factor": 1.9996,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 2.0,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   -0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": -0.0,
+  "altura_m": 2.0,
+  "subido_m": 0.0
+ },
+ "pies_clavados": {
+  "Idle": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.0,
+    -0.0
+   ],
+   "despues_cm": [
+    -0.0,
+    -0.0
+   ]
+  },
+  "Run": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -2.19,
+    14.72
+   ],
+   "despues_cm": [
+    -0.0,
+    14.96
+   ]
+  },
+  "Attack": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    3.47,
+    3.48
+   ],
+   "despues_cm": [
+    3.47,
+    3.48
+   ]
+  },
+  "Cast": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    3.48,
+    3.48
+   ],
+   "despues_cm": [
+    3.48,
+    3.48
+   ]
+  },
+  "Death": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -1.02,
+    6.14
+   ],
+   "despues_cm": [
+    -0.0,
+    6.77
+   ]
+  },
+  "Hit": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    5.13,
+    5.14
+   ],
+   "despues_cm": [
+    5.13,
+    5.14
+   ]
+  },
+  "Cast_E": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    1.79,
+    51.7
+   ],
+   "despues_cm": [
+    1.79,
+    51.7
+   ]
+  }
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -0.958,
+    -0.808,
+    0.0
+   ],
+   [
+    0.958,
+    0.808,
+    2.0
+   ]
+  ],
+  "diagonal_m": 3.207,
+  "altura_m": 2.0,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 3.319
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.0,
+  "ruta": "game/assets/models/final/champ_rakhar_lagarto.glb",
+  "bytes": 1390388,
+  "min_y_sin_piel": -0.0,
+  "raiz_ajustada_m": 0.0
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 2,
+  "mensajes": [
+   "aviso MESH_PRIMITIVE_GENERATED_TANGENT_SPACE: Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations. (/meshes/0/primitives/0/material)",
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/60)"
+  ],
+  "three": {
+   "huesos": 60,
+   "mallasConEsqueleto": 1,
+   "caja_con_piel_m": [
+    1.896,
+    1.997,
+    1.571
+   ],
+   "suelo_con_piel_y": 0.0029,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 2.5,
+     "pistas": 180,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 0.667,
+     "pistas": 180,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 0.875,
+     "pistas": 180,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Cast",
+     "segundos": 0.5,
+     "pistas": 180,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 2.417,
+     "pistas": 180,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Cast_E",
+     "segundos": 1.458,
+     "pistas": 180,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Hit",
+     "segundos": 0.333,
+     "pistas": 180,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 0.0503,
+    "Run": 1.0395,
+    "Attack": 0.8346,
+    "Cast": 0.1812,
+    "Death": 2.6324,
+    "Cast_E": 2.0014,
+    "Hit": 0.6933
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ champ_rakhar_lagarto.glb como champ_rakhar_lagarto · 16478 tris · 3.999 m · 60 huesos · clips: Idle, Run, Attack, Cast, Death, Cast_E, Hit",
+   "    aviso  altura 3.999 m (objetivo 2 m; el juego reescala, pero revisa proporciones)",
+   "    aviso  clips recomendados que faltan: Attack2, Cast_Q, Cast_W, Cast_R, Recall, Victory, Taunt"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/champ_rakhar_lagarto.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Cast",
+   "Death"
+  ]
+ },
+ "segundos": 8.3
+}

@@ -1,0 +1,319 @@
+{
+ "asset": "epic_avatar",
+ "pack": "quaternius",
+ "base": "lowpoly-animated-monsters/FBX/Bat.fbx",
+ "categoria": "epic",
+ "altura_objetivo_m": 2.4,
+ "fecha": "2026-11-03 11:51",
+ "puertas": {
+  "huesos": {
+   "n": 23,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": 7,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.091,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.165,
+    "aristas_max": 1.358,
+    "aristas_ok": true,
+    "suela_min_m": -0.221,
+    "suela_max_m": 0.0,
+    "ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.091,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.165,
+    "aristas_max": 1.358,
+    "aristas_ok": true,
+    "suela_min_m": -0.221,
+    "suela_max_m": 0.0,
+    "ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.147,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.542,
+    "aristas_max": 1.815,
+    "aristas_ok": true,
+    "suela_min_m": -0.0328,
+    "suela_max_m": 0.1338,
+    "ok": true
+   },
+   "Attack2": {
+    "desviacion_diagonal_max": 0.09,
+    "tolerancia": 0.15,
+    "aristas_p99": 2.003,
+    "aristas_max": 2.383,
+    "aristas_ok": true,
+    "suela_min_m": -0.1731,
+    "suela_max_m": 0.0274,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.081,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.556,
+    "aristas_max": 1.815,
+    "aristas_ok": true,
+    "suela_min_m": -0.5882,
+    "suela_max_m": 0.3072,
+    "ok": true
+   },
+   "Hit": {
+    "desviacion_diagonal_max": 0.128,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.182,
+    "aristas_max": 1.375,
+    "aristas_ok": true,
+    "suela_min_m": -0.0962,
+    "suela_max_m": 0.003,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 45,
+  "huesos": 23,
+  "nombres_huesos": [
+   "Root",
+   "BodyRoot",
+   "Body",
+   "Neck",
+   "Head",
+   "Face",
+   "Nose",
+   "Shoulder.L",
+   "Wing1.L",
+   "Wing2.L",
+   "Wing3.L",
+   "Wing4.L",
+   "Shoulder.R",
+   "Wing1.R",
+   "Wing2.R",
+   "Wing3.R",
+   "Wing4.R",
+   "UpperLeg.L",
+   "LowerLeg.L",
+   "Feet.L",
+   "UpperLeg.R",
+   "LowerLeg.R",
+   "Feet.R"
+  ],
+  "acciones": [
+   "Bat_Attack",
+   "Bat_Attack2",
+   "Bat_Death",
+   "Bat_Flying",
+   "Bat_Hit"
+  ],
+  "mallas_con_piel": [
+   "Bat"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 4,
+ "tinte": {
+  "color": "#9575cd",
+  "mezcla": 0.6,
+  "materiales": 4
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Bat_Flying",
+   "fotogramas": [
+    1,
+    31
+   ],
+   "segundos": 1.25
+  },
+  "Run": {
+   "origen": "Bat_Flying",
+   "fotogramas": [
+    1,
+    31
+   ],
+   "segundos": 1.25
+  },
+  "Attack": {
+   "origen": "Bat_Attack",
+   "fotogramas": [
+    1,
+    22
+   ],
+   "segundos": 0.875
+  },
+  "Attack2": {
+   "origen": "Bat_Attack2",
+   "fotogramas": [
+    1,
+    31
+   ],
+   "segundos": 1.25
+  },
+  "Death": {
+   "origen": "Bat_Death",
+   "fotogramas": [
+    1,
+    30
+   ],
+   "segundos": 1.208
+  },
+  "Hit": {
+   "origen": "Bat_Hit",
+   "fotogramas": [
+    1,
+    31
+   ],
+   "segundos": 1.25
+  }
+ },
+ "escala": {
+  "altura_origen_m": 4.078,
+  "factor": 0.5885,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 2.4,
+  "suela_m": 0.0,
+  "centro_xy": [
+   -0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": -0.0,
+  "altura_m": 2.4,
+  "subido_m": 0.0
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -0.804,
+    -1.269,
+    0.0
+   ],
+   [
+    0.804,
+    1.269,
+    2.4
+   ]
+  ],
+  "diagonal_m": 3.846,
+  "altura_m": 2.4,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 3.846
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.591,
+  "ruta": "game/assets/models/final/epic_avatar.glb",
+  "bytes": 248696,
+  "min_y_sin_piel": -0.0,
+  "raiz_ajustada_m": 0.1584
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/23)"
+  ],
+  "three": {
+   "huesos": 23,
+   "mallasConEsqueleto": 4,
+   "caja_con_piel_m": [
+    1.608,
+    2.4,
+    2.539
+   ],
+   "suelo_con_piel_y": 0.1584,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 1.25,
+     "pistas": 69,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 1.25,
+     "pistas": 69,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 0.875,
+     "pistas": 69,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 1.208,
+     "pistas": 69,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack2",
+     "segundos": 1.25,
+     "pistas": 69,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Hit",
+     "segundos": 1.25,
+     "pistas": 69,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 2.305,
+    "Run": 2.305,
+    "Attack": 2.9375,
+    "Death": 3.2665,
+    "Attack2": 2.388,
+    "Hit": 2.3312
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ epic_avatar.glb como epic_avatar · 806 tris · 1.412 m · 23 huesos · clips: Idle, Run, Attack, Death, Attack2, Hit",
+   "    aviso  pocos triángulos (806 < 8000): ¿falta detalle?",
+   "    aviso  altura 1.412 m (objetivo 2.4 m; el juego reescala, pero revisa proporciones)",
+   "    aviso  el modelo no está centrado en X/Z (-0.049, 0.428)",
+   "    aviso  clips recomendados que faltan: Roar, Spawn"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/epic_avatar.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Death"
+  ]
+ },
+ "segundos": 1.9
+}

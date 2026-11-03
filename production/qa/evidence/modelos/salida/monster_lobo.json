@@ -1,0 +1,366 @@
+{
+ "asset": "monster_lobo",
+ "pack": "quaternius",
+ "base": "animated-easy-enemies/Easy Animated Enemy Pack - Jan 2019/FBX/Rat.fbx",
+ "categoria": "monster",
+ "altura_objetivo_m": 1.2,
+ "fecha": "2026-11-03 11:50",
+ "puertas": {
+  "huesos": {
+   "n": 31,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": 10,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.015,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.094,
+    "aristas_max": 1.15,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": -0.0,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.026,
+    "tolerancia": 0.15,
+    "aristas_p99": 2.222,
+    "aristas_max": 3.673,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 0.0802,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.022,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.495,
+    "aristas_max": 2.135,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0177,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.024,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.604,
+    "aristas_max": 2.596,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0,
+    "ok": true
+   },
+   "Hit": {
+    "desviacion_diagonal_max": 0.03,
+    "tolerancia": 0.15,
+    "aristas_p99": 2.165,
+    "aristas_max": 3.047,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 0.0547,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 54,
+  "huesos": 31,
+  "nombres_huesos": [
+   "root",
+   "FrontFoot.R",
+   "Body",
+   "FrontLeg.R",
+   "FrontUpLeg.R",
+   "FrontLowLeg.R",
+   "BackLeg.R",
+   "BackUpLeg.R",
+   "BackLowLeg.R",
+   "FrontLeg.L",
+   "FrontUpLeg.L",
+   "FrontLowLeg.L",
+   "BackLeg.L",
+   "BackUpLeg.L",
+   "BackLowLeg.L",
+   "Back",
+   "Tail1",
+   "Tail2",
+   "Tail3",
+   "Tail4",
+   "Tail5",
+   "Tail6",
+   "Tail7",
+   "Shoulders",
+   "Neck",
+   "Head",
+   "Hips",
+   "Torso",
+   "BackFoot.R",
+   "FrontFoot.L",
+   "BackFoot.L"
+  ],
+  "acciones": [
+   "Rat_Attack",
+   "Rat_Death",
+   "Rat_Idle",
+   "Rat_Jump",
+   "Rat_Run",
+   "Rat_Walk"
+  ],
+  "mallas_con_piel": [
+   "Rat"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 2,
+ "tinte": {
+  "color": "#8d8d8d",
+  "mezcla": 0.5,
+  "materiales": 2
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Rat_Idle",
+   "fotogramas": [
+    1,
+    58
+   ],
+   "segundos": 2.375
+  },
+  "Run": {
+   "origen": "Rat_Run",
+   "fotogramas": [
+    1,
+    13
+   ],
+   "segundos": 0.5
+  },
+  "Attack": {
+   "origen": "Rat_Attack",
+   "fotogramas": [
+    1,
+    17
+   ],
+   "segundos": 0.667
+  },
+  "Death": {
+   "origen": "Rat_Death",
+   "fotogramas": [
+    1,
+    27
+   ],
+   "segundos": 1.083
+  },
+  "Hit": {
+   "origen": "Rat_Jump",
+   "fotogramas": [
+    1,
+    21
+   ],
+   "segundos": 0.833
+  }
+ },
+ "escala": {
+  "altura_origen_m": 2.292,
+  "factor": 0.5237,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 1.2,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": -0.0,
+  "altura_m": 1.2,
+  "subido_m": 0.0
+ },
+ "pies_clavados": {
+  "Idle": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.01,
+    -0.0
+   ],
+   "despues_cm": [
+    -0.01,
+    -0.0
+   ]
+  },
+  "Run": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -9.91,
+    8.97
+   ],
+   "despues_cm": [
+    0.0,
+    9.76
+   ]
+  },
+  "Attack": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -2.67,
+    3.16
+   ],
+   "despues_cm": [
+    -0.0,
+    3.16
+   ]
+  },
+  "Death": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -16.68,
+    -0.0
+   ],
+   "despues_cm": [
+    -0.0,
+    0.0
+   ]
+  },
+  "Hit": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -3.86,
+    9.48
+   ],
+   "despues_cm": [
+    -0.0,
+    11.51
+   ]
+  }
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -0.389,
+    -1.827,
+    0.0
+   ],
+   [
+    0.389,
+    1.827,
+    1.2
+   ]
+  ],
+  "diagonal_m": 3.923,
+  "altura_m": 1.2,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 3.893
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.0,
+  "ruta": "game/assets/models/final/monster_lobo.glb",
+  "bytes": 533292,
+  "min_y_sin_piel": 0.001,
+  "raiz_ajustada_m": 0.0
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/31)"
+  ],
+  "three": {
+   "huesos": 31,
+   "mallasConEsqueleto": 2,
+   "caja_con_piel_m": [
+    0.776,
+    1.189,
+    3.641
+   ],
+   "suelo_con_piel_y": 0,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 2.375,
+     "pistas": 93,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 0.5,
+     "pistas": 93,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 0.667,
+     "pistas": 93,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 1.083,
+     "pistas": 93,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Hit",
+     "segundos": 0.833,
+     "pistas": 93,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 0.1933,
+    "Run": 1.2461,
+    "Attack": 0.5777,
+    "Death": 1.3834,
+    "Hit": 1.0184
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ monster_lobo.glb como monster_lobo · 4004 tris · 0.249 m · 31 huesos · clips: Idle, Run, Attack, Death, Hit",
+   "    aviso  altura 0.249 m (objetivo 1.2 m; el juego reescala, pero revisa proporciones)",
+   "    aviso  el modelo no está centrado en X/Z (0, 0.743)",
+   "    aviso  clips recomendados que faltan: Roar"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/monster_lobo.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Death"
+  ]
+ },
+ "segundos": 2.2
+}

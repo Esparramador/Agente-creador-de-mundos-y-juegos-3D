@@ -1,0 +1,322 @@
+{
+ "asset": "monster_sapo",
+ "pack": "quaternius",
+ "base": "animated-easy-enemies/Easy Animated Enemy Pack - Jan 2019/FBX/Frog.fbx",
+ "categoria": "monster",
+ "altura_objetivo_m": 1.4,
+ "fecha": "2026-11-03 11:51",
+ "puertas": {
+  "huesos": {
+   "n": 28,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": 6,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.01,
+    "tolerancia": 0.45,
+    "aristas_p99": 1.063,
+    "aristas_max": 1.144,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0001,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.38,
+    "tolerancia": 0.45,
+    "aristas_p99": 1.569,
+    "aristas_max": 5.236,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 0.3261,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.213,
+    "tolerancia": 0.45,
+    "aristas_p99": 1.38,
+    "aristas_max": 2.39,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.012,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.559,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.972,
+    "aristas_max": 5.329,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.2589,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 36,
+  "huesos": 28,
+  "nombres_huesos": [
+   "root",
+   "Body",
+   "FrontLeg.L",
+   "FrontUpLeg.L",
+   "FrontLowLeg.L",
+   "Back",
+   "Shoulders",
+   "Neck",
+   "Head",
+   "Hips",
+   "Torso",
+   "BackHip.L",
+   "BackLeg.L",
+   "BackUpLeg.L",
+   "BackLowLeg.L",
+   "FrontLeg.L.001",
+   "FrontUpLeg.R",
+   "FrontLowLeg.R",
+   "BackHip.R",
+   "BackLeg.R",
+   "BackUpLeg.R",
+   "BackLowLeg.R",
+   "PoleTarget.L",
+   "PoleTarget.R",
+   "FrontFoot.L",
+   "BackFoot.L",
+   "FrontFoot.R",
+   "BackFoot.R"
+  ],
+  "acciones": [
+   "Frog_Attack",
+   "Frog_Death",
+   "Frog_Idle",
+   "Frog_Jump"
+  ],
+  "mallas_con_piel": [
+   "Frog"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 4,
+ "tinte": {
+  "color": "#ff7043",
+  "mezcla": 0.45,
+  "materiales": 4
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Frog_Idle",
+   "fotogramas": [
+    1,
+    61
+   ],
+   "segundos": 2.5
+  },
+  "Run": {
+   "origen": "Frog_Jump",
+   "fotogramas": [
+    1,
+    22
+   ],
+   "segundos": 0.875
+  },
+  "Attack": {
+   "origen": "Frog_Attack",
+   "fotogramas": [
+    1,
+    19
+   ],
+   "segundos": 0.75
+  },
+  "Death": {
+   "origen": "Frog_Death",
+   "fotogramas": [
+    1,
+    21
+   ],
+   "segundos": 0.833
+  }
+ },
+ "escala": {
+  "altura_origen_m": 1.501,
+  "factor": 0.9325,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 1.4,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": 0.0,
+  "altura_m": 1.4,
+  "subido_m": 0.0
+ },
+ "pies_clavados": {
+  "Idle": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.44,
+    0.35
+   ],
+   "despues_cm": [
+    -0.0,
+    0.03
+   ]
+  },
+  "Run": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -9.94,
+    77.85
+   ],
+   "despues_cm": [
+    -0.0,
+    78.02
+   ]
+  },
+  "Attack": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -11.73,
+    2.96
+   ],
+   "despues_cm": [
+    -0.0,
+    3.19
+   ]
+  },
+  "Death": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -16.28,
+    107.14
+   ],
+   "despues_cm": [
+    -0.0,
+    107.25
+   ]
+  }
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -1.633,
+    -1.497,
+    0.0
+   ],
+   [
+    1.633,
+    1.497,
+    1.4
+   ]
+  ],
+  "diagonal_m": 4.646,
+  "altura_m": 1.4,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 4.65
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.929,
+  "ruta": "game/assets/models/final/monster_sapo.glb",
+  "bytes": 574728,
+  "min_y_sin_piel": -0.0,
+  "raiz_ajustada_m": -0.0073
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/28)"
+  ],
+  "three": {
+   "huesos": 28,
+   "mallasConEsqueleto": 4,
+   "caja_con_piel_m": [
+    3.261,
+    1.385,
+    2.97
+   ],
+   "suelo_con_piel_y": -0.0062,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 2.5,
+     "pistas": 84,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 0.875,
+     "pistas": 84,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 0.75,
+     "pistas": 84,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 0.833,
+     "pistas": 84,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 0.144,
+    "Run": 2.8972,
+    "Attack": 2.6532,
+    "Death": 5.1995
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ monster_sapo.glb como monster_sapo · 4920 tris · 1.305 m · 28 huesos · clips: Idle, Run, Attack, Death",
+   "    aviso  clips recomendados que faltan: Hit, Roar"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/monster_sapo.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Death"
+  ]
+ },
+ "segundos": 2.4
+}

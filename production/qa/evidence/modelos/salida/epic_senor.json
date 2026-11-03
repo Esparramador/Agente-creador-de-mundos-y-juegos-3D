@@ -1,0 +1,373 @@
+{
+ "asset": "epic_senor",
+ "pack": "quaternius",
+ "base": "animated-easy-enemies/Easy Animated Enemy Pack - Jan 2019/FBX/Spider.fbx",
+ "categoria": "epic",
+ "altura_objetivo_m": 3.2,
+ "fecha": "2026-11-03 11:51",
+ "puertas": {
+  "huesos": {
+   "n": 39,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": 6,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.004,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.097,
+    "aristas_max": 1.388,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0001,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.038,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.099,
+    "aristas_max": 1.573,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 0.0283,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.081,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.141,
+    "aristas_max": 1.489,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 0.0029,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.173,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.432,
+    "aristas_max": 1.707,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 2.9617,
+    "ok": true
+   },
+   "Spawn": {
+    "desviacion_diagonal_max": 0.029,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.198,
+    "aristas_max": 1.443,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 1.5795,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 45,
+  "huesos": 39,
+  "nombres_huesos": [
+   "Root",
+   "Body",
+   "FrontLeg.L",
+   "FrontLeg2.L",
+   "FrontLeg3.L",
+   "MidFrontLeg.L",
+   "MidFrontLeg2.L",
+   "MidFrontLeg3.L",
+   "BackLeg.L",
+   "BackLeg2.L",
+   "BackLeg3.L",
+   "MidBackLeg.L",
+   "MidBackLeg2.L",
+   "MidBackLeg3.L",
+   "FrontLeg.R",
+   "FrontLeg2.R",
+   "FrontLeg3.R",
+   "MidFrontLeg.R",
+   "MidFrontLeg2.R",
+   "MidFrontLeg3.R",
+   "BackLeg.R",
+   "BackLeg2.R",
+   "BackLeg3.R",
+   "MidBackLeg.R",
+   "MidBackLeg2.R",
+   "MidBackLeg3.R",
+   "Abdomen",
+   "Thorax",
+   "Head",
+   "PoleTarget.L",
+   "FrontFoot.L",
+   "MidFrontFoot.L",
+   "BackFoot.L",
+   "MidBackFoot.L",
+   "PoleTarget.R",
+   "FrontFoot2.R",
+   "MidFrontFoot.R",
+   "BackFoot.R",
+   "MidBackFoot.R"
+  ],
+  "acciones": [
+   "Spider_Attack",
+   "Spider_Death",
+   "Spider_Idle",
+   "Spider_Jump",
+   "Spider_Walk"
+  ],
+  "mallas_con_piel": [
+   "Cube"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 2,
+ "tinte": {
+  "color": "#4a148c",
+  "mezcla": 0.45,
+  "materiales": 2
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Spider_Idle",
+   "fotogramas": [
+    1,
+    101
+   ],
+   "segundos": 4.167
+  },
+  "Run": {
+   "origen": "Spider_Walk",
+   "fotogramas": [
+    1,
+    21
+   ],
+   "segundos": 0.833
+  },
+  "Attack": {
+   "origen": "Spider_Attack",
+   "fotogramas": [
+    1,
+    19
+   ],
+   "segundos": 0.75
+  },
+  "Death": {
+   "origen": "Spider_Death",
+   "fotogramas": [
+    1,
+    26
+   ],
+   "segundos": 1.042
+  },
+  "Spawn": {
+   "origen": "Spider_Jump",
+   "fotogramas": [
+    1,
+    18
+   ],
+   "segundos": 0.708
+  }
+ },
+ "escala": {
+  "altura_origen_m": 1.949,
+  "factor": 1.6417,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 3.2,
+  "suela_m": 0.0,
+  "centro_xy": [
+   -0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": -0.0,
+  "altura_m": 3.2,
+  "subido_m": 0.0
+ },
+ "pies_clavados": {
+  "Idle": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.03,
+    0.01
+   ],
+   "despues_cm": [
+    -0.01,
+    0.02
+   ]
+  },
+  "Run": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -2.46,
+    1.88
+   ],
+   "despues_cm": [
+    -0.0,
+    2.83
+   ]
+  },
+  "Attack": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.78,
+    0.33
+   ],
+   "despues_cm": [
+    -0.0,
+    0.4
+   ]
+  },
+  "Death": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -6.1,
+    406.5
+   ],
+   "despues_cm": [
+    -0.0,
+    409.74
+   ]
+  },
+  "Spawn": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.92,
+    211.43
+   ],
+   "despues_cm": [
+    -0.0,
+    211.48
+   ]
+  }
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -4.873,
+    -4.326,
+    0.0
+   ],
+   [
+    4.873,
+    4.326,
+    3.2
+   ]
+  ],
+  "diagonal_m": 13.419,
+  "altura_m": 3.2,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 13.154
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.0,
+  "ruta": "game/assets/models/final/epic_senor.glb",
+  "bytes": 478428,
+  "min_y_sin_piel": 0.001,
+  "raiz_ajustada_m": 0.0
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/39)"
+  ],
+  "three": {
+   "huesos": 39,
+   "mallasConEsqueleto": 2,
+   "caja_con_piel_m": [
+    9.746,
+    3.2,
+    8.651
+   ],
+   "suelo_con_piel_y": 0,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 4.167,
+     "pistas": 117,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 0.833,
+     "pistas": 117,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 0.75,
+     "pistas": 117,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 1.042,
+     "pistas": 117,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Spawn",
+     "segundos": 0.708,
+     "pistas": 117,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 0.5232,
+    "Run": 2.5094,
+    "Attack": 2.2324,
+    "Death": 12.3861,
+    "Spawn": 5.5877
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ epic_senor.glb como epic_senor · 2712 tris · 5.253 m · 39 huesos · clips: Idle, Run, Attack, Death, Spawn",
+   "    aviso  pocos triángulos (2712 < 8000): ¿falta detalle?",
+   "    aviso  altura 5.253 m (objetivo 3.2 m; el juego reescala, pero revisa proporciones)",
+   "    aviso  clips recomendados que faltan: Roar, Hit, Attack2"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/epic_senor.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Death"
+  ]
+ },
+ "segundos": 2.1
+}

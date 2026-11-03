@@ -1,0 +1,321 @@
+{
+ "asset": "epic_dragon",
+ "pack": "quaternius",
+ "base": "lowpoly-animated-monsters/FBX/Dragon.fbx",
+ "categoria": "epic",
+ "altura_objetivo_m": 3.6,
+ "fecha": "2026-11-03 11:51",
+ "puertas": {
+  "huesos": {
+   "n": 27,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": 7,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.042,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.22,
+    "aristas_max": 1.564,
+    "aristas_ok": true,
+    "suela_min_m": -0.0128,
+    "suela_max_m": 0.0026,
+    "ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.042,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.22,
+    "aristas_max": 1.564,
+    "aristas_ok": true,
+    "suela_min_m": -0.0128,
+    "suela_max_m": 0.0026,
+    "ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.137,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.598,
+    "aristas_max": 2.34,
+    "aristas_ok": true,
+    "suela_min_m": -0.0218,
+    "suela_max_m": 0.2973,
+    "ok": true
+   },
+   "Attack2": {
+    "desviacion_diagonal_max": 0.033,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.677,
+    "aristas_max": 2.434,
+    "aristas_ok": true,
+    "suela_min_m": -0.0091,
+    "suela_max_m": 0.0026,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.046,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.562,
+    "aristas_max": 2.399,
+    "aristas_ok": true,
+    "suela_min_m": -0.0637,
+    "suela_max_m": 0.6936,
+    "ok": true
+   },
+   "Hit": {
+    "desviacion_diagonal_max": 0.039,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.22,
+    "aristas_max": 1.586,
+    "aristas_ok": true,
+    "suela_min_m": -0.0091,
+    "suela_max_m": 0.0026,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 45,
+  "huesos": 27,
+  "nombres_huesos": [
+   "Root",
+   "BodyRoot",
+   "Body",
+   "Neck",
+   "Head",
+   "Face",
+   "Nose",
+   "Shoulder.L",
+   "Wing1.L",
+   "Wing2.L",
+   "Wing3.L",
+   "Wing4.L",
+   "Shoulder.R",
+   "Wing1.R",
+   "Wing2.R",
+   "Wing3.R",
+   "Wing4.R",
+   "UpperLeg.L",
+   "LowerLeg.L",
+   "Feet.L",
+   "UpperLeg.R",
+   "LowerLeg.R",
+   "Feet.R",
+   "Tail1",
+   "Tail2",
+   "Tail3",
+   "Tail4"
+  ],
+  "acciones": [
+   "Dragon_Attack",
+   "Dragon_Attack2",
+   "Dragon_Death",
+   "Dragon_Flying",
+   "Dragon_Hit"
+  ],
+  "mallas_con_piel": [
+   "Dragon"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 4,
+ "tinte": {
+  "color": null,
+  "mezcla": 0.5,
+  "materiales": 0
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Dragon_Flying",
+   "fotogramas": [
+    1,
+    41
+   ],
+   "segundos": 1.667
+  },
+  "Run": {
+   "origen": "Dragon_Flying",
+   "fotogramas": [
+    1,
+    41
+   ],
+   "segundos": 1.667
+  },
+  "Attack": {
+   "origen": "Dragon_Attack",
+   "fotogramas": [
+    1,
+    22
+   ],
+   "segundos": 0.875
+  },
+  "Attack2": {
+   "origen": "Dragon_Attack2",
+   "fotogramas": [
+    1,
+    41
+   ],
+   "segundos": 1.667
+  },
+  "Death": {
+   "origen": "Dragon_Death",
+   "fotogramas": [
+    1,
+    30
+   ],
+   "segundos": 1.208
+  },
+  "Hit": {
+   "origen": "Dragon_Hit",
+   "fotogramas": [
+    1,
+    41
+   ],
+   "segundos": 1.667
+  }
+ },
+ "escala": {
+  "altura_origen_m": 3.852,
+  "factor": 0.9345,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 3.6,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": 0.0,
+  "altura_m": 3.6,
+  "subido_m": 0.0
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -1.593,
+    -1.734,
+    0.0
+   ],
+   [
+    1.593,
+    1.734,
+    3.6
+   ]
+  ],
+  "diagonal_m": 5.928,
+  "altura_m": 3.6,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 6.166
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.934,
+  "ruta": "game/assets/models/final/epic_dragon.glb",
+  "bytes": 275192,
+  "min_y_sin_piel": -0.0,
+  "raiz_ajustada_m": 0.0626
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/27)"
+  ],
+  "three": {
+   "huesos": 27,
+   "mallasConEsqueleto": 4,
+   "caja_con_piel_m": [
+    3.186,
+    3.6,
+    3.468
+   ],
+   "suelo_con_piel_y": 0.0626,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 1.667,
+     "pistas": 81,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 1.667,
+     "pistas": 81,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 0.875,
+     "pistas": 81,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 1.208,
+     "pistas": 81,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack2",
+     "segundos": 1.667,
+     "pistas": 81,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Hit",
+     "segundos": 1.667,
+     "pistas": 81,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 4.1957,
+    "Run": 4.1957,
+    "Attack": 4.9009,
+    "Death": 6.2887,
+    "Attack2": 4.1135,
+    "Hit": 4.1135
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ epic_dragon.glb como epic_dragon · 1104 tris · 3.364 m · 27 huesos · clips: Idle, Run, Attack, Death, Attack2, Hit",
+   "    aviso  pocos triángulos (1104 < 8000): ¿falta detalle?",
+   "    aviso  clips recomendados que faltan: Roar, Spawn"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/epic_dragon.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Death"
+  ]
+ },
+ "segundos": 2.1
+}

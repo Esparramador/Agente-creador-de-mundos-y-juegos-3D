@@ -1,0 +1,224 @@
+{
+  "fuente": "/Users/joansg/Desktop/Agente J.Bond/Agente/assets-libres/quaternius/universal-animation-library/Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard.glb",
+  "destino": "/Users/joansg/Desktop/Agente J.Bond/Agente/proyectos/coronas-de-ceniza/game/assets/models/src/lagarto.glb",
+  "errores_resueltos": [
+    "tripo_node_9009bbe9-36a3-4dce-a48c-645edeeba9fb colgaba del rig: desemparentada (la mueve el modificador)"
+  ],
+  "huesos": {
+    "fuente": 65,
+    "destino": 60,
+    "emparejados": 22,
+    "sin_pareja_destino": [
+      "Root",
+      "Cola01",
+      "Cola02",
+      "Cola03",
+      "Cola04",
+      "Cola05",
+      "Pelvis",
+      "L_CalfTwist01",
+      "L_CalfTwist02",
+      "L_ThighTwist01",
+      "L_ThighTwist02",
+      "R_CalfTwist01",
+      "R_CalfTwist02",
+      "R_ThighTwist01",
+      "R_ThighTwist02",
+      "L_ForearmTwist01",
+      "L_ForearmTwist02",
+      "L_Dedo1_1",
+      "L_Dedo1_2",
+      "L_Dedo2_1",
+      "L_Dedo2_2",
+      "L_Dedo3_1",
+      "L_Dedo3_2",
+      "L_UpperarmTwist01",
+      "L_UpperarmTwist02",
+      "NeckTwist02",
+      "Gafas",
+      "Mandibula",
+      "R_ForearmTwist01",
+      "R_ForearmTwist02",
+      "R_Dedo1_1",
+      "R_Dedo1_2",
+      "R_Dedo2_1",
+      "R_Dedo2_2",
+      "R_Dedo3_1",
+      "R_Dedo3_2",
+      "R_UpperarmTwist01",
+      "R_UpperarmTwist02"
+    ]
+  },
+  "reposos_distintos_grados_top": [
+    [
+      "R_Foot",
+      166.1
+    ],
+    [
+      "L_Foot",
+      154.08
+    ],
+    [
+      "R_Clavicle",
+      131.16
+    ],
+    [
+      "L_Upperarm",
+      124.15
+    ],
+    [
+      "L_ToeBase",
+      122.76
+    ],
+    [
+      "L_Hand",
+      113.95
+    ],
+    [
+      "R_Forearm",
+      106.21
+    ],
+    [
+      "L_Clavicle",
+      105.02
+    ]
+  ],
+  "raiz_movimiento": {
+    "destino": "Hip",
+    "fuente": "pelvis",
+    "escala_traslacion": 0.3477
+  },
+  "reposo_alineado_grados": {
+    "L_Hand": 63.0,
+    "R_Hand": 108.4,
+    "L_Foot": 112.8
+  },
+  "pies_clavados": {
+    "Death01": {
+      "error_antes_max_cm": 21.05,
+      "error_despues_max_cm": 0.0
+    },
+    "Hit_Chest": {
+      "error_antes_max_cm": 10.19,
+      "error_despues_max_cm": 0.0
+    },
+    "Idle_Loop": {
+      "error_antes_max_cm": 7.55,
+      "error_despues_max_cm": 0.0
+    },
+    "Punch_Jab": {
+      "error_antes_max_cm": 12.9,
+      "error_despues_max_cm": 0.0
+    },
+    "Roll": {
+      "error_antes_max_cm": 30.59,
+      "error_despues_max_cm": 0.0
+    },
+    "Spell_Simple_Shoot": {
+      "error_antes_max_cm": 7.25,
+      "error_despues_max_cm": 0.0
+    },
+    "Sprint_Loop": {
+      "error_antes_max_cm": 10.55,
+      "error_despues_max_cm": 0.0
+    }
+  },
+  "cuaterniones_volteados": 23,
+  "clips": {
+    "Death01": {
+      "fotogramas": [
+        0,
+        58
+      ],
+      "segundos": 2.417,
+      "suela_z_m": [
+        -0.0,
+        -0.0263,
+        -0.0112
+      ]
+    },
+    "Hit_Chest": {
+      "fotogramas": [
+        0,
+        8
+      ],
+      "segundos": 0.333,
+      "suela_z_m": [
+        -0.0,
+        -0.0,
+        -0.0
+      ]
+    },
+    "Idle_Loop": {
+      "fotogramas": [
+        0,
+        60
+      ],
+      "segundos": 2.5,
+      "suela_z_m": [
+        -0.0,
+        -0.0,
+        -0.0
+      ]
+    },
+    "Punch_Jab": {
+      "fotogramas": [
+        0,
+        21
+      ],
+      "segundos": 0.875,
+      "suela_z_m": [
+        -0.0,
+        -0.0001,
+        -0.0
+      ]
+    },
+    "Roll": {
+      "fotogramas": [
+        0,
+        35
+      ],
+      "segundos": 1.458,
+      "suela_z_m": [
+        -0.0001,
+        -0.0022,
+        -0.0025
+      ]
+    },
+    "Spell_Simple_Shoot": {
+      "fotogramas": [
+        0,
+        12
+      ],
+      "segundos": 0.5,
+      "suela_z_m": [
+        -0.0,
+        -0.0,
+        -0.0
+      ]
+    },
+    "Sprint_Loop": {
+      "fotogramas": [
+        0,
+        16
+      ],
+      "segundos": 0.667,
+      "suela_z_m": [
+        -0.0,
+        0.0088,
+        -0.0
+      ]
+    }
+  },
+  "fps": 24,
+  "hoja_control": "/Users/joansg/Desktop/Agente J.Bond/Agente/proyectos/coronas-de-ceniza/production/qa/evidence/modelos/salida/retarget_champ_rakhar_lagarto/champ_rakhar_lagarto_control.png",
+  "hoja_control_filas": [
+    "Death01",
+    "Idle_Loop",
+    "Punch_Jab"
+  ],
+  "malla_vs_rig_desvio_m": 0.0,
+  "glb": "/Users/joansg/Desktop/Agente J.Bond/Agente/proyectos/coronas-de-ceniza/production/qa/evidence/modelos/salida/retarget_champ_rakhar_lagarto/champ_rakhar_lagarto.glb",
+  "glb_bytes": 2106720,
+  "segundos_blender": 4.7
+}

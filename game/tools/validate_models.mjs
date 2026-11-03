@@ -76,7 +76,8 @@ export function check(info, assetId) {
 }
 
 const args = process.argv.slice(2);
-if (args.length && import.meta.url === `file://${process.argv[1]}`) {
+// Comparar rutas, no URL: con espacios en la ruta `import.meta.url` lleva %20 y nunca coincidía (salía 0 sin validar nada)
+if (args.length && fileURLToPath(import.meta.url) === process.argv[1]) {
   let jobs = [];
   if (args[0] === '--current') {
     const dir = join(ROOT, 'game/assets/models/src');

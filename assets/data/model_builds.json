@@ -1,0 +1,1858 @@
+{
+ "_doc": "Receta de construcción de cada modelo definitivo (la leen tools/blender/champs_kaykit.py, monsters_quaternius.py y retarget_lagarto.py). base = archivo de origen; pack = de dónde sale; scale = [ancho X, fondo Y, alto Z] multiplicador sobre la altura objetivo de model_specs.json; tint = color que se mezcla (tintMix) en el color base de los materiales; props.keep = nodos del propio glb que se conservan (el resto de armas/accesorios se borran), props.borrow = nodos de otro glb KayKit colgados del mismo hueso, props.make = piezas construidas con primitivas en el marco de un nodo de referencia (ref) o de un hueso; clips = clip del juego -> clip real del pack (lista = concatenación). Los clips que no están en el glb base se buscan en los packs de extraClips (KayKit Character Animations 1.1, Rig_Medium). yaw = giro en grados para que el modelo mire a -Y en Blender (+Z en glTF).",
+ "packs": {
+  "kaykit_src": "game/assets/models/src",
+  "kaykit_animations": "../../assets-libres/kaykit/character-animations/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Medium",
+  "quaternius": "../../assets-libres/quaternius",
+  "ual": "../../assets-libres/quaternius/universal-animation-library/Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard.glb"
+ },
+ "gates": {
+  "bboxTol": 0.15,
+  "bboxTolDeath": 0.6,
+  "edgeP99": 4.0,
+  "edgeMax": 12.0,
+  "feetTolM": 0.01,
+  "maxInfluences": 4,
+  "maxBones": 80,
+  "_doc": "bboxTol: desviación de la diagonal de la caja (malla con piel) frente al primer fotograma de Idle; Death puede tumbarse (bboxTolDeath). edgeP99/edgeMax: estiramiento de aristas de la malla evaluada frente al reposo (la deformación de verdad: una pose no estira aristas, un peso mal puesto sí). Un asset puede subir bboxTol en su propia clave gates (saltos de cuadrúpedos)."
+ },
+ "assets": {
+  "champ_brannoc": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ka_Knight",
+   "scale": [
+    1.25,
+    1.25,
+    1.0
+   ],
+   "tint": "#9e7a5a",
+   "tintMix": 0.4,
+   "props": {
+    "keep": [
+     "Knight_Helmet",
+     "Knight_Cape"
+    ],
+    "make": [
+     {
+      "name": "Martillo_forja",
+      "ref": "2H_Sword",
+      "parts": [
+       {
+        "shape": "cylinder",
+        "size": [
+         0.03,
+         0.03,
+         0.8
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.2
+        ],
+        "color": "#5b3a1e"
+       },
+       {
+        "shape": "box",
+        "size": [
+         0.267,
+         0.167,
+         0.167
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.533
+        ],
+        "color": "#7d7f85",
+        "metal": 0.8
+       },
+       {
+        "shape": "box",
+        "size": [
+         0.1,
+         0.187,
+         0.053
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.533
+        ],
+        "color": "#ff7a1a",
+        "emissive": 2.0
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "2H_Melee_Attack_Chop",
+    "Cast": "Spellcast_Shoot",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_Q": "Melee_2H_Attack_Slice",
+    "Cast_R": "Melee_2H_Attack_Spin"
+   }
+  },
+  "champ_morgra": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ka_Barbarian",
+   "scale": [
+    1.1,
+    1.1,
+    1.0
+   ],
+   "tint": "#6aa84f",
+   "tintMix": 0.45,
+   "props": {
+    "keep": [
+     "Barbarian_Hat"
+    ],
+    "make": [
+     {
+      "name": "Totem",
+      "ref": "2H_Axe",
+      "parts": [
+       {
+        "shape": "cylinder",
+        "size": [
+         0.047,
+         0.047,
+         0.867
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.233
+        ],
+        "color": "#8a5a2b"
+       },
+       {
+        "shape": "box",
+        "size": [
+         0.167,
+         0.167,
+         0.15
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.5
+        ],
+        "color": "#c62828"
+       },
+       {
+        "shape": "box",
+        "size": [
+         0.2,
+         0.2,
+         0.167
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.667
+        ],
+        "color": "#e0c097"
+       },
+       {
+        "shape": "sphere",
+        "size": [
+         0.033,
+         0.033,
+         0.033
+        ],
+        "loc": [
+         0.05,
+         -0.107,
+         0.683
+        ],
+        "color": "#ffeb3b",
+        "emissive": 1.5
+       },
+       {
+        "shape": "sphere",
+        "size": [
+         0.033,
+         0.033,
+         0.033
+        ],
+        "loc": [
+         -0.05,
+         -0.107,
+         0.683
+        ],
+        "color": "#ffeb3b",
+        "emissive": 1.5
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "2H_Melee_Attack_Chop",
+    "Cast": "Spellcast_Shoot",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_Q": "Melee_2H_Attack_Stab",
+    "Cast_R": "Melee_2H_Attack_Spinning"
+   }
+  },
+  "champ_ossuar": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ks_Skeleton_Warrior",
+   "scale": [
+    1.3,
+    1.3,
+    1.0
+   ],
+   "tint": "#d7ccc8",
+   "tintMix": 0.2,
+   "props": {
+    "keep": [
+     "Skeleton_Warrior_Helmet"
+    ],
+    "borrow": [
+     {
+      "from": "ka_Barbarian",
+      "node": "1H_Axe",
+      "as": "Garfio_costilla"
+     }
+    ],
+    "make": [
+     {
+      "name": "Caja_toracica_emisiva",
+      "ref": "Skeleton_Warrior_Helmet",
+      "parts": [
+       {
+        "shape": "sphere",
+        "size": [
+         0.233,
+         0.167,
+         0.267
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         -0.8
+        ],
+        "color": "#39ff8a",
+        "emissive": 3.0
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle_Combat",
+    "Run": "Running_A",
+    "Attack": "1H_Melee_Attack_Chop",
+    "Cast": "Spellcast_Shoot",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_Q": "Melee_1H_Attack_Stab",
+    "Cast_R": "Skeletons_Taunt"
+   }
+  },
+  "champ_kaelith": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ka_Knight",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#ffe082",
+   "tintMix": 0.35,
+   "props": {
+    "keep": [
+     "1H_Sword",
+     "Round_Shield",
+     "Knight_Helmet",
+     "Knight_Cape"
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "1H_Melee_Attack_Chop",
+    "Cast": "Spellcast_Shoot",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_Q": "Melee_1H_Attack_Slice_Horizontal",
+    "Cast_E": "Melee_1H_Attack_Stab",
+    "Cast_R": "Melee_1H_Attack_Jump_Chop"
+   }
+  },
+  "champ_tharok": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ka_Barbarian",
+   "scale": [
+    1.08,
+    1.08,
+    1.0
+   ],
+   "tint": "#c62828",
+   "tintMix": 0.35,
+   "props": {
+    "keep": [
+     "2H_Axe",
+     "Barbarian_Hat"
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "2H_Melee_Attack_Chop",
+    "Cast": "Spellcast_Shoot",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_Q": "Melee_2H_Attack_Spin",
+    "Cast_R": "Melee_2H_Attack_Slice"
+   }
+  },
+  "champ_yssra": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ka_Rogue",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#26c6da",
+   "tintMix": 0.45,
+   "props": {
+    "keep": [
+     "Rogue_Cape"
+    ],
+    "make": [
+     {
+      "name": "Tridente",
+      "ref": "Knife",
+      "parts": [
+       {
+        "shape": "cylinder",
+        "size": [
+         0.02,
+         0.02,
+         1.133
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.3
+        ],
+        "color": "#b0bec5",
+        "metal": 0.9
+       },
+       {
+        "shape": "cone",
+        "size": [
+         0.04,
+         0.04,
+         0.2
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.967
+        ],
+        "color": "#eceff1",
+        "metal": 0.9
+       },
+       {
+        "shape": "cone",
+        "size": [
+         0.033,
+         0.033,
+         0.167
+        ],
+        "loc": [
+         0.083,
+         0.0,
+         0.917
+        ],
+        "color": "#eceff1",
+        "metal": 0.9
+       },
+       {
+        "shape": "cone",
+        "size": [
+         0.033,
+         0.033,
+         0.167
+        ],
+        "loc": [
+         -0.083,
+         0.0,
+         0.917
+        ],
+        "color": "#eceff1",
+        "metal": 0.9
+       },
+       {
+        "shape": "box",
+        "size": [
+         0.2,
+         0.033,
+         0.033
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.817
+        ],
+        "color": "#b0bec5",
+        "metal": 0.9
+       }
+      ]
+     },
+     {
+      "name": "Aleta_dorsal",
+      "ref": "Rogue_Cape",
+      "parts": [
+       {
+        "shape": "cone",
+        "size": [
+         0.04,
+         0.167,
+         0.3
+        ],
+        "loc": [
+         0.0,
+         0.15,
+         0.633
+        ],
+        "rot": [
+         -25,
+         0,
+         0
+        ],
+        "color": "#ff8a65"
+       },
+       {
+        "shape": "cone",
+        "size": [
+         0.033,
+         0.133,
+         0.2
+        ],
+        "loc": [
+         0.0,
+         0.167,
+         0.367
+        ],
+        "rot": [
+         -25,
+         0,
+         0
+        ],
+        "color": "#ff8a65"
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "Melee_1H_Attack_Stab",
+    "Cast": "Spellcast_Shoot",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_E": "Dodge_Forward",
+    "Cast_R": "Ranged_Magic_Raise"
+   }
+  },
+  "champ_vaelor": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ka_Mage",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#ff7043",
+   "tintMix": 0.4,
+   "props": {
+    "keep": [
+     "2H_Staff",
+     "Mage_Hat",
+     "Mage_Cape"
+    ],
+    "make": [
+     {
+      "name": "Brasa_baculo",
+      "ref": "2H_Staff",
+      "parts": [
+       {
+        "shape": "sphere",
+        "size": [
+         0.073,
+         0.073,
+         0.073
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.7
+        ],
+        "color": "#ff6d00",
+        "emissive": 3.0
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "Spellcast_Shoot",
+    "Cast": "Ranged_Magic_Spellcasting",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_Q": "Ranged_Magic_Shoot",
+    "Cast_R": "Ranged_Magic_Spellcasting_Long"
+   }
+  },
+  "champ_nyxe": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ka_Mage",
+   "scale": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "tint": "#ea80fc",
+   "tintMix": 0.45,
+   "props": {
+    "keep": [
+     "1H_Wand"
+    ],
+    "make": [
+     {
+      "name": "Alas_polilla",
+      "ref": "Mage_Cape",
+      "parts": [
+       {
+        "shape": "plane",
+        "size": [
+         0.9,
+         1.4,
+         1
+        ],
+        "loc": [
+         0.55,
+         0.25,
+         1.0
+        ],
+        "rot": [
+         90,
+         0,
+         30
+        ],
+        "color": "#f3b6ff",
+        "alpha": 0.45,
+        "emissive": 0.6
+       },
+       {
+        "shape": "plane",
+        "size": [
+         0.9,
+         1.4,
+         1
+        ],
+        "loc": [
+         -0.55,
+         0.25,
+         1.0
+        ],
+        "rot": [
+         90,
+         0,
+         -30
+        ],
+        "color": "#f3b6ff",
+        "alpha": 0.45,
+        "emissive": 0.6
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "Spellcast_Shoot",
+    "Cast": "Ranged_Magic_Spellcasting",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_E": "Dodge_Backward",
+    "Cast_R": "Ranged_Magic_Raise"
+   }
+  },
+  "champ_zerath": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ks_Skeleton_Mage",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#7c4dff",
+   "tintMix": 0.45,
+   "props": {
+    "keep": [],
+    "make": [
+     {
+      "name": "Capucha",
+      "ref": "Skeleton_Mage_Hat",
+      "parts": [
+       {
+        "shape": "cone",
+        "size": [
+         0.55,
+         0.55,
+         0.95
+        ],
+        "loc": [
+         0,
+         0.05,
+         -0.2
+        ],
+        "color": "#1a0b2e"
+       },
+       {
+        "shape": "sphere",
+        "size": [
+         0.05,
+         0.05,
+         0.05
+        ],
+        "loc": [
+         0.12,
+         -0.36,
+         -0.3
+        ],
+        "color": "#d500f9",
+        "emissive": 4.0
+       },
+       {
+        "shape": "sphere",
+        "size": [
+         0.05,
+         0.05,
+         0.05
+        ],
+        "loc": [
+         -0.12,
+         -0.36,
+         -0.3
+        ],
+        "color": "#d500f9",
+        "emissive": 4.0
+       },
+       {
+        "shape": "sphere",
+        "size": [
+         0.04,
+         0.04,
+         0.04
+        ],
+        "loc": [
+         0,
+         -0.38,
+         -0.15
+        ],
+        "color": "#d500f9",
+        "emissive": 4.0
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle_Combat",
+    "Run": "Running_A",
+    "Attack": "Spellcast_Shoot",
+    "Cast": "Ranged_Magic_Spellcasting",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_W": "Ranged_Magic_Spellcasting_Long",
+    "Cast_R": "Ranged_Magic_Summon"
+   }
+  },
+  "champ_lyra": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ka_Rogue",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#8bc34a",
+   "tintMix": 0.3,
+   "props": {
+    "keep": [
+     "Rogue_Cape"
+    ],
+    "make": [
+     {
+      "name": "Arco_largo",
+      "ref": "Knife_Offhand",
+      "parts": [
+       {
+        "shape": "torus",
+        "size": [
+         0.467,
+         0.023,
+         0.023
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         -0.467
+        ],
+        "rot": [
+         90,
+         0,
+         0
+        ],
+        "color": "#6d4c41",
+        "arc": 160,
+        "arc_center": 90
+       },
+       {
+        "shape": "cylinder",
+        "size": [
+         0.007,
+         0.007,
+         0.92
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         -0.387
+        ],
+        "rot": [
+         0,
+         90,
+         0
+        ],
+        "color": "#eeeeee"
+       }
+      ]
+     },
+     {
+      "name": "Carcaj",
+      "ref": "Rogue_Cape",
+      "parts": [
+       {
+        "shape": "cylinder",
+        "size": [
+         0.073,
+         0.073,
+         0.467
+        ],
+        "loc": [
+         0.167,
+         0.2,
+         0.533
+        ],
+        "rot": [
+         20,
+         0,
+         20
+        ],
+        "color": "#5d4037"
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Ranged_Bow_Idle",
+    "Run": "Running_HoldingBow",
+    "Attack": [
+     "Ranged_Bow_Draw",
+     "Ranged_Bow_Release"
+    ],
+    "Cast": "Ranged_Bow_Release_Up",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_E": "Dodge_Backward",
+    "Cast_R": "Ranged_Bow_Draw_Up"
+   }
+  },
+  "champ_gearix": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ka_Mage",
+   "scale": [
+    0.85,
+    0.85,
+    0.78
+   ],
+   "tint": "#b8923a",
+   "tintMix": 0.4,
+   "props": {
+    "keep": [],
+    "make": [
+     {
+      "name": "Trabuco",
+      "ref": "1H_Wand",
+      "parts": [
+       {
+        "shape": "cylinder",
+        "size": [
+         0.04,
+         0.04,
+         0.667
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.267
+        ],
+        "color": "#5d4037"
+       },
+       {
+        "shape": "cone",
+        "size": [
+         0.1,
+         0.1,
+         0.2
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.65
+        ],
+        "rot": [
+         180,
+         0,
+         0
+        ],
+        "color": "#c69c3c",
+        "metal": 0.9
+       },
+       {
+        "shape": "box",
+        "size": [
+         0.083,
+         0.167,
+         0.133
+        ],
+        "loc": [
+         0.0,
+         0.067,
+         -0.1
+        ],
+        "color": "#4e342e"
+       }
+      ]
+     },
+     {
+      "name": "Gafas",
+      "ref": "Mage_Hat",
+      "parts": [
+       {
+        "shape": "torus",
+        "size": [
+         0.11,
+         0.03,
+         0.03
+        ],
+        "loc": [
+         0.13,
+         -0.3,
+         -0.33
+        ],
+        "rot": [
+         90,
+         0,
+         0
+        ],
+        "color": "#c69c3c",
+        "metal": 0.8
+       },
+       {
+        "shape": "torus",
+        "size": [
+         0.11,
+         0.03,
+         0.03
+        ],
+        "loc": [
+         -0.13,
+         -0.3,
+         -0.33
+        ],
+        "rot": [
+         90,
+         0,
+         0
+        ],
+        "color": "#c69c3c",
+        "metal": 0.8
+       }
+      ]
+     },
+     {
+      "name": "Mochila",
+      "ref": "Mage_Cape",
+      "parts": [
+       {
+        "shape": "box",
+        "size": [
+         0.367,
+         0.2,
+         0.433
+        ],
+        "loc": [
+         0.0,
+         0.267,
+         0.433
+        ],
+        "color": "#6d4c41"
+       },
+       {
+        "shape": "cylinder",
+        "size": [
+         0.067,
+         0.067,
+         0.333
+        ],
+        "loc": [
+         0.133,
+         0.267,
+         0.667
+        ],
+        "color": "#c69c3c",
+        "metal": 0.9
+       },
+       {
+        "shape": "torus",
+        "size": [
+         0.117,
+         0.027,
+         0.027
+        ],
+        "loc": [
+         -0.133,
+         0.383,
+         0.6
+        ],
+        "rot": [
+         90,
+         0,
+         0
+        ],
+        "color": "#5f8a3c",
+        "metal": 0.6
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "Ranged_1H_Shoot",
+    "Cast": "Spellcast_Shoot",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_Q": "Interact",
+    "Cast_E": "Dodge_Backward",
+    "Cast_R": "Ranged_2H_Shooting"
+   }
+  },
+  "champ_sable": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ks_Skeleton_Rogue",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#37474f",
+   "tintMix": 0.45,
+   "props": {
+    "keep": [
+     "Skeleton_Rogue_Hood",
+     "Skeleton_Rogue_Cape"
+    ],
+    "borrow": [
+     {
+      "from": "ka_Rogue",
+      "node": "Knife",
+      "as": "Daga_R"
+     },
+     {
+      "from": "ka_Rogue",
+      "node": "Knife_Offhand",
+      "as": "Daga_L"
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle_Combat",
+    "Run": "Running_A",
+    "Attack": "Melee_Dualwield_Attack_Slice",
+    "Cast": "Melee_Dualwield_Attack_Stab",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_Q": "Melee_Dualwield_Attack_Chop",
+    "Cast_W": "Sneaking",
+    "Cast_E": "Dodge_Forward"
+   }
+  },
+  "champ_elowen": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ka_Mage",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#66bb6a",
+   "tintMix": 0.45,
+   "props": {
+    "keep": [
+     "2H_Staff",
+     "Mage_Cape"
+    ],
+    "make": [
+     {
+      "name": "Ramas_y_hojas",
+      "ref": "Mage_Hat",
+      "parts": [
+       {
+        "shape": "cone",
+        "size": [
+         0.04,
+         0.04,
+         0.4
+        ],
+        "loc": [
+         0.13,
+         0,
+         0.05
+        ],
+        "rot": [
+         0,
+         25,
+         0
+        ],
+        "color": "#5d4037"
+       },
+       {
+        "shape": "cone",
+        "size": [
+         0.04,
+         0.04,
+         0.4
+        ],
+        "loc": [
+         -0.13,
+         0,
+         0.05
+        ],
+        "rot": [
+         0,
+         -25,
+         0
+        ],
+        "color": "#5d4037"
+       },
+       {
+        "shape": "sphere",
+        "size": [
+         0.15,
+         0.15,
+         0.13
+        ],
+        "loc": [
+         0.22,
+         0,
+         0.25
+        ],
+        "color": "#43a047"
+       },
+       {
+        "shape": "sphere",
+        "size": [
+         0.15,
+         0.15,
+         0.13
+        ],
+        "loc": [
+         -0.22,
+         0,
+         0.25
+        ],
+        "color": "#43a047"
+       },
+       {
+        "shape": "sphere",
+        "size": [
+         0.07,
+         0.07,
+         0.07
+        ],
+        "loc": [
+         0,
+         -0.3,
+         -0.1
+        ],
+        "color": "#f48fb1",
+        "emissive": 0.8
+       }
+      ]
+     },
+     {
+      "name": "Raices_baculo",
+      "ref": "2H_Staff",
+      "parts": [
+       {
+        "shape": "sphere",
+        "size": [
+         0.083,
+         0.083,
+         0.083
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.7
+        ],
+        "color": "#8bc34a",
+        "emissive": 1.5
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "Spellcast_Shoot",
+    "Cast": "Ranged_Magic_Spellcasting",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_W": "Ranged_Magic_Raise",
+    "Cast_R": "Ranged_Magic_Summon"
+   }
+  },
+  "champ_aurik": {
+   "category": "champion",
+   "pack": "kaykit",
+   "base": "ka_Knight",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#ffca28",
+   "tintMix": 0.45,
+   "props": {
+    "keep": [
+     "Knight_Helmet",
+     "Knight_Cape"
+    ],
+    "make": [
+     {
+      "name": "Lanza",
+      "ref": "1H_Sword",
+      "parts": [
+       {
+        "shape": "cylinder",
+        "size": [
+         0.02,
+         0.02,
+         1.2
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         0.333
+        ],
+        "color": "#8d6e63"
+       },
+       {
+        "shape": "cone",
+        "size": [
+         0.053,
+         0.053,
+         0.3
+        ],
+        "loc": [
+         0.0,
+         0.0,
+         1.067
+        ],
+        "color": "#fff3c4",
+        "metal": 0.9
+       }
+      ]
+     },
+     {
+      "name": "Cuernos",
+      "ref": "Knight_Helmet",
+      "parts": [
+       {
+        "shape": "cone",
+        "size": [
+         0.07,
+         0.07,
+         0.5
+        ],
+        "loc": [
+         0.22,
+         0.1,
+         0.45
+        ],
+        "rot": [
+         -30,
+         25,
+         0
+        ],
+        "color": "#fff8e1"
+       },
+       {
+        "shape": "cone",
+        "size": [
+         0.07,
+         0.07,
+         0.5
+        ],
+        "loc": [
+         -0.22,
+         0.1,
+         0.45
+        ],
+        "rot": [
+         -30,
+         -25,
+         0
+        ],
+        "color": "#fff8e1"
+       }
+      ]
+     },
+     {
+      "name": "Alas_plegadas",
+      "ref": "Knight_Cape",
+      "parts": [
+       {
+        "shape": "plane",
+        "size": [
+         0.7,
+         1.3,
+         1
+        ],
+        "loc": [
+         0.5,
+         0.25,
+         1.1
+        ],
+        "rot": [
+         90,
+         0,
+         25
+        ],
+        "color": "#ffb300"
+       },
+       {
+        "shape": "plane",
+        "size": [
+         0.7,
+         1.3,
+         1
+        ],
+        "loc": [
+         -0.5,
+         0.25,
+         1.1
+        ],
+        "rot": [
+         90,
+         0,
+         -25
+        ],
+        "color": "#ffb300"
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "Melee_1H_Attack_Stab",
+    "Cast": "Spellcast_Shoot",
+    "Death": "Death_A",
+    "Hit": "Hit_A",
+    "Cast_Q": "Melee_1H_Attack_Slice_Diagonal",
+    "Cast_R": "Ranged_Magic_Raise"
+   }
+  },
+  "minion_melee": {
+   "category": "minion",
+   "pack": "kaykit",
+   "base": "ks_Skeleton_Minion",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": null,
+   "props": {
+    "keep": []
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "1H_Melee_Attack_Chop",
+    "Death": "Death_A",
+    "Hit": "Hit_A"
+   }
+  },
+  "minion_caster": {
+   "category": "minion",
+   "pack": "kaykit",
+   "base": "ks_Skeleton_Mage",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": null,
+   "props": {
+    "keep": [
+     "Skeleton_Mage_Hat"
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "Spellcast_Shoot",
+    "Death": "Death_A",
+    "Hit": "Hit_A"
+   }
+  },
+  "minion_siege": {
+   "category": "minion",
+   "pack": "kaykit",
+   "base": "ks_Skeleton_Warrior",
+   "scale": [
+    1.1,
+    1.1,
+    1.0
+   ],
+   "tint": null,
+   "props": {
+    "keep": [
+     "Skeleton_Warrior_Helmet"
+    ],
+    "make": [
+     {
+      "name": "Canon",
+      "ref": "Skeleton_Warrior_Helmet",
+      "parts": [
+       {
+        "shape": "cylinder",
+        "size": [
+         0.117,
+         0.117,
+         0.8
+        ],
+        "loc": [
+         0.267,
+         0.3,
+         -0.5
+        ],
+        "rot": [
+         -15,
+         0,
+         0
+        ],
+        "color": "#37474f",
+        "metal": 0.8
+       },
+       {
+        "shape": "box",
+        "size": [
+         0.233,
+         0.233,
+         0.233
+        ],
+        "loc": [
+         0.267,
+         0.333,
+         -0.9
+        ],
+        "color": "#546e7a"
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "2H_Melee_Attack_Chop",
+    "Death": "Death_A",
+    "Hit": "Hit_A"
+   }
+  },
+  "minion_super": {
+   "category": "minion",
+   "pack": "kaykit",
+   "base": "ks_Skeleton_Warrior",
+   "scale": [
+    1.4,
+    1.4,
+    1.0
+   ],
+   "tint": null,
+   "props": {
+    "keep": [
+     "Skeleton_Warrior_Helmet"
+    ],
+    "borrow": [
+     {
+      "from": "ka_Knight",
+      "node": "Rectangle_Shield",
+      "as": "Escudo"
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Running_A",
+    "Attack": "1H_Melee_Attack_Chop",
+    "Death": "Death_A",
+    "Hit": "Hit_A"
+   },
+   "decimate": 0.85
+  },
+  "minion_ram": {
+   "category": "minion",
+   "pack": "kaykit",
+   "base": "ks_Skeleton_Warrior",
+   "scale": [
+    1.5,
+    1.5,
+    1.0
+   ],
+   "tint": "#ff8a65",
+   "tintMix": 0.3,
+   "props": {
+    "keep": [
+     "Skeleton_Warrior_Helmet"
+    ],
+    "make": [
+     {
+      "name": "Cabeza_carnero",
+      "ref": "Skeleton_Warrior_Helmet",
+      "parts": [
+       {
+        "shape": "cylinder",
+        "size": [
+         0.1,
+         0.1,
+         1.167
+        ],
+        "loc": [
+         0.0,
+         -0.5,
+         -0.5
+        ],
+        "rot": [
+         90,
+         0,
+         0
+        ],
+        "color": "#5d4037"
+       },
+       {
+        "shape": "torus",
+        "size": [
+         0.167,
+         0.047,
+         0.047
+        ],
+        "loc": [
+         0.167,
+         -1.033,
+         -0.5
+        ],
+        "rot": [
+         0,
+         90,
+         0
+        ],
+        "color": "#c69c3c",
+        "metal": 0.8
+       },
+       {
+        "shape": "torus",
+        "size": [
+         0.167,
+         0.047,
+         0.047
+        ],
+        "loc": [
+         -0.167,
+         -1.033,
+         -0.5
+        ],
+        "rot": [
+         0,
+         90,
+         0
+        ],
+        "color": "#c69c3c",
+        "metal": 0.8
+       }
+      ]
+     }
+    ]
+   },
+   "clips": {
+    "Idle": "Idle",
+    "Run": "Walking_A",
+    "Attack": "2H_Melee_Attack_Chop",
+    "Death": "Death_A",
+    "Hit": "Hit_A"
+   },
+   "decimate": 0.8
+  },
+  "monster_golem": {
+   "category": "monster",
+   "pack": "quaternius",
+   "base": "animated-lowpoly-dinosaurs/Dinosaur Animated Pack - Dec 2018/FBX/Stegosaurus.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#78909c",
+   "tintMix": 0.6,
+   "yaw": 0,
+   "clips": {
+    "Idle": "Stegosaurus_Idle",
+    "Run": "Stegosaurus_Walk",
+    "Attack": "Stegosaurus_Attack",
+    "Death": "Stegosaurus_Death",
+    "Hit": "Stegosaurus_Jump"
+   }
+  },
+  "monster_bestia": {
+   "category": "monster",
+   "pack": "quaternius",
+   "base": "animated-lowpoly-dinosaurs/Dinosaur Animated Pack - Dec 2018/FBX/Triceratops.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#e64a19",
+   "tintMix": 0.6,
+   "yaw": 0,
+   "clips": {
+    "Idle": "Triceratops_Idle",
+    "Run": "Triceratops_Run",
+    "Attack": "Triceratops_Attack",
+    "Death": "Triceratops_Death",
+    "Hit": "Triceratops_Jump"
+   }
+  },
+  "monster_lobo": {
+   "category": "monster",
+   "pack": "quaternius",
+   "base": "animated-easy-enemies/Easy Animated Enemy Pack - Jan 2019/FBX/Rat.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#8d8d8d",
+   "tintMix": 0.5,
+   "yaw": 0,
+   "clips": {
+    "Idle": "Rat_Idle",
+    "Run": "Rat_Run",
+    "Attack": "Rat_Attack",
+    "Death": "Rat_Death",
+    "Hit": "Rat_Jump"
+   }
+  },
+  "monster_ave": {
+   "category": "monster",
+   "pack": "quaternius",
+   "base": "animated-easy-enemies/Easy Animated Enemy Pack - Jan 2019/FBX/Wasp.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#4e342e",
+   "tintMix": 0.5,
+   "yaw": -90,
+   "flying": true,
+   "gates": {
+    "bboxTol": 0.35,
+    "edgeP99": 5.0
+   },
+   "clips": {
+    "Idle": "Wasp_Flying",
+    "Run": "Wasp_Flying",
+    "Attack": "Wasp_Attack",
+    "Death": "Wasp_Death"
+   },
+   "_nota": "el FBX de la avispa mira a +X: yaw -90 para mirar a -Y (visto en la tira)"
+  },
+  "monster_roca": {
+   "category": "monster",
+   "pack": "quaternius",
+   "base": "lowpoly-animated-monsters/FBX/Slime.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#6d675f",
+   "tintMix": 0.85,
+   "yaw": 0,
+   "clips": {
+    "Idle": "Slime_Idle",
+    "Run": "Slime_Walk",
+    "Attack": "Slime_Attack",
+    "Death": "Slime_Death"
+   }
+  },
+  "monster_sapo": {
+   "category": "monster",
+   "pack": "quaternius",
+   "base": "animated-easy-enemies/Easy Animated Enemy Pack - Jan 2019/FBX/Frog.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#ff7043",
+   "tintMix": 0.45,
+   "yaw": 0,
+   "gates": {
+    "bboxTol": 0.45
+   },
+   "clips": {
+    "Idle": "Frog_Idle",
+    "Run": "Frog_Jump",
+    "Attack": "Frog_Attack",
+    "Death": "Frog_Death"
+   }
+  },
+  "epic_dragon": {
+   "category": "epic",
+   "pack": "quaternius",
+   "base": "lowpoly-animated-monsters/FBX/Dragon.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": null,
+   "yaw": 0,
+   "flying": true,
+   "clips": {
+    "Idle": "Dragon_Flying",
+    "Run": "Dragon_Flying",
+    "Attack": "Dragon_Attack",
+    "Attack2": "Dragon_Attack2",
+    "Death": "Dragon_Death",
+    "Hit": "Dragon_Hit"
+   }
+  },
+  "champ_aurik_dragon": {
+   "category": "champion",
+   "pack": "quaternius",
+   "base": "lowpoly-animated-monsters/FBX/Dragon.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#ffca28",
+   "tintMix": 0.55,
+   "yaw": 0,
+   "flying": true,
+   "clips": {
+    "Idle": "Dragon_Flying",
+    "Run": "Dragon_Flying",
+    "Attack": "Dragon_Attack",
+    "Cast": "Dragon_Attack2",
+    "Death": "Dragon_Death",
+    "Hit": "Dragon_Hit"
+   }
+  },
+  "epic_heraldo": {
+   "category": "epic",
+   "pack": "quaternius",
+   "base": "animated-lowpoly-dinosaurs/Dinosaur Animated Pack - Dec 2018/FBX/Trex.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#ff8a65",
+   "tintMix": 0.4,
+   "yaw": 0,
+   "clips": {
+    "Idle": "TRex_Idle",
+    "Run": "TRex_Walk",
+    "Attack": "TRex_Attack",
+    "Death": "TRex_Death",
+    "Roar": "TRex_Jump"
+   }
+  },
+  "epic_senor": {
+   "category": "epic",
+   "pack": "quaternius",
+   "base": "animated-easy-enemies/Easy Animated Enemy Pack - Jan 2019/FBX/Spider.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#4a148c",
+   "tintMix": 0.45,
+   "yaw": 0,
+   "clips": {
+    "Idle": "Spider_Idle",
+    "Run": "Spider_Walk",
+    "Attack": "Spider_Attack",
+    "Death": "Spider_Death",
+    "Spawn": "Spider_Jump"
+   }
+  },
+  "epic_avatar": {
+   "category": "epic",
+   "pack": "quaternius",
+   "base": "lowpoly-animated-monsters/FBX/Bat.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#9575cd",
+   "tintMix": 0.6,
+   "emissive": 0.8,
+   "yaw": 0,
+   "flying": true,
+   "clips": {
+    "Idle": "Bat_Flying",
+    "Run": "Bat_Flying",
+    "Attack": "Bat_Attack",
+    "Attack2": "Bat_Attack2",
+    "Death": "Bat_Death",
+    "Hit": "Bat_Hit"
+   }
+  },
+  "champ_rakhar": {
+   "category": "champion",
+   "pack": "quaternius",
+   "base": "animated-lowpoly-dinosaurs/Dinosaur Animated Pack - Dec 2018/FBX/Velociraptor.fbx",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#d7a86e",
+   "tintMix": 0.5,
+   "yaw": 0,
+   "clips": {
+    "Idle": "Velociraptor_Idle",
+    "Run": "Velociraptor_Run",
+    "Attack": "Velociraptor_Attack",
+    "Cast": "Velociraptor_Jump",
+    "Death": "Velociraptor_Death",
+    "Cast_E": "Velociraptor_Jump"
+   }
+  },
+  "champ_rakhar_lagarto": {
+   "category": "champion",
+   "pack": "ual_retarget",
+   "base": "game/assets/models/src/lagarto.glb",
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "tint": "#d84315",
+   "tintMix": 0.3,
+   "alinear": true,
+   "gates": {
+    "bboxTol": 0.25,
+    "edgeP99": 8.0,
+    "edgeMax": 45.0,
+    "_nota": "rig Tripo con pesos casi binarios: aristas estiradas en hombros y muñecas ya en el lagarto actual del juego; a la escala del juego no se aprecia (hoja de control revisada)"
+   },
+   "mapa": {
+    "Hip": "pelvis",
+    "Waist": "spine_01",
+    "Spine01": "spine_02",
+    "Spine02": "spine_03",
+    "NeckTwist01": "neck_01",
+    "Head": "Head",
+    "L_Clavicle": "clavicle_l",
+    "L_Upperarm": "upperarm_l",
+    "L_Forearm": "lowerarm_l",
+    "L_Hand": "hand_l",
+    "R_Clavicle": "clavicle_r",
+    "R_Upperarm": "upperarm_r",
+    "R_Forearm": "lowerarm_r",
+    "R_Hand": "hand_r",
+    "L_Thigh": "thigh_l",
+    "L_Calf": "calf_l",
+    "L_Foot": "foot_l",
+    "L_ToeBase": "ball_l",
+    "R_Thigh": "thigh_r",
+    "R_Calf": "calf_r",
+    "R_Foot": "foot_r",
+    "R_ToeBase": "ball_r"
+   },
+   "clips": {
+    "Idle": "Idle_Loop",
+    "Run": "Sprint_Loop",
+    "Attack": "Punch_Jab",
+    "Cast": "Spell_Simple_Shoot",
+    "Death": "Death01",
+    "Hit": "Hit_Chest",
+    "Cast_E": "Roll"
+   },
+   "decimate": 0.55
+  }
+ },
+ "_marcos": {
+  "_doc": "Marcos medidos (probe 03/11): props de MANO (ref 1H_Sword, 2H_Sword, 2H_Axe, 2H_Staff, 1H_Wand, Knife, Knife_Offhand): eje local Z = longitud del arma hacia delante (-Y mundo), X = arriba, Y = hacia fuera del brazo; 1 unidad local ≈ 1,5 m (medido en la tira). Props de CABEZA (ref *_Helmet, *_Hat): X/Y/Z = mundo, frente = -Y, 1 unidad ≈ 1 m. Props de ESPALDA (ref *_Cape, hueso chest): X/Y/Z = mundo, espalda = +Y, origen a la altura del pecho, 1 unidad ≈ 1,3 m."
+ }
+}

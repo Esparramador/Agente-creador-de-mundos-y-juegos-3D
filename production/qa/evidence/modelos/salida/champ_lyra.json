@@ -1,0 +1,477 @@
+{
+ "asset": "champ_lyra",
+ "pack": "kaykit",
+ "base": "ka_Rogue",
+ "categoria": "champion",
+ "altura_objetivo_m": 2.2,
+ "fecha": "2026-11-03 11:51",
+ "puertas": {
+  "huesos": {
+   "n": 41,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": null,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.001,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.148,
+    "aristas_max": 1.576,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.021,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.218,
+    "aristas_max": 1.771,
+    "aristas_ok": true,
+    "suela_min_m": 0.0128,
+    "suela_max_m": 0.077,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.04,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.185,
+    "aristas_max": 1.735,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0,
+    "ok": true
+   },
+   "Cast": {
+    "desviacion_diagonal_max": 0.031,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.224,
+    "aristas_max": 1.736,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0013,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.107,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.359,
+    "aristas_max": 2.217,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.1173,
+    "ok": true
+   },
+   "Hit": {
+    "desviacion_diagonal_max": 0.044,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.209,
+    "aristas_max": 1.76,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0005,
+    "ok": true
+   },
+   "Cast_E": {
+    "desviacion_diagonal_max": 0.038,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.26,
+    "aristas_max": 1.754,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0,
+    "ok": true
+   },
+   "Cast_R": {
+    "desviacion_diagonal_max": 0.026,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.183,
+    "aristas_max": 1.735,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_glb": {
+  "canales_objeto_quitados": 0,
+  "objetos": 13,
+  "huesos": 41,
+  "acciones": [
+   "1H_Melee_Attack_Chop",
+   "2H_Melee_Attack_Chop",
+   "Cheer",
+   "Death_A",
+   "Hit_A",
+   "Idle",
+   "Interact",
+   "Running_A",
+   "Sit_Chair_Idle",
+   "Spellcast_Shoot",
+   "Unarmed_Melee_Attack_Punch_A",
+   "Walking_A"
+  ],
+  "mallas_con_piel": [
+   "Rogue_ArmLeft",
+   "Rogue_ArmRight",
+   "Rogue_Body",
+   "Rogue_Head",
+   "Rogue_LegLeft",
+   "Rogue_LegRight"
+  ]
+ },
+ "props": {
+  "conservados": [
+   "Rogue_Cape"
+  ],
+  "prestados": [],
+  "construidos": [
+   "Arco_largo",
+   "Carcaj"
+  ]
+ },
+ "tinte": {
+  "color": "#8bc34a",
+  "mezcla": 0.3,
+  "materiales": 1
+ },
+ "clips_extra": {
+  "pack": "KayKit Character Animations 1.1 (Rig_Medium)",
+  "acciones": 136,
+  "reposo_vs_base": {
+   "grados": 0.0,
+   "hueso": null
+  }
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Ranged_Bow_Idle",
+   "fotogramas": [
+    0,
+    47
+   ],
+   "segundos": 1.567
+  },
+  "Run": {
+   "origen": "Running_HoldingBow",
+   "fotogramas": [
+    0,
+    24
+   ],
+   "segundos": 0.8
+  },
+  "Attack": {
+   "origen": "Ranged_Bow_Draw + Ranged_Bow_Release",
+   "fotogramas": [
+    0,
+    81
+   ],
+   "segundos": 2.7
+  },
+  "Cast": {
+   "origen": "Ranged_Bow_Release_Up",
+   "fotogramas": [
+    0,
+    41
+   ],
+   "segundos": 1.367
+  },
+  "Death": {
+   "origen": "Death_A",
+   "fotogramas": [
+    0,
+    24
+   ],
+   "segundos": 0.8
+  },
+  "Hit": {
+   "origen": "Hit_A",
+   "fotogramas": [
+    0,
+    20
+   ],
+   "segundos": 0.667
+  },
+  "Cast_E": {
+   "origen": "Dodge_Backward",
+   "fotogramas": [
+    0,
+    12
+   ],
+   "segundos": 0.4
+  },
+  "Cast_R": {
+   "origen": "Ranged_Bow_Draw_Up",
+   "fotogramas": [
+    0,
+    40
+   ],
+   "segundos": 1.333
+  }
+ },
+ "escala": {
+  "altura_origen_m": 2.187,
+  "factor": 1.0059,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 2.2,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": 0.0,
+  "altura_m": 2.2,
+  "subido_m": 0.0
+ },
+ "pies_clavados": {
+  "Idle": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.11,
+    -0.0
+   ],
+   "despues_cm": [
+    -0.0,
+    0.0
+   ]
+  },
+  "Run": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -1.86,
+    8.59
+   ],
+   "despues_cm": [
+    -0.0,
+    9.1
+   ]
+  },
+  "Attack": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.25,
+    -0.04
+   ],
+   "despues_cm": [
+    -0.0,
+    0.0
+   ]
+  },
+  "Cast": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.34,
+    0.18
+   ],
+   "despues_cm": [
+    -0.0,
+    0.18
+   ]
+  },
+  "Death": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -13.93,
+    17.87
+   ],
+   "despues_cm": [
+    -0.0,
+    20.25
+   ]
+  },
+  "Hit": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.09,
+    0.05
+   ],
+   "despues_cm": [
+    -0.0,
+    0.06
+   ]
+  },
+  "Cast_E": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.91,
+    -0.04
+   ],
+   "despues_cm": [
+    -0.0,
+    0.0
+   ]
+  },
+  "Cast_R": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.34,
+    0.0
+   ],
+   "despues_cm": [
+    -0.0,
+    0.01
+   ]
+  }
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -1.071,
+    -0.511,
+    0.0
+   ],
+   [
+    0.883,
+    0.511,
+    2.2
+   ]
+  ],
+  "diagonal_m": 3.115,
+  "altura_m": 2.2,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 2.753
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.0,
+  "ruta": "game/assets/models/final/champ_lyra.glb",
+  "bytes": 569708,
+  "min_y_sin_piel": 0.0,
+  "raiz_ajustada_m": 0.0
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 6,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/44)",
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/45)",
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/46)",
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/47)",
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/48)",
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/49)"
+  ],
+  "three": {
+   "huesos": 41,
+   "mallasConEsqueleto": 6,
+   "caja_con_piel_m": [
+    2.143,
+    2.2,
+    1.005
+   ],
+   "suelo_con_piel_y": 0,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 1.567,
+     "pistas": 123,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 0.8,
+     "pistas": 123,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 2.7,
+     "pistas": 123,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Cast",
+     "segundos": 1.367,
+     "pistas": 123,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 0.8,
+     "pistas": 123,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Cast_E",
+     "segundos": 0.4,
+     "pistas": 123,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Cast_R",
+     "segundos": 1.333,
+     "pistas": 123,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Hit",
+     "segundos": 0.667,
+     "pistas": 123,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 0.0926,
+    "Run": 1.1964,
+    "Attack": 1.3701,
+    "Cast": 1.5752,
+    "Death": 2.7974,
+    "Cast_E": 1.0746,
+    "Cast_R": 1.6654,
+    "Hit": 0.6231
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ champ_lyra.glb como champ_lyra · 4595 tris · 2.213 m · 41 huesos · clips: Idle, Run, Attack, Cast, Death, Cast_E, Cast_R, Hit",
+   "    aviso  pocos triángulos (4595 < 6000): ¿falta detalle?",
+   "    aviso  clips recomendados que faltan: Attack2, Cast_Q, Cast_W, Recall, Victory, Taunt"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/champ_lyra.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Cast",
+   "Death"
+  ]
+ },
+ "segundos": 3.4
+}

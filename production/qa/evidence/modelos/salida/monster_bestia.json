@@ -1,0 +1,364 @@
+{
+ "asset": "monster_bestia",
+ "pack": "quaternius",
+ "base": "animated-lowpoly-dinosaurs/Dinosaur Animated Pack - Dec 2018/FBX/Triceratops.fbx",
+ "categoria": "monster",
+ "altura_objetivo_m": 1.8,
+ "fecha": "2026-11-03 11:50",
+ "puertas": {
+  "huesos": {
+   "n": 29,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": 8,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.012,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.254,
+    "aristas_max": 1.597,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": -0.0,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.037,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.53,
+    "aristas_max": 2.276,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 0.0116,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.037,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.402,
+    "aristas_max": 1.843,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0173,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.062,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.886,
+    "aristas_max": 3.081,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0,
+    "ok": true
+   },
+   "Hit": {
+    "desviacion_diagonal_max": 0.078,
+    "tolerancia": 0.15,
+    "aristas_p99": 2.461,
+    "aristas_max": 3.48,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.2474,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 54,
+  "huesos": 29,
+  "nombres_huesos": [
+   "root",
+   "Body",
+   "BackLeg.R",
+   "BackUpLeg.R",
+   "BackLowLeg.R",
+   "BackLeg.L",
+   "BackUpLeg.L",
+   "BackLowLeg.L",
+   "Back",
+   "Tail1",
+   "Tail2",
+   "Tail3",
+   "Tail4",
+   "Tail5",
+   "Hips",
+   "Torso",
+   "Shoulders",
+   "Neck",
+   "Head",
+   "FrontLeg.R",
+   "FrontUpLeg.R",
+   "FrontLowLeg.R",
+   "FrontLeg.L",
+   "FrontUpLeg.L",
+   "FrontLowLeg.L",
+   "BackFoot.R",
+   "BackFoot.L",
+   "FrontFoot.R",
+   "FrontFoot.L"
+  ],
+  "acciones": [
+   "Triceratops_Attack",
+   "Triceratops_Death",
+   "Triceratops_Idle",
+   "Triceratops_Jump",
+   "Triceratops_Run",
+   "Triceratops_Walk"
+  ],
+  "mallas_con_piel": [
+   "Triceratops"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 3,
+ "tinte": {
+  "color": "#e64a19",
+  "mezcla": 0.6,
+  "materiales": 3
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Triceratops_Idle",
+   "fotogramas": [
+    1,
+    62
+   ],
+   "segundos": 2.542
+  },
+  "Run": {
+   "origen": "Triceratops_Run",
+   "fotogramas": [
+    1,
+    20
+   ],
+   "segundos": 0.792
+  },
+  "Attack": {
+   "origen": "Triceratops_Attack",
+   "fotogramas": [
+    1,
+    19
+   ],
+   "segundos": 0.75
+  },
+  "Death": {
+   "origen": "Triceratops_Death",
+   "fotogramas": [
+    1,
+    44
+   ],
+   "segundos": 1.792
+  },
+  "Hit": {
+   "origen": "Triceratops_Jump",
+   "fotogramas": [
+    1,
+    41
+   ],
+   "segundos": 1.667
+  }
+ },
+ "escala": {
+  "altura_origen_m": 9.433,
+  "factor": 0.1908,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 1.8,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": 0.0,
+  "altura_m": 1.8,
+  "subido_m": 0.0
+ },
+ "pies_clavados": {
+  "Idle": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.35,
+    0.01
+   ],
+   "despues_cm": [
+    -0.0,
+    0.01
+   ]
+  },
+  "Run": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.89,
+    2.43
+   ],
+   "despues_cm": [
+    -0.0,
+    2.71
+   ]
+  },
+  "Attack": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.8,
+    2.04
+   ],
+   "despues_cm": [
+    -0.0,
+    2.12
+   ]
+  },
+  "Death": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -27.75,
+    9.94
+   ],
+   "despues_cm": [
+    -0.0,
+    10.99
+   ]
+  },
+  "Hit": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.87,
+    92.03
+   ],
+   "despues_cm": [
+    -0.0,
+    92.1
+   ]
+  }
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -0.558,
+    -1.941,
+    0.0
+   ],
+   [
+    0.558,
+    1.941,
+    1.8
+   ]
+  ],
+  "diagonal_m": 4.422,
+  "altura_m": 1.8,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 4.488
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.389,
+  "ruta": "game/assets/models/final/monster_bestia.glb",
+  "bytes": 294068,
+  "min_y_sin_piel": -0.0,
+  "raiz_ajustada_m": -0.013
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/29)"
+  ],
+  "three": {
+   "huesos": 29,
+   "mallasConEsqueleto": 3,
+   "caja_con_piel_m": [
+    1.11,
+    1.8,
+    3.882
+   ],
+   "suelo_con_piel_y": -0.013,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 2.542,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 0.792,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 0.75,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 1.792,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Hit",
+     "segundos": 1.667,
+     "pistas": 87,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 0.3145,
+    "Run": 1.4303,
+    "Attack": 1.0471,
+    "Death": 2.8741,
+    "Hit": 1.4401
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ monster_bestia.glb como monster_bestia · 1334 tris · 0.687 m · 29 huesos · clips: Idle, Run, Attack, Death, Hit",
+   "    aviso  pocos triángulos (1334 < 2000): ¿falta detalle?",
+   "    aviso  altura 0.687 m (objetivo 1.8 m; el juego reescala, pero revisa proporciones)",
+   "    aviso  clips recomendados que faltan: Roar"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/monster_bestia.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Death"
+  ]
+ },
+ "segundos": 2.9
+}

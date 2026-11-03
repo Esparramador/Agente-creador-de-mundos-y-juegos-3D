@@ -1,0 +1,308 @@
+{
+ "asset": "monster_roca",
+ "pack": "quaternius",
+ "base": "lowpoly-animated-monsters/FBX/Slime.fbx",
+ "categoria": "monster",
+ "altura_objetivo_m": 1.6,
+ "fecha": "2026-11-03 11:50",
+ "puertas": {
+  "huesos": {
+   "n": 12,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": 6,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.043,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.027,
+    "aristas_max": 1.468,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 0.0,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.012,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.189,
+    "aristas_max": 1.789,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 0.0,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.023,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.401,
+    "aristas_max": 2.82,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0106,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.216,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.0,
+    "aristas_max": 1.004,
+    "aristas_ok": true,
+    "suela_min_m": 0.0,
+    "suela_max_m": 0.0,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 36,
+  "huesos": 12,
+  "nombres_huesos": [
+   "Root",
+   "Body",
+   "Neck",
+   "Head",
+   "RightEye",
+   "LeftEye",
+   "Shoulder.L",
+   "LowerArm.L",
+   "Hand.L",
+   "Shoulder.R",
+   "LowerArm.R",
+   "Hand.R"
+  ],
+  "acciones": [
+   "Slime_Attack",
+   "Slime_Death",
+   "Slime_Idle",
+   "Slime_Walk"
+  ],
+  "mallas_con_piel": [
+   "Slime"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 2,
+ "tinte": {
+  "color": "#6d675f",
+  "mezcla": 0.85,
+  "materiales": 2
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Slime_Idle",
+   "fotogramas": [
+    1,
+    61
+   ],
+   "segundos": 2.5
+  },
+  "Run": {
+   "origen": "Slime_Walk",
+   "fotogramas": [
+    1,
+    21
+   ],
+   "segundos": 0.833
+  },
+  "Attack": {
+   "origen": "Slime_Attack",
+   "fotogramas": [
+    1,
+    16
+   ],
+   "segundos": 0.625
+  },
+  "Death": {
+   "origen": "Slime_Death",
+   "fotogramas": [
+    1,
+    11
+   ],
+   "segundos": 0.417
+  }
+ },
+ "escala": {
+  "altura_origen_m": 1.948,
+  "factor": 0.8213,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 1.6,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": 0.0,
+  "altura_m": 1.6,
+  "subido_m": 0.0
+ },
+ "pies_clavados": {
+  "Idle": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    0.0,
+    0.0
+   ],
+   "despues_cm": [
+    0.0,
+    0.0
+   ]
+  },
+  "Run": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    0.0,
+    0.0
+   ],
+   "despues_cm": [
+    0.0,
+    0.0
+   ]
+  },
+  "Attack": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -1.49,
+    1.06
+   ],
+   "despues_cm": [
+    -0.0,
+    1.06
+   ]
+  },
+  "Death": {
+   "hueso": "Root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    0.0,
+    0.0
+   ],
+   "despues_cm": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -1.042,
+    -1.257,
+    0.0
+   ],
+   [
+    1.042,
+    1.257,
+    1.6
+   ]
+  ],
+  "diagonal_m": 3.637,
+  "altura_m": 1.6,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 3.637
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.833,
+  "ruta": "game/assets/models/final/monster_roca.glb",
+  "bytes": 181064,
+  "min_y_sin_piel": -0.0,
+  "raiz_ajustada_m": -0.0065
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/12)"
+  ],
+  "three": {
+   "huesos": 12,
+   "mallasConEsqueleto": 2,
+   "caja_con_piel_m": [
+    2.084,
+    1.6,
+    2.515
+   ],
+   "suelo_con_piel_y": -0.0065,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 2.5,
+     "pistas": 36,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 0.833,
+     "pistas": 36,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 0.625,
+     "pistas": 36,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 0.417,
+     "pistas": 36,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 0.2123,
+    "Run": 0.3255,
+    "Attack": 1.0851,
+    "Death": 0.8596
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ monster_roca.glb como monster_roca · 1440 tris · 1.314 m · 12 huesos · clips: Idle, Run, Attack, Death",
+   "    aviso  pocos triángulos (1440 < 2000): ¿falta detalle?",
+   "    aviso  altura 1.314 m (objetivo 1.6 m; el juego reescala, pero revisa proporciones)",
+   "    aviso  clips recomendados que faltan: Hit, Roar"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/monster_roca.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Death"
+  ]
+ },
+ "segundos": 1.4
+}

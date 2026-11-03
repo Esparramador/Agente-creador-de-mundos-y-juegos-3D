@@ -1,56 +1,85 @@
-// Asignación de modelos 3D (glTF) a cada unidad. Es la ÚNICA tabla que hay que tocar al sustituir
-// un modelo provisional por el definitivo de Blender (ver production/handoff/BLENDER-3D-HANDOFF.md).
-// h = altura en metros de mundo (1 m = 100 u. de juego); tint = color que se mezcla al 45%; sx = escala X/Z.
-// anims = clip glTF para cada estado: idle, run, attack, cast, death.
+// Asignación de modelos 3D (glTF) a cada unidad. Es la ÚNICA tabla que hay que tocar al sustituir un modelo
+// (ver production/handoff/BLENDER-3D-HANDOFF.md). Todos los modelos de unidades son ya los DEFINITIVOS construidos
+// con tools/blender/{champs_kaykit,monsters_quaternius,retarget_lagarto}.py a partir de assets/data/model_builds.json:
+// cada uno lleva su propio esqueleto, sus armas/props en la mano y los clips con los nombres del contrato
+// (Idle, Run, Attack, Cast, Death, Hit, Cast_Q…). Las tiras de evidencia están en production/qa/evidence/modelos/.
+// h = altura en metros de mundo (1 m = 100 u. de juego); tint = color que se mezcla al 45 % (solo súbditos por equipo
+// y dragones por elemento: el resto ya sale tintado del .glb); fly = altura de vuelo en m (voladores).
 
-const KAY = { idle: 'Idle', run: 'Running_A', attack: '1H_Melee_Attack_Chop', cast: 'Spellcast_Shoot', death: 'Death_A' };
-const KAY_RANGED = { ...KAY, attack: 'Spellcast_Shoot' };
-const KAY_2H = { ...KAY, attack: '2H_Melee_Attack_Chop' };
-const SKEL = { ...KAY, idle: 'Idle_Combat' };
+// Clips de los modelos definitivos (nombres obligatorios de model_specs.json)
+export const FINAL = { idle: 'Idle', run: 'Run', attack: 'Attack', cast: 'Cast', death: 'Death', hit: 'Hit' };
+const FINAL_NOCAST = { ...FINAL, cast: 'Attack' };          // súbditos y monstruos: sin clip Cast
 const ROBOT = { idle: 'Idle', run: 'Running', attack: 'Punch', cast: 'ThumbsUp', death: 'Death' };
-// Clips de los modelos DEFINITIVOS hechos en Blender (nombres obligatorios de model_specs.json)
-export const FINAL = { idle: 'Idle', run: 'Run', attack: 'Attack', cast: 'Cast', death: 'Death' };
-const LIZARD = { idle: 'Idle', run: 'Idle', attack: 'Coger', cast: 'Saludo', death: 'Adios' };
 
-// Campeones: modelo provisional → definitivo (columna "final" del documento de handoff)
+// Campeones (15): cada entrada apunta a game/assets/models/champ_<id>.glb
 export const MODEL_MAP = {
-  brannoc: { model: 'ka_Knight', h: 1.9, sx: 1.25, tint: 0x9e7a5a, anims: KAY_2H },       // enano: bajo y ancho
-  morgra:  { model: 'ka_Barbarian', h: 2.4, tint: 0x6aa84f, anims: KAY_2H },              // orca: piel verde
-  ossuar:  { model: 'ks_Skeleton_Warrior', h: 2.7, anims: SKEL },                         // gólem de huesos
-  kaelith: { model: 'ka_Knight', h: 2.2, tint: 0xffe082, anims: KAY },                    // paladina dorada
-  tharok:  { model: 'ka_Barbarian', h: 2.4, tint: 0xc62828, anims: KAY_2H },              // hacha roja
-  yssra:   { model: 'ka_Rogue', h: 2.2, tint: 0x26c6da, anims: KAY },                     // sirénida
-  vaelor:  { model: 'ka_Mage', h: 2.2, tint: 0xff7043, anims: KAY_RANGED },               // mago de ceniza
-  nyxe:    { model: 'ka_Mage', h: 1.7, tint: 0xea80fc, anims: KAY_RANGED },               // hada
-  zerath:  { model: 'ks_Skeleton_Mage', h: 2.3, tint: 0x7c4dff, anims: { ...SKEL, attack: 'Spellcast_Shoot' } },
-  lyra:    { model: 'ka_Rogue', h: 2.2, anims: KAY_RANGED },                              // arquera élfica
-  gearix:  { model: 'personaje', h: 1.7, anims: ROBOT, yaw: 0 },                          // ingeniera (robot)
-  sable:   { model: 'ks_Skeleton_Rogue', h: 2.2, tint: 0x37474f, anims: SKEL },
-  rakhar:  { model: 'lagarto', h: 2.0, tint: 0xd84315, anims: LIZARD },                   // bestial (tu lagarto)
-  elowen:  { model: 'ka_Mage', h: 2.1, tint: 0x66bb6a, anims: KAY_RANGED },               // dríade
-  aurik:   { model: 'ka_Knight', h: 2.3, tint: 0xffca28, anims: KAY },                    // dracónido (R: mini_dragon_blue)
+  brannoc: { model: 'champ_brannoc', h: 1.9, anims: FINAL },   // enano: bajo y ancho, martillo de forja a dos manos
+  morgra:  { model: 'champ_morgra', h: 2.4, anims: FINAL },    // orca: tótem
+  ossuar:  { model: 'champ_ossuar', h: 2.7, anims: FINAL },    // gólem de huesos, garfio y caja torácica emisiva
+  kaelith: { model: 'champ_kaelith', h: 2.2, anims: FINAL },   // paladina: espada y escudo
+  tharok:  { model: 'champ_tharok', h: 2.4, anims: FINAL },    // hacha doble
+  yssra:   { model: 'champ_yssra', h: 2.2, anims: FINAL },     // sirénida: tridente y aleta
+  vaelor:  { model: 'champ_vaelor', h: 2.2, anims: FINAL },    // mago de ceniza: báculo con brasa
+  nyxe:    { model: 'champ_nyxe', h: 1.7, anims: FINAL, fly: 0.3 },   // hada: alas translúcidas, flota
+  zerath:  { model: 'champ_zerath', h: 2.3, anims: FINAL },    // espíritu encapuchado
+  lyra:    { model: 'champ_lyra', h: 2.2, anims: FINAL },      // arquera: arco largo (Attack = tensar + soltar)
+  gearix:  { model: 'champ_gearix', h: 1.7, anims: FINAL },    // ingeniera: trabuco, gafas y mochila
+  sable:   { model: 'champ_sable', h: 2.2, anims: FINAL },     // asesina: dos dagas
+  rakhar:  { model: 'champ_rakhar', h: 2.0, anims: FINAL },    // bestia cuadrúpeda (aspecto «lagarto» en SKINS)
+  elowen:  { model: 'champ_elowen', h: 2.1, anims: FINAL },    // dríade: ramas, hojas y vara de raíz
+  aurik:   { model: 'champ_aurik', h: 2.3, anims: FINAL },     // dracónido: lanza, cuernos y alas (R: champ_aurik_dragon)
 };
+// Aspectos alternativos por campeón: u.skin === '<nombre>'
+export const SKINS = {
+  rakhar: { lagarto: { model: 'champ_rakhar_lagarto', h: 2.0, anims: FINAL } },   // el lagarto de Joan con clips por retarget
+};
+// Forma Dragón de Aurik (buff 'dragon')
+export const AURIK_DRAGON = { model: 'champ_aurik_dragon', h: 3.2, anims: FINAL, fly: 0.8 };
 
-export const MODEL_FILES = ['ka_Knight', 'ka_Barbarian', 'ka_Mage', 'ka_Rogue', 'ks_Skeleton_Warrior', 'ks_Skeleton_Mage', 'ks_Skeleton_Rogue',
-  'ks_Skeleton_Minion', 'personaje', 'lagarto', 'mini_dragon_blue', 'lord_tuetano', 'guerrero', 'guerrero_2', 'tree', 'cypress', 'kk_bush',
+// Lista LITERAL (tools/bundle.mjs la lee con una expresión regular para incrustar los .glb en dist/)
+export const MODEL_FILES = [
+  'champ_brannoc', 'champ_morgra', 'champ_ossuar', 'champ_kaelith', 'champ_tharok', 'champ_yssra', 'champ_vaelor', 'champ_nyxe',
+  'champ_zerath', 'champ_lyra', 'champ_gearix', 'champ_sable', 'champ_rakhar', 'champ_elowen', 'champ_aurik', 'champ_rakhar_lagarto', 'champ_aurik_dragon',
+  'minion_melee', 'minion_caster', 'minion_siege', 'minion_super', 'minion_ram',
+  'monster_golem', 'monster_bestia', 'monster_lobo', 'monster_ave', 'monster_roca', 'monster_sapo',
+  'epic_dragon', 'epic_heraldo', 'epic_senor', 'epic_avatar',
+  'personaje',                                   // torreta/mascota de Gearix (RobotExpressive, CC0)
+  'tree', 'cypress', 'kk_bush',
   // hechos en Blender (tools/blender/build_structures.py)
   'struct_tower', 'struct_inhib', 'struct_nexus', 'struct_fountain', 'prop_ward'];
 // Escenarios hechos en Blender (tools/blender/build_maps.py): se carga solo el del mapa en juego
 export const MAP_FILES = { grieta_ceniza: 'map_grieta_ceniza', puente_niebla: 'map_puente_niebla', ruinas_eclipse: 'map_ruinas_eclipse' };
 
 const TEAM_TINT = [0x64b5f6, 0xef5350];
+// Dragón elemental: un solo modelo, cuatro tintes (por u.dragonType; si no, por el nombre)
+const DRAGON_TINT = { Ceniza: 0xff7043, Marea: 0x4fc3f7, 'Raíz': 0x66bb6a, Forja: 0xffb300 };
+// CONTRATO con C (world.js): los monstruos de campamento llevan u.ctype (golem|bestia|lobos|aves|roca|sapo);
+// si no viene, se usa u.camp.type. u.big = el grande del campamento.
+const CAMP_MODELS = {
+  golem:  { model: 'monster_golem', h: 2.0 },
+  bestia: { model: 'monster_bestia', h: 1.8 },
+  lobos:  { model: 'monster_lobo', h: 1.2 },
+  aves:   { model: 'monster_ave', h: 1.0, fly: 0.5 },
+  roca:   { model: 'monster_roca', h: 1.6 },
+  sapo:   { model: 'monster_sapo', h: 1.4 },
+};
 export function UNIT_MODELS(u) {
-  if (u.kind === 'champ') return MODEL_MAP[u.cid];
+  if (u.kind === 'champ') return (u.skin && SKINS[u.cid]?.[u.skin]) || MODEL_MAP[u.cid];
   if (u.kind === 'minion') {
-    if (u.mtype === 'caster') return { model: 'ks_Skeleton_Mage', h: 1.2, tint: TEAM_TINT[u.team], anims: { ...SKEL, attack: 'Spellcast_Shoot' } };
-    if (u.mtype === 'siege' || u.mtype === 'ram') return { model: 'ks_Skeleton_Warrior', h: u.ram ? 2.6 : 1.7, tint: TEAM_TINT[u.team], anims: KAY_2H };
-    if (u.mtype === 'super') return { model: 'ks_Skeleton_Warrior', h: 2.2, tint: TEAM_TINT[u.team], anims: KAY_2H };
-    return { model: 'ks_Skeleton_Minion', h: 1.2, tint: TEAM_TINT[u.team], anims: SKEL };
+    const tint = TEAM_TINT[u.team];
+    if (u.mtype === 'caster') return { model: 'minion_caster', h: 1.2, tint, anims: FINAL_NOCAST };
+    if (u.ram) return { model: 'minion_ram', h: 2.6, tint, anims: FINAL_NOCAST };
+    if (u.mtype === 'siege') return { model: 'minion_siege', h: 1.7, tint, anims: FINAL_NOCAST };
+    if (u.mtype === 'super') return { model: 'minion_super', h: 2.2, tint, anims: FINAL_NOCAST };
+    return { model: 'minion_melee', h: 1.2, tint, anims: FINAL_NOCAST };
   }
   if (u.kind === 'monster') {
-    if (u.epicType === 'dragon') return { model: 'mini_dragon_blue', h: 3.6, tint: { 'Dragón de Ceniza': 0xff7043, 'Dragón de Marea': null, 'Dragón de Raíz': 0x66bb6a, 'Dragón de Forja': 0xffb300 }[u.name] ?? null, anims: {} };
-    if (u.epicType) return { model: 'lord_tuetano', h: u.epicType === 'lord' ? 3.2 : 2.4, tint: u.epicType === 'avatar' ? 0x9575cd : u.epicType === 'herald' ? 0xff8a65 : null, anims: {} };
-    return u.big ? { model: 'ks_Skeleton_Warrior', h: 1.9, tint: 0x8d6e63, anims: SKEL } : { model: 'ks_Skeleton_Minion', h: 1.0, tint: 0xa1887f, anims: SKEL };
+    if (u.epicType === 'dragon') { const t = u.dragonType || Object.keys(DRAGON_TINT).find(k => (u.name || '').includes(k)); return { model: 'epic_dragon', h: 3.6, tint: DRAGON_TINT[t] ?? null, anims: FINAL_NOCAST, fly: 0.8 }; }
+    if (u.epicType === 'herald') return { model: 'epic_heraldo', h: 2.4, anims: FINAL_NOCAST };
+    if (u.epicType === 'lord') return { model: 'epic_senor', h: 3.2, anims: FINAL_NOCAST };
+    if (u.epicType === 'avatar') return { model: 'epic_avatar', h: 2.4, anims: FINAL_NOCAST, fly: 0.6 };
+    const c = CAMP_MODELS[u.ctype ?? u.camp?.type] || CAMP_MODELS.lobos;
+    return { ...c, h: u.big ? c.h : c.h * 0.7, anims: FINAL_NOCAST };
   }
   if (u.kind === 'pet') return { model: 'personaje', h: 1.0, tint: TEAM_TINT[u.team], anims: ROBOT };
   if (u.kind === 'ward') return { model: 'prop_ward', h: 0.95, team: u.team, anims: {} };

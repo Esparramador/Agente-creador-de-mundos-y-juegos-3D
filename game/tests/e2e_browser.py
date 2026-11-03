@@ -61,7 +61,7 @@ with sync_playwright() as p:
     new_game(pg, 'grieta_ceniza', 'kaelith')
     check('Grieta: el lienzo dibuja el mapa', nonblack(pg) > 200)
     m3 = js(pg, "() => { const r = __cdc.r3d; if (!r) return null; let skinned = 0; for (const o of r.objs.values()) if (o.userData.mixer) skinned++; return { models: Object.keys(r.templates).length, objs: r.objs.size, skinned, champ: r.objs.get(__cdc.G.player.id)?.userData.spec.model } }")
-    check('3D: 23 modelos glTF (17 + 5 estructuras Blender + mapa Blender) y campeones animados', m3 and m3['models'] == 23 and m3['skinned'] >= 5 and m3['champ'] == 'ka_Knight', str(m3))
+    check('3D: ≥40 modelos glTF (32 unidades CC0 + estructuras + mapa) y Kaelith con su modelo definitivo', m3 and m3['models'] >= 40 and m3['skinned'] >= 5 and m3['champ'] == 'champ_kaelith', str(m3))
     st = js(pg, "() => { const G = __cdc.G; return { n: G.champs.length, name: G.player.name, team: G.player.team, role: G.player.role } }")
     check('Grieta: 10 campeones y jugador Kaelith', st['n'] == 10 and st['name'] == 'Kaelith', str(st))
     pg.screenshot(path=str(SHOTS / '02_grieta_inicio.png'))

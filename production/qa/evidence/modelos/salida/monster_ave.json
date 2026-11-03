@@ -1,0 +1,272 @@
+{
+ "asset": "monster_ave",
+ "pack": "quaternius",
+ "base": "animated-easy-enemies/Easy Animated Enemy Pack - Jan 2019/FBX/Wasp.fbx",
+ "categoria": "monster",
+ "altura_objetivo_m": 1.0,
+ "fecha": "2026-11-03 11:56",
+ "puertas": {
+  "huesos": {
+   "n": 29,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 1,
+   "max_influencias": 4,
+   "limitado_desde": 7,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.109,
+    "tolerancia": 0.35,
+    "aristas_p99": 1.083,
+    "aristas_max": 1.783,
+    "aristas_ok": true,
+    "suela_min_m": 0.0947,
+    "suela_max_m": 0.2065,
+    "ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.109,
+    "tolerancia": 0.35,
+    "aristas_p99": 1.083,
+    "aristas_max": 1.783,
+    "aristas_ok": true,
+    "suela_min_m": 0.0947,
+    "suela_max_m": 0.2065,
+    "ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.27,
+    "tolerancia": 0.35,
+    "aristas_p99": 1.151,
+    "aristas_max": 2.316,
+    "aristas_ok": true,
+    "suela_min_m": 0.0107,
+    "suela_max_m": 0.1011,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.201,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.134,
+    "aristas_max": 1.894,
+    "aristas_ok": true,
+    "suela_min_m": -0.1558,
+    "suela_max_m": 0.1682,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 27,
+  "huesos": 29,
+  "nombres_huesos": [
+   "Root",
+   "Body",
+   "Thorax",
+   "Neck",
+   "Head",
+   "Wing.R",
+   "Wing.L",
+   "Abdomen",
+   "Abdomen2",
+   "Abdomen3",
+   "Sting",
+   "BottomLeg1.R",
+   "BottomLeg2.R",
+   "BottomLeg3.R",
+   "MidLeg1.R",
+   "MidLeg2.R",
+   "MidLeg3.R",
+   "TopLeg1.R",
+   "TopLeg2.R",
+   "TopLeg3.R",
+   "BottomLeg1.L",
+   "BottomLeg2.L",
+   "BottomLeg3.L",
+   "MidLeg1.L",
+   "MidLeg2.L",
+   "MidLeg3.L",
+   "TopLeg1.L",
+   "TopLeg2.L",
+   "TopLeg3.L"
+  ],
+  "acciones": [
+   "Wasp_Attack",
+   "Wasp_Death",
+   "Wasp_Flying"
+  ],
+  "mallas_con_piel": [
+   "Wasp"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 4,
+ "tinte": {
+  "color": "#4e342e",
+  "mezcla": 0.5,
+  "materiales": 4
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Wasp_Flying",
+   "fotogramas": [
+    1,
+    37
+   ],
+   "segundos": 1.5
+  },
+  "Run": {
+   "origen": "Wasp_Flying",
+   "fotogramas": [
+    1,
+    37
+   ],
+   "segundos": 1.5
+  },
+  "Attack": {
+   "origen": "Wasp_Attack",
+   "fotogramas": [
+    1,
+    19
+   ],
+   "segundos": 0.75
+  },
+  "Death": {
+   "origen": "Wasp_Death",
+   "fotogramas": [
+    1,
+    19
+   ],
+   "segundos": 0.75
+  }
+ },
+ "escala": {
+  "altura_origen_m": 3.78,
+  "factor": 0.2645,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 1.0,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": 0.0,
+  "altura_m": 1.0,
+  "subido_m": 0.0
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -0.316,
+    -0.479,
+    0.0
+   ],
+   [
+    0.316,
+    0.479,
+    1.0
+   ]
+  ],
+  "diagonal_m": 1.522,
+  "altura_m": 1.0,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 1.323
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.268,
+  "ruta": "game/assets/models/final/monster_ave.glb",
+  "bytes": 445356,
+  "min_y_sin_piel": -0.0,
+  "raiz_ajustada_m": 0.0442
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/29)"
+  ],
+  "three": {
+   "huesos": 29,
+   "mallasConEsqueleto": 4,
+   "caja_con_piel_m": [
+    0.631,
+    0.999,
+    0.958
+   ],
+   "suelo_con_piel_y": 0.0454,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 1.5,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 1.5,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 0.75,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 0.75,
+     "pistas": 87,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 1.0029,
+    "Run": 1.0029,
+    "Attack": 0.9449,
+    "Death": 1.1351
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ monster_ave.glb como monster_ave · 3736 tris · 0.265 m · 29 huesos · clips: Idle, Run, Attack, Death",
+   "    aviso  altura 0.265 m (objetivo 1 m; el juego reescala, pero revisa proporciones)",
+   "    aviso  el modelo no está centrado en X/Z (0, -0.145)",
+   "    aviso  clips recomendados que faltan: Hit, Roar"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/monster_ave.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Death"
+  ]
+ },
+ "segundos": 2.5
+}

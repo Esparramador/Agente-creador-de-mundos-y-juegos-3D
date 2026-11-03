@@ -1,0 +1,403 @@
+{
+ "asset": "champ_rakhar",
+ "pack": "quaternius",
+ "base": "animated-lowpoly-dinosaurs/Dinosaur Animated Pack - Dec 2018/FBX/Velociraptor.fbx",
+ "categoria": "champion",
+ "altura_objetivo_m": 2.0,
+ "fecha": "2026-11-03 11:51",
+ "puertas": {
+  "huesos": {
+   "n": 29,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": 7,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.029,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.237,
+    "aristas_max": 1.598,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": -0.0,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.033,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.413,
+    "aristas_max": 3.873,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0284,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.065,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.368,
+    "aristas_max": 2.52,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0009,
+    "ok": true
+   },
+   "Cast": {
+    "desviacion_diagonal_max": 0.029,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.378,
+    "aristas_max": 1.676,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.3256,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.118,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.763,
+    "aristas_max": 5.578,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0,
+    "ok": true
+   },
+   "Cast_E": {
+    "desviacion_diagonal_max": 0.029,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.378,
+    "aristas_max": 1.676,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.3256,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 54,
+  "huesos": 29,
+  "nombres_huesos": [
+   "root",
+   "Body",
+   "FrontLeg.R",
+   "FrontUpLeg.R",
+   "FrontLowLeg.R",
+   "FrontFoot.R",
+   "BackLeg.R",
+   "BackUpLeg.R",
+   "BackLowLeg.R",
+   "FrontLeg.L",
+   "FrontUpLeg.L",
+   "FrontLowLeg.L",
+   "FrontFoot.L",
+   "BackLeg.L",
+   "BackUpLeg.L",
+   "BackLowLeg.L",
+   "Back",
+   "Tail1",
+   "Tail2",
+   "Tail3",
+   "Tail4",
+   "Tail5",
+   "Hips",
+   "Torso",
+   "Shoulders",
+   "Neck",
+   "Head",
+   "BackFoot.R",
+   "BackFoot.L"
+  ],
+  "acciones": [
+   "Velociraptor_Attack",
+   "Velociraptor_Death",
+   "Velociraptor_Idle",
+   "Velociraptor_Jump",
+   "Velociraptor_Run",
+   "Velociraptor_Walk"
+  ],
+  "mallas_con_piel": [
+   "Velociraptor"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 3,
+ "tinte": {
+  "color": "#d7a86e",
+  "mezcla": 0.5,
+  "materiales": 3
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Velociraptor_Idle",
+   "fotogramas": [
+    1,
+    61
+   ],
+   "segundos": 2.5
+  },
+  "Run": {
+   "origen": "Velociraptor_Run",
+   "fotogramas": [
+    1,
+    14
+   ],
+   "segundos": 0.542
+  },
+  "Attack": {
+   "origen": "Velociraptor_Attack",
+   "fotogramas": [
+    1,
+    21
+   ],
+   "segundos": 0.833
+  },
+  "Cast": {
+   "origen": "Velociraptor_Jump",
+   "fotogramas": [
+    1,
+    28
+   ],
+   "segundos": 1.125
+  },
+  "Death": {
+   "origen": "Velociraptor_Death",
+   "fotogramas": [
+    1,
+    32
+   ],
+   "segundos": 1.292
+  },
+  "Cast_E": {
+   "origen": "Velociraptor_Jump",
+   "fotogramas": [
+    1,
+    28
+   ],
+   "segundos": 1.125
+  }
+ },
+ "escala": {
+  "altura_origen_m": 5.514,
+  "factor": 0.3627,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 2.0,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": -0.0,
+  "altura_m": 2.0,
+  "subido_m": 0.0
+ },
+ "pies_clavados": {
+  "Idle": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.0,
+    -0.0
+   ],
+   "despues_cm": [
+    -0.0,
+    -0.0
+   ]
+  },
+  "Run": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -2.41,
+    6.85
+   ],
+   "despues_cm": [
+    -0.0,
+    6.85
+   ]
+  },
+  "Attack": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.15,
+    0.07
+   ],
+   "despues_cm": [
+    -0.0,
+    0.13
+   ]
+  },
+  "Cast": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.0,
+    60.52
+   ],
+   "despues_cm": [
+    -0.0,
+    60.52
+   ]
+  },
+  "Death": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -7.81,
+    1.5
+   ],
+   "despues_cm": [
+    -0.0,
+    1.9
+   ]
+  },
+  "Cast_E": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.0,
+    60.52
+   ],
+   "despues_cm": [
+    -0.0,
+    60.52
+   ]
+  }
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -0.478,
+    -2.408,
+    0.0
+   ],
+   [
+    0.478,
+    2.408,
+    2.0
+   ]
+  ],
+  "diagonal_m": 5.301,
+  "altura_m": 2.0,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 5.207
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.368,
+  "ruta": "game/assets/models/final/champ_rakhar.glb",
+  "bytes": 281468,
+  "min_y_sin_piel": 0.0,
+  "raiz_ajustada_m": -0.0139
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/29)"
+  ],
+  "three": {
+   "huesos": 29,
+   "mallasConEsqueleto": 3,
+   "caja_con_piel_m": [
+    0.956,
+    2,
+    4.816
+   ],
+   "suelo_con_piel_y": -0.0139,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 2.5,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 0.542,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 0.833,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Cast",
+     "segundos": 1.125,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 1.292,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Cast_E",
+     "segundos": 1.125,
+     "pistas": 87,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 1.7364,
+    "Run": 1.5866,
+    "Attack": 1.5767,
+    "Cast": 1.5722,
+    "Death": 2.8903,
+    "Cast_E": 1.5722
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ champ_rakhar.glb como champ_rakhar · 1248 tris · 0.725 m · 29 huesos · clips: Idle, Run, Attack, Cast, Death, Cast_E",
+   "    aviso  pocos triángulos (1248 < 6000): ¿falta detalle?",
+   "    aviso  altura 0.725 m (objetivo 2 m; el juego reescala, pero revisa proporciones)",
+   "    aviso  el modelo no está centrado en X/Z (0, 0.535)",
+   "    aviso  clips recomendados que faltan: Attack2, Cast_Q, Cast_W, Cast_R, Hit, Recall, Victory, Taunt"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/champ_rakhar.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Cast",
+   "Death"
+  ]
+ },
+ "segundos": 2.6
+}

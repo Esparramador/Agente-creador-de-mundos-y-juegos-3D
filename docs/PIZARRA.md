@@ -64,8 +64,77 @@ Todo agente la lee al empezar y la actualiza al terminar. Cada flujo escribe SOL
 
 **Ficheros míos**: `game/src/maps.js`, `game/src/world.js`, `game/src/nav.js` (nuevo), `game/tests/game.test.mjs`, `game/tools/export_maps.mjs`, `assets/data/map_layouts.json`, `assets/data/maps.json`, `tools/build_design.py` (solo `MAPS`), `tools/blender/build_maps.py`, `art/blender/maps/grieta_ceniza.blend`, `game/assets/models/{,src/}map_grieta_ceniza.glb`, `design/gdd/maps.md`, `design/gdd/match-flow.md`, `design/levels/*`. `ai.js` sin cambios (hereda la ruta vía `cmdMove`). Sin commit.
 
-## D · Modelos
-(pendiente del flujo D)
+## D · Modelos (03/11/2026)
+
+**Desenlace:** las 32 unidades del juego (15 campeones + aspecto `champ_rakhar_lagarto` + `champ_aurik_dragon`, 5 súbditos, 6 monstruos de campamento distintos y 4 épicos) tienen ya modelo CC0 con esqueleto propio, armas y props en la mano y clips del contrato (`Idle, Run, Attack, Cast, Death` + `Hit`/`Cast_*`); validador 32/32, Khronos 0 errores, tiras revisadas; los modelos del autor (`guerrero*`, `mini_dragon_blue`, `lord_tuetano`, `lagarto` teñido) y los KayKit teñidos están retirados de `game/assets/models/` (quedan en `src/` como fuente). Sin commit.
+
+**Verificado (comando y cifra)**
+- `node --input-type=module -e "<analyze/check de validate_models.mjs>" -- game/assets/models/final` → **32/32 cumplen** (ojo: el bloque `main` de `validate_models.mjs` no se ejecuta con espacios en la ruta del repo —`import.meta.url` lleva `%20`— y sale 0 sin validar; `integrate_model.sh` lo llama así. Los scripts de Blender usan sus funciones exportadas. Corregirlo es de F/B, no mío).
+- Khronos (`comprobar_glb.mjs` de la skill): 0 errores en los 32; three.js con piel en CPU: altura = objetivo de `model_specs.json` y suelo con piel en 0 (±1 cm) en todos.
+- Puertas anti-deformación por modelo (abortan): 0 vértices sin peso · ≤4 influencias · ≤80 huesos · diagonal de la caja con piel de cada clip dentro de ±15 % del primer fotograma de Idle (Death ±60 %; `gates` propias en sapo 45 %, avispa 35 %, lagarto 25 %) · estiramiento de aristas de la malla evaluada p99 ≤4× y máx ≤12× (lagarto Tripo: 8×/45×, pesos casi binarios ya en el original) · suela a ±1 cm en Idle y nunca bajo el suelo en el resto (pies clavados fotograma a fotograma sobre el hueso raíz, ganancia medida) · Khronos 0 · validador ✓. Informe por modelo: `production/qa/evidence/modelos/salida/<id>.json`.
+- `node game/tools/bundle.mjs` → `dist/coronas-de-ceniza.html` 14,5 MB (44 modelos). `node --test game/tests/game.test.mjs` → fail 0.
+- `python3 game/tests/e2e_browser.py` (fuera del sandbox: Chromium muere con SIGTRAP dentro) → 33/35. Fallan: (1) `3D: 23 modelos glTF … champ == 'ka_Knight'`: la prueba tiene escritos los provisionales (ahora 42 plantillas cargadas y `champ_kaelith`); hay que actualizar esa línea de `e2e_browser.py` (no es mía). (2) `B inicia la vuelta a base` falló una vez y pasó en la segunda ejecución (34/35): flaky de tiempos con el bundle más grande (14,5 MB), no del modelo.
+- Tiras `production/qa/evidence/modelos/<id>.png` (reposo frente · lado · Idle · Run · Attack · Cast · Death) miradas una a una: armas en la mano (espada+escudo, hacha, bastón con brasa, tridente, arco, dagas, martillo, lanza), pies en el suelo, nada estirado; la avispa miraba a +X y se giró (`yaw: -90`). Captura del juego con los nuevos: `game/tests/screenshots/04_grieta_combate.png` (Kaelith con espada y escudo, súbditos con sombrero de mago).
+
+**Packs descargados** (con `assets-libres/descargar.py`, `.origen.json` en cada carpeta):
+
+| Carpeta | Fuente | Licencia | Tamaño | sha256 |
+|---|---|---|---|---|
+| `Agente/assets-libres/kaykit/character-animations` | (https://kaylousberg.itch.io/kaykit-character-animations) | CC0-1.0 | 14510 KB | `65882f31f905ad2e953819648a59287cdeab8f623908d5ef701971d3758be20f` |
+| `Agente/assets-libres/quaternius/lowpoly-animated-monsters` | (https://quaternius.itch.io/lowpoly-animated-monsters) | CC0-1.0 | 1373 KB | `c0b73e7d641a25348e46195e1413d050d08cf14302d999e0d40a634c43c47a9b` |
+| `Agente/assets-libres/quaternius/animated-lowpoly-dinosaurs` | (https://quaternius.itch.io/animated-lowpoly-dinosaurs) | CC0-1.0 | 10595 KB | `d9ca7d3568bd98b323b0be9a82b546af66d77c2a18e355c1bee5c50061b8931c` |
+| `Agente/assets-libres/quaternius/lowpoly-animated-animals` | (https://quaternius.itch.io/lowpoly-animated-animals) | CC0-1.0 | 6800 KB | `b4bc5f209368cafc21962934e7d676cf1cfb1f746a363086cd9f45c4385db70e` |
+| `Agente/assets-libres/quaternius/animated-easy-enemies` | (https://quaternius.itch.io/animated-easy-enemies) | CC0-1.0 | 3021 KB | `a97f38b981fec2f42b263fe92828a7bf73f9da1228d5aac906fe354cd2b21004` |
+
+**Bloqueado por algo externo:** *Quaternius Ultimate Monsters* no existe en itch.io (`quaternius.itch.io/ultimate-monsters` → 404); su descarga oficial es una carpeta de Google Drive y el 02/11 devolvía «Quota exceeded» en los 260 archivos. Se sustituyó por cuatro packs CC0 del mismo autor desde su itch.io oficial. Consecuencia para las decisiones de Joan: el **felino cuadrúpedo de Rakhar es hoy el Velociraptor** (cuadrúpedo ágil con Idle/Run/Attack/Death/Jump) y el dragón es el *Dragon* de LowPoly Animated Monsters. Cuando el Drive vuelva a servir, basta cambiar `base` en `model_builds.json` (Cat/Dragon_Evolved) y relanzar `monsters_quaternius.py`.
+
+**Tabla por asset** (puertas = desviación máx. de la diagonal · aristas p99 · Khronos errores/avisos; tira revisada ✓):
+
+| Asset | Base | Clips | Puertas | Altura · tamaño final | Correcciones registradas | Tira |
+|---|---|---|---|---|---|---|
+| `champ_aurik` | ka_Knight | Idle, Run, Attack, Cast, Death, Hit, Cast_Q, Cast_R | 12% · ×1.41 · 0/6 | 2.3 m · 558 KB | — | ✓ |
+| `champ_aurik_dragon` | Dragon.fbx | Idle, Run, Attack, Cast, Death, Hit | 14% · ×1.68 · 0/1 | 3.2 m · 269 KB | influencias 7→4 | ✓ |
+| `champ_brannoc` | ka_Knight | Idle, Run, Attack, Cast, Death, Hit, Cast_Q, Cast_R | 22% · ×1.44 · 0/6 | 1.9 m · 564 KB | — | ✓ |
+| `champ_elowen` | ka_Mage | Idle, Run, Attack, Cast, Death, Hit, Cast_W, Cast_R | 8% · ×1.33 · 0/6 | 2.1 m · 609 KB | — | ✓ |
+| `champ_gearix` | ka_Mage | Idle, Run, Attack, Cast, Death, Hit, Cast_Q, Cast_E, Cast_R | 11% · ×1.34 · 0/6 | 1.326 m · 605 KB | — | ✓ |
+| `champ_kaelith` | ka_Knight | Idle, Run, Attack, Cast, Death, Hit, Cast_Q, Cast_E, Cast_R | 12% · ×1.44 · 0/6 | 2.2 m · 595 KB | — | ✓ |
+| `champ_lyra` | ka_Rogue | Idle, Run, Attack, Cast, Death, Hit, Cast_E, Cast_R | 11% · ×1.36 · 0/6 | 2.2 m · 556 KB | — | ✓ |
+| `champ_morgra` | ka_Barbarian | Idle, Run, Attack, Cast, Death, Hit, Cast_Q, Cast_R | 15% · ×1.42 · 0/6 | 2.4 m · 556 KB | — | ✓ |
+| `champ_nyxe` | ka_Mage | Idle, Run, Attack, Cast, Death, Hit, Cast_E, Cast_R | 8% · ×1.33 · 0/6 | 1.36 m · 496 KB | — | ✓ |
+| `champ_ossuar` | ks_Skeleton_Warrior | Idle, Run, Attack, Cast, Death, Hit, Cast_Q, Cast_R | 20% · ×1.35 · 0/9 | 2.7 m · 711 KB | — | ✓ |
+| `champ_rakhar` | Velociraptor.fbx | Idle, Run, Attack, Cast, Death, Cast_E | 12% · ×1.76 · 0/1 | 2.0 m · 274 KB | influencias 7→4 | ✓ |
+| `champ_rakhar_lagarto` | lagarto.glb | Idle, Run, Attack, Cast, Death, Hit, Cast_E | 12% · ×2.14 · 0/2 | 2.0 m · 1357 KB | decimado 29960→16478 tris | ✓ |
+| `champ_sable` | ks_Skeleton_Rogue | Idle, Run, Attack, Cast, Death, Hit, Cast_Q, Cast_W, Cast_E | 10% · ×1.24 · 0/8 | 2.2 m · 703 KB | — | ✓ |
+| `champ_tharok` | ka_Barbarian | Idle, Run, Attack, Cast, Death, Hit, Cast_Q, Cast_R | 14% · ×1.42 · 0/6 | 2.4 m · 559 KB | — | ✓ |
+| `champ_vaelor` | ka_Mage | Idle, Run, Attack, Cast, Death, Hit, Cast_Q, Cast_R | 8% · ×1.33 · 0/6 | 2.2 m · 542 KB | — | ✓ |
+| `champ_yssra` | ka_Rogue | Idle, Run, Attack, Cast, Death, Hit, Cast_E, Cast_R | 11% · ×1.36 · 0/6 | 2.2 m · 533 KB | — | ✓ |
+| `champ_zerath` | ks_Skeleton_Mage | Idle, Run, Attack, Cast, Death, Hit, Cast_W, Cast_R | 9% · ×1.15 · 0/8 | 2.3 m · 638 KB | — | ✓ |
+| `epic_avatar` | Bat.fbx | Idle, Run, Attack, Attack2, Death, Hit | 15% · ×2.00 · 0/1 | 2.4 m · 242 KB | influencias 7→4 | ✓ |
+| `epic_dragon` | Dragon.fbx | Idle, Run, Attack, Attack2, Death, Hit | 14% · ×1.68 · 0/1 | 3.6 m · 268 KB | influencias 7→4 | ✓ |
+| `epic_heraldo` | Trex.fbx | Idle, Run, Attack, Death, Roar | 14% · ×1.69 · 0/1 | 2.4 m · 326 KB | influencias 7→4 | ✓ |
+| `epic_senor` | Spider.fbx | Idle, Run, Attack, Death, Spawn | 17% · ×1.43 · 0/1 | 3.2 m · 467 KB | influencias 6→4 | ✓ |
+| `minion_caster` | ks_Skeleton_Mage | Idle, Run, Attack, Death, Hit | 11% · ×1.11 · 0/8 | 1.2 m · 425 KB | — | ✓ |
+| `minion_melee` | ks_Skeleton_Minion | Idle, Run, Attack, Death, Hit | 11% · ×1.10 · 0/9 | 1.2 m · 484 KB | — | ✓ |
+| `minion_ram` | ks_Skeleton_Warrior | Idle, Run, Attack, Death, Hit | 35% · ×1.50 · 0/9 | 2.6 m · 570 KB | decimado 5104→4078 tris | ✓ |
+| `minion_siege` | ks_Skeleton_Warrior | Idle, Run, Attack, Death, Hit | 17% · ×1.21 · 0/9 | 1.7 m · 554 KB | — | ✓ |
+| `minion_super` | ks_Skeleton_Warrior | Idle, Run, Attack, Death, Hit | 31% · ×1.43 · 0/9 | 2.2 m · 526 KB | decimado 5104→4333 tris | ✓ |
+| `monster_ave` | Wasp.fbx | Idle, Run, Attack, Death | 27% · ×1.15 · 0/1 | 1.0 m · 434 KB | 1 vértice sin peso reparado; influencias 7→4 | ✓ |
+| `monster_bestia` | Triceratops.fbx | Idle, Run, Attack, Death, Hit | 8% · ×2.46 · 0/1 | 1.8 m · 287 KB | influencias 8→4 | ✓ |
+| `monster_golem` | Stegosaurus.fbx | Idle, Run, Attack, Death, Hit | 13% · ×2.84 · 0/1 | 2.0 m · 405 KB | influencias 14→4 | ✓ |
+| `monster_lobo` | Rat.fbx | Idle, Run, Attack, Death, Hit | 3% · ×2.22 · 0/1 | 1.2 m · 520 KB | influencias 10→4 | ✓ |
+| `monster_roca` | Slime.fbx | Idle, Run, Attack, Death | 22% · ×1.40 · 0/1 | 1.6 m · 176 KB | influencias 6→4 | ✓ |
+| `monster_sapo` | Frog.fbx | Idle, Run, Attack, Death | 56% · ×1.97 · 0/1 | 1.4 m · 561 KB | influencias 6→4 | ✓ |
+
+**Contratos cumplidos**
+- C: `UNIT_MODELS` usa `u.ctype` (fallback `u.camp?.type`) para `monster_golem|bestia|lobo|ave|roca|sapo`; `u.big` = grande (los pequeños al 70 %). Los círculos con `o.wall === true` no son míos de dibujar (el relieve va en `map_grieta_ceniza.glb`); `render3d.js` sigue dibujando las rocas de `game.obstacles` como hasta ahora.
+- B: `render3d.js` lee `settings.mobile` → `antialias: !mobile`, `setPixelRatio(min(dpr, mobile ? 1.25 : 1.5))`, `shadowMap.enabled = !mobile`.
+- G: `World3D.onUnitSpawn(obj,u)` al crear la malla, `onUnitDeath(obj,u)` al entrar en `death`, `onCast(obj,u,k)` al entrar en `cast` (`k = u.lastCastKey ?? u.castKey ?? null`: la simulación hoy solo escribe `u.lastCast`; si C/G quieren la tecla, que `world.js` escriba `u.lastCastKey`) y `getObj(u)`. `vfx.js` ya los engancha con `?.`.
+- Aspectos: `u.skin === 'lagarto'` → `champ_rakhar_lagarto` (`SKINS` en `models.js`; `'felino'` = modelo por defecto); Forma Dragón de Aurik → `champ_aurik_dragon` (`AURIK_DRAGON`). Voladores (`fly`): hada, dragón, avatar, ave planean a esa altura.
+- Nexos: los bustos `guerrero*` son ahora estandartes del equipo (`banner()` en `render3d.js`); la torre ya no lleva busto.
+
+**Implementado sin probar en partida real:** el cambio de aspecto en caliente (`swapModel` al cambiar `u.skin`) y la Forma Dragón solo se han visto en las tiras y en el e2e (que no lanza la R de Aurik).
+
+**Ficheros míos:** `game/src/models.js`, `game/src/render3d.js`, `game/assets/models/{champ_*,minion_*,monster_*,epic_*}.glb` (+ `final/`, `LICENSES.md`), `assets/data/model_specs.json` (+ `champ_rakhar_lagarto`), `assets/data/model_builds.json` (nuevo), `tools/blender/{champs_kaykit,monsters_quaternius,retarget_lagarto}.py` (nuevos), `production/handoff/BLENDER-3D-HANDOFF.md` (§0 bis), `production/qa/evidence/modelos/*` (tiras, `inventario-packs.json`, `salida/`), `Agente/assets-libres/{kaykit/character-animations,quaternius/{lowpoly-animated-monsters,animated-lowpoly-dinosaurs,lowpoly-animated-animals,animated-easy-enemies}}`.
 
 ## G · Fichas y VFX (02/11/2026)
 **Verificado (con comando y cifras)**
@@ -97,5 +166,12 @@ window.__cdc.vfx = initVfx(r3d, G, { ...S, mobile: !!settings?.mobile });   // s
 ```
 Contrato con D (ya consumido con `?.`): `R3.onUnitSpawn(obj,u)`, `R3.onUnitDeath(obj,u)`, `R3.onCast(obj,u,k)`, `R3.getObj(u)`; si D no los llama, `vfx.js` detecta por sí mismo apariciones/muertes/reapariciones (`G.units`) y lanzamientos (`G.events` tipo `cast`). `obj.userData.model` es el modelo que se escala/hunde; `obj.userData.vfxAlpha` multiplica a `setOpacity`.
 
-## F · Integración y verificación
-(pendiente)
+## F · Integración y verificación (03/11/2026, en curso)
+**Integrado y verificado** (commit `de0e9a0`, en `main` y publicado):
+- Fragmento de G en `main.js` (`montarFichas`, `initVfx`, aspecto por campeón) · `data.js` regenerado con `build_design.py` (`--check` OK) · `annotate_maps.py` dibuja muros y fosos, leyenda sin «Inhibidor» en la Grieta y fuente de macOS (antes caía a la fuente por defecto sin acentos).
+- `node --test game/tests/game.test.mjs` → 87/87 (3,6 min) · `touch.test.mjs` + `fichas.test.mjs` → 11/11.
+- Fuera del sandbox (Chromium necesita puertos Mach): `e2e_browser.py` 35/35 · `e2e_mobile.py` 35/35 · `e2e_fichas.py` 40/40, tras la integración.
+- `fps_probe.py` (Chrome real, Apple M3, minuto 5): escritorio **56,0 fps** (153 k tris, 77 llamadas) · móvil 844×390 **56,4 fps** (161 k tris, 83 llamadas) → `production/qa/evidence/fps-{escritorio,movil}.json`.
+- Bundle: `coronas-de-ceniza.html` 10,8 MB · `dist/web/juego.js` 898 KB (con gsap).
+
+**Pendiente**: flujo D (modelos definitivos) → después: `validate_models.mjs` 100 %, reempaquetar, repetir los tres e2e y la sonda de fps, purga de modelos del autor del historial (autorizada), commit y push.

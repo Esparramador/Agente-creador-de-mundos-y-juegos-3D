@@ -208,7 +208,8 @@
   "champ_rakhar": {
    "category": "champion",
    "height": 2.0,
-   "replaces": "lagarto (tinte)"
+   "replaces": "lagarto (tinte)",
+   "extraModel": "champ_rakhar_lagarto"
   },
   "champ_elowen": {
    "category": "champion",
@@ -377,6 +378,11 @@
    "height": 6.3,
    "replaces": "suelo pintado por código",
    "done": "tools/blender/build_maps.py"
+  },
+  "champ_rakhar_lagarto": {
+   "category": "champion",
+   "height": 2.0,
+   "replaces": "lagarto (aspecto alternativo de Rakhar, clips por retarget UAL)"
   }
  }
 }

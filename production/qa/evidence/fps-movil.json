@@ -1,9 +1,9 @@
 {
-  "fps": 56.397744089967475,
-  "worstFrameMs": 316.6999999999989,
-  "tris": 161109,
-  "calls": 83,
-  "units": 90,
+  "fps": 59.78532201626291,
+  "worstFrameMs": 50,
+  "tris": 207510,
+  "calls": 259,
+  "units": 128,
   "modo3d": true,
   "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3, Unspecified Version)",
   "viewport": {

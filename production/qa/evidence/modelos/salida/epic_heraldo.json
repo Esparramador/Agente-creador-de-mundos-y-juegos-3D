@@ -1,0 +1,365 @@
+{
+ "asset": "epic_heraldo",
+ "pack": "quaternius",
+ "base": "animated-lowpoly-dinosaurs/Dinosaur Animated Pack - Dec 2018/FBX/Trex.fbx",
+ "categoria": "epic",
+ "altura_objetivo_m": 2.4,
+ "fecha": "2026-11-03 11:51",
+ "puertas": {
+  "huesos": {
+   "n": 29,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": 7,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.031,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.195,
+    "aristas_max": 1.906,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.023,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.479,
+    "aristas_max": 3.152,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0114,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.119,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.326,
+    "aristas_max": 2.193,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0429,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.145,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.586,
+    "aristas_max": 5.068,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.1786,
+    "ok": true
+   },
+   "Roar": {
+    "desviacion_diagonal_max": 0.052,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.69,
+    "aristas_max": 3.846,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0659,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 54,
+  "huesos": 29,
+  "nombres_huesos": [
+   "root",
+   "Body",
+   "FrontLeg.R",
+   "FrontUpLeg.R",
+   "FrontLowLeg.R",
+   "FrontFoot.R",
+   "BackLeg.R",
+   "BackUpLeg.R",
+   "BackLowLeg.R",
+   "FrontLeg.L",
+   "FrontUpLeg.L",
+   "FrontLowLeg.L",
+   "FrontFoot.L",
+   "BackLeg.L",
+   "BackUpLeg.L",
+   "BackLowLeg.L",
+   "Back",
+   "Tail1",
+   "Tail2",
+   "Tail3",
+   "Tail4",
+   "Tail5",
+   "Hips",
+   "Torso",
+   "Shoulders",
+   "Neck",
+   "Head",
+   "BackFoot.R",
+   "BackFoot.L"
+  ],
+  "acciones": [
+   "TRex_Attack",
+   "TRex_Death",
+   "TRex_Idle",
+   "TRex_Jump",
+   "TRex_Run",
+   "TRex_Walk"
+  ],
+  "mallas_con_piel": [
+   "Trex"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 5,
+ "tinte": {
+  "color": "#ff8a65",
+  "mezcla": 0.4,
+  "materiales": 5
+ },
+ "clips": {
+  "Idle": {
+   "origen": "TRex_Idle",
+   "fotogramas": [
+    1,
+    61
+   ],
+   "segundos": 2.5
+  },
+  "Run": {
+   "origen": "TRex_Walk",
+   "fotogramas": [
+    1,
+    34
+   ],
+   "segundos": 1.375
+  },
+  "Attack": {
+   "origen": "TRex_Attack",
+   "fotogramas": [
+    1,
+    29
+   ],
+   "segundos": 1.167
+  },
+  "Death": {
+   "origen": "TRex_Death",
+   "fotogramas": [
+    1,
+    39
+   ],
+   "segundos": 1.583
+  },
+  "Roar": {
+   "origen": "TRex_Jump",
+   "fotogramas": [
+    1,
+    36
+   ],
+   "segundos": 1.458
+  }
+ },
+ "escala": {
+  "altura_origen_m": 15.225,
+  "factor": 0.1576,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 2.4,
+  "suela_m": -0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": -0.0,
+  "altura_m": 2.4,
+  "subido_m": 0.0
+ },
+ "pies_clavados": {
+  "Idle": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.45,
+    -0.01
+   ],
+   "despues_cm": [
+    -0.0,
+    0.0
+   ]
+  },
+  "Run": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.84,
+    1.01
+   ],
+   "despues_cm": [
+    -0.0,
+    1.29
+   ]
+  },
+  "Attack": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -3.66,
+    6.48
+   ],
+   "despues_cm": [
+    -0.0,
+    6.52
+   ]
+  },
+  "Death": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -13.95,
+    24.43
+   ],
+   "despues_cm": [
+    -0.0,
+    24.55
+   ]
+  },
+  "Roar": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -6.51,
+    90.06
+   ],
+   "despues_cm": [
+    -0.0,
+    90.06
+   ]
+  }
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -0.627,
+    -2.446,
+    -0.0
+   ],
+   [
+    0.627,
+    2.446,
+    2.4
+   ]
+  ],
+  "diagonal_m": 5.591,
+  "altura_m": 2.4,
+  "suela_m": -0.0,
+  "diagonal_referencia_idle_m": 5.452
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.0,
+  "ruta": "game/assets/models/final/epic_heraldo.glb",
+  "bytes": 334408,
+  "min_y_sin_piel": 0.001,
+  "raiz_ajustada_m": 0.0
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/29)"
+  ],
+  "three": {
+   "huesos": 29,
+   "mallasConEsqueleto": 5,
+   "caja_con_piel_m": [
+    1.254,
+    2.4,
+    4.891
+   ],
+   "suelo_con_piel_y": 0,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 2.5,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 1.375,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 1.167,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 1.583,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Roar",
+     "segundos": 1.458,
+     "pistas": 87,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 1.4906,
+    "Run": 1.3294,
+    "Attack": 1.529,
+    "Death": 3.4437,
+    "Roar": 1.7545
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ epic_heraldo.glb como epic_heraldo · 1820 tris · 1.135 m · 29 huesos · clips: Idle, Run, Attack, Death, Roar",
+   "    aviso  pocos triángulos (1820 < 8000): ¿falta detalle?",
+   "    aviso  altura 1.135 m (objetivo 2.4 m; el juego reescala, pero revisa proporciones)",
+   "    aviso  clips recomendados que faltan: Spawn, Hit, Attack2",
+   "    aviso  5 materiales (ideal ≤ 2 para menos llamadas de dibujo)"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/epic_heraldo.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Death"
+  ]
+ },
+ "segundos": 1.6
+}

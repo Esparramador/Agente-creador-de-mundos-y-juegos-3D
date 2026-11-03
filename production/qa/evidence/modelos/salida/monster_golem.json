@@ -1,0 +1,364 @@
+{
+ "asset": "monster_golem",
+ "pack": "quaternius",
+ "base": "animated-lowpoly-dinosaurs/Dinosaur Animated Pack - Dec 2018/FBX/Stegosaurus.fbx",
+ "categoria": "monster",
+ "altura_objetivo_m": 2.0,
+ "fecha": "2026-11-03 11:50",
+ "puertas": {
+  "huesos": {
+   "n": 29,
+   "max": 80,
+   "ok": true
+  },
+  "pesos": {
+   "vertices_sin_peso": 0,
+   "sin_peso_reparados": 0,
+   "max_influencias": 4,
+   "limitado_desde": 14,
+   "ok": true
+  },
+  "clips": {
+   "Idle": {
+    "desviacion_diagonal_max": 0.005,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.371,
+    "aristas_max": 2.821,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0001,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Run": {
+    "desviacion_diagonal_max": 0.04,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.615,
+    "aristas_max": 5.225,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0412,
+    "ok": true,
+    "pies_ok": true
+   },
+   "Attack": {
+    "desviacion_diagonal_max": 0.133,
+    "tolerancia": 0.15,
+    "aristas_p99": 1.639,
+    "aristas_max": 6.496,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0159,
+    "ok": true
+   },
+   "Death": {
+    "desviacion_diagonal_max": 0.13,
+    "tolerancia": 0.6,
+    "aristas_p99": 1.884,
+    "aristas_max": 4.075,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0753,
+    "ok": true
+   },
+   "Hit": {
+    "desviacion_diagonal_max": 0.064,
+    "tolerancia": 0.15,
+    "aristas_p99": 2.844,
+    "aristas_max": 6.818,
+    "aristas_ok": true,
+    "suela_min_m": -0.0,
+    "suela_max_m": 0.0524,
+    "ok": true
+   }
+  },
+  "khronos": {
+   "errores": 0,
+   "ok": true
+  },
+  "validador": {
+   "ok": true
+  }
+ },
+ "estado": "ok",
+ "base_fbx": {
+  "canales_objeto_quitados": 54,
+  "huesos": 29,
+  "nombres_huesos": [
+   "root",
+   "Body",
+   "BackLeg.R",
+   "BackUpLeg.R",
+   "BackLowLeg.R",
+   "BackLeg.L",
+   "BackUpLeg.L",
+   "BackLowLeg.L",
+   "Back",
+   "Tail1",
+   "Tail2",
+   "Tail3",
+   "Tail4",
+   "Tail5",
+   "Hips",
+   "Torso",
+   "Shoulders",
+   "Neck",
+   "Head",
+   "FrontLeg.R",
+   "FrontUpLeg.R",
+   "FrontLowLeg.R",
+   "FrontLeg.L",
+   "FrontUpLeg.L",
+   "FrontLowLeg.L",
+   "BackFoot.R",
+   "BackFoot.L",
+   "FrontFoot.R",
+   "FrontFoot.L"
+  ],
+  "acciones": [
+   "Stegosaurus_Attack",
+   "Stegosaurus_Death",
+   "Stegosaurus_Idle",
+   "Stegosaurus_Jump",
+   "Stegosaurus_Run",
+   "Stegosaurus_Walk"
+  ],
+  "mallas_con_piel": [
+   "Stegosaurus"
+  ],
+  "fps_escena": 24
+ },
+ "materiales_saneados": 3,
+ "tinte": {
+  "color": "#78909c",
+  "mezcla": 0.6,
+  "materiales": 3
+ },
+ "clips": {
+  "Idle": {
+   "origen": "Stegosaurus_Idle",
+   "fotogramas": [
+    1,
+    62
+   ],
+   "segundos": 2.542
+  },
+  "Run": {
+   "origen": "Stegosaurus_Walk",
+   "fotogramas": [
+    1,
+    71
+   ],
+   "segundos": 2.917
+  },
+  "Attack": {
+   "origen": "Stegosaurus_Attack",
+   "fotogramas": [
+    1,
+    46
+   ],
+   "segundos": 1.875
+  },
+  "Death": {
+   "origen": "Stegosaurus_Death",
+   "fotogramas": [
+    1,
+    39
+   ],
+   "segundos": 1.583
+  },
+  "Hit": {
+   "origen": "Stegosaurus_Jump",
+   "fotogramas": [
+    1,
+    36
+   ],
+   "segundos": 1.458
+  }
+ },
+ "escala": {
+  "altura_origen_m": 10.616,
+  "factor": 0.1884,
+  "multiplicadores": [
+   1,
+   1,
+   1
+  ],
+  "altura_final_m": 2.0,
+  "suela_m": 0.0,
+  "centro_xy": [
+   0.0,
+   0.0
+  ]
+ },
+ "caja_cruda": {
+  "min_z_m": -0.0,
+  "altura_m": 2.0,
+  "subido_m": 0.0
+ },
+ "pies_clavados": {
+  "Idle": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.08,
+    0.0
+   ],
+   "despues_cm": [
+    -0.0,
+    0.01
+   ]
+  },
+  "Run": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -1.92,
+    7.7
+   ],
+   "despues_cm": [
+    -0.0,
+    7.7
+   ]
+  },
+  "Attack": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -0.65,
+    2.02
+   ],
+   "despues_cm": [
+    -0.0,
+    2.11
+   ]
+  },
+  "Death": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -15.53,
+    7.05
+   ],
+   "despues_cm": [
+    -0.0,
+    7.53
+   ]
+  },
+  "Hit": {
+   "hueso": "root",
+   "ganancia": 1.0,
+   "antes_cm": [
+    -4.86,
+    98.5
+   ],
+   "despues_cm": [
+    -0.0,
+    98.5
+   ]
+  }
+ },
+ "reposo": {
+  "caja_m": [
+   [
+    -0.443,
+    -2.172,
+    0.0
+   ],
+   [
+    0.443,
+    2.172,
+    2.0
+   ]
+  ],
+  "diagonal_m": 4.863,
+  "altura_m": 2.0,
+  "suela_m": 0.0,
+  "diagonal_referencia_idle_m": 4.851
+ },
+ "glb": {
+  "ganancia_raiz_glb": 1.4,
+  "ruta": "game/assets/models/final/monster_golem.glb",
+  "bytes": 415312,
+  "min_y_sin_piel": 0.0,
+  "raiz_ajustada_m": -0.0143
+ },
+ "khronos": {
+  "exit": 0,
+  "errores": 0,
+  "avisos": 1,
+  "mensajes": [
+   "aviso NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. (/nodes/29)"
+  ],
+  "three": {
+   "huesos": 29,
+   "mallasConEsqueleto": 3,
+   "caja_con_piel_m": [
+    0.879,
+    2,
+    4.343
+   ],
+   "suelo_con_piel_y": -0.0143,
+   "animaciones": [
+    {
+     "nombre": "Idle",
+     "segundos": 2.542,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Run",
+     "segundos": 2.917,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Attack",
+     "segundos": 1.875,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Death",
+     "segundos": 1.583,
+     "pistas": 87,
+     "empieza_s": 0
+    },
+    {
+     "nombre": "Hit",
+     "segundos": 1.458,
+     "pistas": 87,
+     "empieza_s": 0
+    }
+   ],
+   "movimientoMaximo_m": {
+    "Idle": 0.4367,
+    "Run": 1.0572,
+    "Attack": 4.433,
+    "Death": 3.1496,
+    "Hit": 2.1985
+   }
+  }
+ },
+ "validador": {
+  "exit": 0,
+  "salida": [
+   "✓ monster_golem.glb como monster_golem · 2290 tris · 0.754 m · 29 huesos · clips: Idle, Run, Attack, Death, Hit",
+   "    aviso  altura 0.754 m (objetivo 2 m; el juego reescala, pero revisa proporciones)",
+   "    aviso  el modelo no está centrado en X/Z (0, 0.725)",
+   "    aviso  clips recomendados que faltan: Roar"
+  ]
+ },
+ "tira": {
+  "ruta": "production/qa/evidence/modelos/monster_golem.png",
+  "orden": [
+   "reposo_frente",
+   "reposo_lado",
+   "Idle",
+   "Run",
+   "Attack",
+   "Death"
+  ]
+ },
+ "segundos": 3.5
+}

@@ -13,7 +13,7 @@ jobs:
         with: { node-version: "22" }
       - run: npm ci --prefix game
       - run: node --test game/tests/game.test.mjs
-      - run: node game/tools/validate_models.mjs --current || true   # informe (los provisionales aún no cumplen)
+      - run: node game/tools/validate_models.mjs --dir game/assets/models/final   # 32 unidades: falla si una no cumple
       - run: node game/tools/bundle.mjs
       - run: pip install playwright && python -m playwright install --with-deps chromium && python3 game/tests/e2e_browser.py
       - run: python3 studio-tests/run_capability_tests.py --junit result.xml
