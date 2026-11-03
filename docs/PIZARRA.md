@@ -166,12 +166,8 @@ window.__cdc.vfx = initVfx(r3d, G, { ...S, mobile: !!settings?.mobile });   // s
 ```
 Contrato con D (ya consumido con `?.`): `R3.onUnitSpawn(obj,u)`, `R3.onUnitDeath(obj,u)`, `R3.onCast(obj,u,k)`, `R3.getObj(u)`; si D no los llama, `vfx.js` detecta por sí mismo apariciones/muertes/reapariciones (`G.units`) y lanzamientos (`G.events` tipo `cast`). `obj.userData.model` es el modelo que se escala/hunde; `obj.userData.vfxAlpha` multiplica a `setOpacity`.
 
-## F · Integración y verificación (03/11/2026, en curso)
-**Integrado y verificado** (commit `de0e9a0`, en `main` y publicado):
-- Fragmento de G en `main.js` (`montarFichas`, `initVfx`, aspecto por campeón) · `data.js` regenerado con `build_design.py` (`--check` OK) · `annotate_maps.py` dibuja muros y fosos, leyenda sin «Inhibidor» en la Grieta y fuente de macOS (antes caía a la fuente por defecto sin acentos).
-- `node --test game/tests/game.test.mjs` → 87/87 (3,6 min) · `touch.test.mjs` + `fichas.test.mjs` → 11/11.
-- Fuera del sandbox (Chromium necesita puertos Mach): `e2e_browser.py` 35/35 · `e2e_mobile.py` 35/35 · `e2e_fichas.py` 40/40, tras la integración.
-- `fps_probe.py` (Chrome real, Apple M3, minuto 5): escritorio **56,0 fps** (153 k tris, 77 llamadas) · móvil 844×390 **56,4 fps** (161 k tris, 83 llamadas) → `production/qa/evidence/fps-{escritorio,movil}.json`.
-- Bundle: `coronas-de-ceniza.html` 10,8 MB · `dist/web/juego.js` 898 KB (con gsap).
-
-**Pendiente**: flujo D (modelos definitivos) → después: `validate_models.mjs` 100 %, reempaquetar, repetir los tres e2e y la sonda de fps, purga de modelos del autor del historial (autorizada), commit y push.
+## F · Integración y verificación (03/11/2026) — CERRADO
+- Integrado todo en `main` (commits `1785190` B+C+G+A, `894e2e2` D) y publicado con el historial purgado de los modelos del autor (`paula`, `ceo_crafter`, `guerrero*`, `mini_dragon_blue`, `lord_tuetano`; `lagarto` se conserva como aspecto de Rakhar por decisión de Joan).
+- Regresión final con modelos definitivos: `game.test.mjs` 87/87 · Node táctil+fichas 11/11 · validador 32/32 · e2e escritorio 35/35 · móvil 35/35 · fichas 40/40 · fps M3 57,4 escritorio / 59,8 móvil. Detalle y lo que NO está probado: `production/qa/smoke-2026-11-03.md`.
+- Arreglos propios de F: integración de `fichas.js`/`vfx.js` en `main.js`; `validate_models.mjs` con rutas con espacios (y el CI valida `final/` de verdad); `annotate_maps.py` dibuja muros y fosos con fuentes de macOS; `data.js` regenerado.
+- Pendiente para Joan: probar en un teléfono real (URL de Pages) y decidir la primera oleada si aparece fuente oficial de Wild Rift.
