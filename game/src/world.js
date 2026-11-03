@@ -1,18 +1,29 @@
 // Simulación de la partida: maps.md, progression-economy.md, match-flow.md.
 // Determinista con semilla; no usa el DOM, así que se prueba en Node (tests/).
-import { CHAMPIONS, ITEMS } from './data.js';
-import { KITS, SUMMONERS, castSummoner } from './kits.js';
+import { CHAMPIONS, ITEMS, ITEM_SETS } from './data.js';
+import { KITS, SUMMONERS, SUMMONERS_BY_POSITION, castSummoner } from './kits.js';
+import { aplicarRunas, paginaRecomendada, runasOnDealt, runasOnAttack, runasOnDamaged, runasOnCC, runasOnTakedown, runasTick, runasDmgMod, runasDmgTakenMod } from './runas.js';
 import { buildMap, wallCircles } from './maps.js';
 import { botThink } from './ai.js';
 import { findPath, segmentBlocked } from './nav.js';
 import {
   TICK, NEUTRAL, rng, dist, dist2, norm, clamp, recalcStats, addBuff, hasBuff, getBuff, removeBuff, applyCC, hasCC,
   canMove, canAct, canCast, canAttack, dealDamage, heal, abilityValue, effectiveCd, xpToNext, respawnTime,
-  spawnProjectile, updateProjectile, updateZone, spawnZone, unitsInRadius, segDist,
+  spawnProjectile, updateProjectile, updateZone, spawnZone, unitsInRadius, segDist, addShield, dashTo,
 } from './core.js';
 
 export const CHAMP_BY_ID = Object.fromEntries(CHAMPIONS.map(c => [c.id, c]));
 export const ITEM_BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
+export const SETS_BY_CHAMP = id => ITEM_SETS.filter(s => s.champ === id);
+/** Set de objetos para un bot: el más popular de su campeón (o el destacado); con `rand` elige al azar ponderado por popularidad. */
+export function elegirSet(cid, rand) {
+  const sets = SETS_BY_CHAMP(cid); if (!sets.length) return null;
+  if (!rand) return sets.slice().sort((a, b) => (b.popularity - a.popularity) || (b.featured - a.featured))[0];
+  const w = sets.map(s => 1 + (s.popularity || 0)); let r = rand() * w.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < sets.length; i++) { r -= w[i]; if (r <= 0) return sets[i]; } return sets[sets.length - 1];
+}
+// Estadísticas de objeto que core.recalcStats no lee de los objetos: se suman en un buff permanente «objetos» (world.syncItemBuff)
+const ITEM_EXTRA_STATS = ['ls', 'arpen', 'tenacity', 'omnivamp', 'mana', 'sumHaste'];
 const RES_TYPE = { 'Maná': 'mana', 'Furia': 'fury', 'Energía': 'energy', 'Munición (6 balas)': 'none', 'Ninguno': 'none', 'Ninguno (vida)': 'hp' };
 const ROLE_OF = c => /Jungla/.test(c.role) ? 'jungle' : c.class === 'Soporte' ? 'support' : c.class === 'Tirador' ? 'bot' : /Mid/.test(c.role) ? 'mid' : 'top';
 const DRAGON_TYPES = ['Ceniza', 'Marea', 'Raíz', 'Forja'];
@@ -45,7 +56,15 @@ export class Game {
     this.applyFactionSynergy();
   }
   // ---------------- utilidades ----------------
-  emit(type, d) { this.events.push({ type, t: this.t, ...d }); if (this.events.length > 400) this.events.splice(0, 200); }
+  emit(type, d) {
+    this.events.push({ type, t: this.t, ...d }); if (this.events.length > 400) this.events.splice(0, 200);
+    // runas que reaccionan a inmovilizar: el autor es el campeón enemigo que acaba de lanzar (≤ 0,35 s) o de golpear al objetivo
+    if (type === 'cc' && d.tgt && d.tgt.kind === 'champ') {
+      const t = d.tgt; let src = this.champs.filter(c => c.alive && c.team !== t.team && c.runes && this.t - (c.lastCast ?? -99) < 0.35).sort((a, b) => dist(a, t) - dist(b, t))[0];
+      if (!src && t.lastHitByChamp && this.t - t.lastHitByChamp.t < 0.5) src = this.champs.find(c => c.id === t.lastHitByChamp.id && c.runes);
+      if (src) runasOnCC(this, src, t);
+    }
+  }
   after(delay, fn) { this.timers.push({ at: this.t + delay, fn }); }
   base(team) { const [x, y] = this.map.fountain[team]; return { x, y }; }
   inFountain(u) { return dist(u, this.base(u.team)) < 900; }
@@ -126,38 +145,52 @@ export class Game {
       const fits = pool.filter(id => !taken.has(id) && (this.rules.aram || ROLE_OF(CHAMP_BY_ID[id]) === role));
       const id = (fits.length ? fits : pool.filter(id => !taken.has(id)))[0]; taken.add(id); return id;
     };
+    // alineación: o.lineup[team] = [{ id, role, summoners?, itemSet?, runes? }] (selección Wild Rift) o o.picks[team] = [id] (compatibilidad)
+    for (const team of [0, 1]) for (const e of ((o.lineup && o.lineup[team]) || [])) taken.add(e.id);
     for (const team of [0, 1]) {
-      const picks = (o.picks && o.picks[team]) || [];
+      const lineup = (o.lineup && o.lineup[team]) || ((o.picks && o.picks[team]) || []).map(id => ({ id }));
       const list = [];
       const freeRoles = roles.slice();
-      for (const id of picks) { taken.add(id); }
-      for (const id of picks) {
-        let role = this.rules.aram ? 'mid' : ROLE_OF(CHAMP_BY_ID[id]);
+      for (const e of lineup.slice(0, size)) { taken.add(e.id); }
+      for (const e of lineup.slice(0, size)) {
+        let role = e.role && freeRoles.includes(e.role) ? e.role : this.rules.aram ? 'mid' : ROLE_OF(CHAMP_BY_ID[e.id]);
         if (!freeRoles.includes(role)) role = freeRoles[0];
-        freeRoles.splice(freeRoles.indexOf(role), 1); list.push([id, role]);
+        freeRoles.splice(freeRoles.indexOf(role), 1); list.push([e.id, role, e]);
       }
-      while (list.length < size) { const role = freeRoles.shift(); list.push([pick(role), role]); }
-      list.forEach(([id, role], i) => {
+      while (list.length < size) { const role = freeRoles.shift(); list.push([pick(role), role, {}]); }
+      list.forEach(([id, role, e], i) => {
         const isPlayer = o.player !== false && team === (o.playerTeam || 0) && i === 0 && !o.allBots;
-        this.champs.push(this.spawnChampion(id, team, role, isPlayer, i));
+        this.champs.push(this.spawnChampion(id, team, role, isPlayer, i, e));
       });
     }
     this.player = this.champs.find(c => c.isPlayer) || null;
   }
-  spawnChampion(id, team, role, isPlayer, idx) {
+  spawnChampion(id, team, role, isPlayer, idx, e = {}) {
     const c = CHAMP_BY_ID[id], [fx, fy] = this.map.fountain[team];
-    const sums = this.rules.aram ? ['flash', 'snowball'] : role === 'jungle' ? ['flash', 'smite'] : role === 'support' ? ['flash', 'heal'] :
-      role === 'bot' ? ['flash', 'heal'] : role === 'top' ? ['flash', 'teleport'] : ['flash', 'ignite'];
+    // set de objetos (compra rápida del HUD y tienda de los bots), runas y hechizos: de la alineación, del jugador (opts) o del set elegido
+    const set = e.itemSet ? null : (isPlayer && this.opts.playerItemSet ? null : this.opts.setPicker ? this.opts.setPicker(id, this.rand) : elegirSet(id, isPlayer ? null : this.rand));
+    const itemSet = (e.itemSet || (isPlayer && this.opts.playerItemSet) || (set && set.items) || []).slice();
+    const sums = this.rules.aram ? ['flash', 'snowball'] : (e.summoners || (isPlayer && this.opts.playerSummoners) || (set && set.summoners) || SUMMONERS_BY_POSITION[role] || ['flash', 'ignite']).slice();
+    if (!this.rules.aram && role === 'jungle' && !sums.includes('smite')) sums[1] = 'smite'; // la jungla siempre lleva Juicio
+    // kit por campeón: hereda del kit de la clase y añade los ganchos de runas y objetos (core.dealDamage los llama por nombre)
+    const base = KITS[id];
+    const kit = Object.create(base);
+    kit.onDealt = (g, s, t, amt, type, o) => runasOnDealt(g, s, t, amt, type, o);
+    kit.dmgMod = (g, s, t, amt, type, o) => runasDmgMod(g, s, t, base.dmgMod ? base.dmgMod(g, s, t, amt, type, o) : amt, type, o);
+    kit.dmgTakenMod = (g, s, src, amt, type, o) => { let a = base.dmgTakenMod ? base.dmgTakenMod(g, s, src, amt, type, o) : amt; a = runasDmgTakenMod(g, s, src, a);
+      if (o && o.attack) for (const it of s.items) if (it.attackReduct) a *= 1 - it.attackReduct; return a; };
+    kit.onDamaged = (g, s, src, amt, type, o) => { if (base.onDamaged) base.onDamaged(g, s, src, amt, type, o); runasOnDamaged(g, s, src, amt, type, o); };
     const u = this.makeUnit('champ', team, fx + (idx - 2) * 70, fy + (idx % 2) * 70, {
-      r: 45, cid: id, name: c.name, data: c, kit: KITS[id], base: c.base_stats, role, isPlayer,
+      r: 45, cid: id, name: c.name, data: c, kit, base: c.base_stats, role, isPlayer,
       ab: Object.fromEntries(c.abilities.map(a => [a.key, a])), resType: RES_TYPE[c.resource] || 'mana',
-      summoners: (isPlayer && this.opts.playerSummoners) || sums, sumCd: [0, 0], smiteCharges: 2,
+      summoners: sums, sumCd: [0, 0], smiteCharges: 2, smiteRecharge: 0, itemSet, setId: set ? set.id : (e.setId || null), activeCd: 0,
       xp: 0, gold: this.rules.startGold || 500, wardCharges: 2, wardRecharge: 0, streak: 0, respawnAt: 0,
       lastDamaged: -99, lastCombat: -99,
     });
     u.ranks = { Q: 0, W: 0, E: 0, R: 0 };
     const lvl = this.rules.startLevel || 1;
     while (u.level < lvl) { u.level++; }
+    aplicarRunas(this, u, e.runes || (isPlayer && this.opts.playerRunes) || (set && set.runes) || paginaRecomendada(id));
     this.recalcRes(u); u.res = u.resMax; recalcStats(this, u); u.hp = u.st.maxHp;
     if (u.kit.init) u.kit.init(this, u);
     if (!isPlayer) this.autoLevel(u);
@@ -192,7 +225,7 @@ export class Game {
 
   // ---------------- recursos y niveles ----------------
   recalcRes(u) {
-    if (u.resType === 'mana') u.resMax = 300 + 40 * (u.level - 1);
+    if (u.resType === 'mana') u.resMax = 300 + 40 * (u.level - 1) + ((u.st && u.st.mana) || 0);
     else if (u.resType === 'energy') u.resMax = 200;
     else if (u.resType === 'fury') u.resMax = 100;
     else u.resMax = 0;
@@ -289,14 +322,15 @@ export class Game {
   cmdSummoner(u, slot, aim) {
     const id = u.summoners[slot]; if (!id || !u.alive) return false;
     const recasting = id === 'snowball' && u.recast.snow > this.t;
-    if (id === 'smite') { if (u.smiteCharges <= 0) return false; }
-    else if (u.sumCd[slot] > 0 && !recasting) return false;
-    if (id !== 'flash' && !canCast(u)) return false;
+    if (u.sumCd[slot] > 0 && !recasting) return false;
+    if (id === 'smite' && u.smiteCharges <= 0) return false;
+    if (id !== 'flash' && id !== 'cleanse' && !canCast(u)) return false; // Purga se lanza bajo control de masas
     if (id === 'flash' && (hasCC(u, 'stun') || hasCC(u, 'airborne') || hasCC(u, 'root') || hasCC(u, 'sleep'))) return false;
     const r = castSummoner(this, u, id, { ...aim });
     if (!r) return false;
-    if (id === 'smite') { u.smiteCharges--; if (u.sumCd[slot] <= 0) u.sumCd[slot] = SUMMONERS.smite.cd; }
-    else if (r !== 'recast') u.sumCd[slot] = SUMMONERS[id].cd;
+    const haste = 1 - Math.min(0.5, u.st.sumHaste || 0);
+    if (id === 'smite') { u.smiteCharges--; u.sumCd[slot] = SUMMONERS.smite.cd * haste; if (!u.smiteRecharge) u.smiteRecharge = 90; }
+    else if (r !== 'recast') u.sumCd[slot] = SUMMONERS[id].cd * haste;
     this.emit('cast', { u, k: 'S' + slot, name: SUMMONERS[id].name });
     return true;
   }
@@ -312,15 +346,57 @@ export class Game {
     const w = this.makeUnit('ward', u.team, ...this.clampToMap(x, y), { r: 20, name: 'Guardián', life: 90, owner: u, base: { maxHp: 3, ad: 0, armor: 0, mr: 0, as: 0, range: 0, ms: 0 } });
     u.stats.wards++; return w;
   }
+  /** Precio real y motivo por el que no se puede comprar (null = se puede). Botas: una sola par, cada nivel descuenta el anterior;
+   *  nivel 3 desde el 10:00 (`since`). Objetos activos: solo uno. */
+  canBuy(u, id) {
+    const it = ITEM_BY_ID[id]; if (!it) return { ok: false, why: 'no existe', cost: 0 };
+    const prev = it.upgradeOf ? u.items.find(x => x.id === it.upgradeOf) : null;
+    const cost = prev ? Math.max(0, it.cost - prev.cost) : it.cost;
+    if (it.since && this.t < it.since) return { ok: false, why: `desde el ${Math.floor(it.since / 60)}:00`, cost, prev };
+    if (it.upgradeOf && !prev) return { ok: false, why: `necesitas ${ITEM_BY_ID[it.upgradeOf].name}`, cost, prev };
+    if (it.slot && !prev && u.items.some(x => x.slot === it.slot)) return { ok: false, why: it.slot === 'botas' ? 'ya llevas botas' : 'solo un objeto activo', cost, prev };
+    if (!prev && u.items.length >= 6) return { ok: false, why: 'inventario lleno', cost, prev };
+    if (u.gold < cost) return { ok: false, why: 'sin oro', cost, prev };
+    if (u.alive && !this.inFountain(u)) return { ok: false, why: 'fuera de la fuente', cost, prev };
+    return { ok: true, why: null, cost, prev };
+  }
   buy(u, id) {
-    const it = ITEM_BY_ID[id];
-    if (!it || u.items.length >= 6 || u.gold < it.cost) return false;
-    if (u.alive && !this.inFountain(u)) return false;
-    u.gold -= it.cost; u.items.push(it); recalcStats(this, u); this.emit('buy', { u, it }); return true;
+    const it = ITEM_BY_ID[id]; const c = this.canBuy(u, id); if (!c.ok) return false;
+    u.gold -= c.cost;
+    if (c.prev) u.items[u.items.indexOf(c.prev)] = it; else u.items.push(it);
+    this.syncItemBuff(u); recalcStats(this, u); this.recalcRes(u); this.emit('buy', { u, it }); return true;
   }
   sell(u, idx) {
     const it = u.items[idx]; if (!it || (u.alive && !this.inFountain(u))) return false;
-    u.items.splice(idx, 1); u.gold += Math.round(it.cost * 0.7); recalcStats(this, u); return true;
+    u.items.splice(idx, 1); u.gold += Math.round(it.cost * 0.7); this.syncItemBuff(u); recalcStats(this, u); this.recalcRes(u); return true;
+  }
+  /** Suma en el buff permanente «objetos» las estadísticas que core.recalcStats no lee de los objetos (robo de vida, penetración, tenacidad, omnivampirismo, maná, celeridad de invocador). */
+  syncItemBuff(u) {
+    const stats = {}; for (const it of u.items) for (const k of ITEM_EXTRA_STATS) if (it.stats[k]) stats[k] = (stats[k] || 0) + it.stats[k];
+    removeBuff(u, 'objetos'); if (Object.keys(stats).length) addBuff(u, 'objetos', 1e9, { stats });
+    if (u.items.some(i => i.renacer) && !hasBuff(u, 'renacer') && !(u.p.renacerCd > this.t)) addBuff(u, 'renacer', 1e9, { item: true });
+    if (!u.items.some(i => i.renacer)) { const b = getBuff(u, 'renacer'); if (b && b.item) removeBuff(u, 'renacer'); }
+  }
+  /** Siguiente objeto del set que el campeón aún no lleva (compra rápida del HUD y tienda de los bots); null si el set está completo. */
+  nextSetItem(u) {
+    for (const id of u.itemSet || []) { let it = ITEM_BY_ID[id]; if (!it) continue; if (u.items.some(x => x.id === id)) continue;
+      // botas de nivel 2 ya llevadas y mejoradas: la mejora cuenta como tenerlas
+      if (u.items.some(x => x.upgradeOf === id)) continue;
+      // una mejora cuyo objeto base aún no se lleva: primero el base (Botas → Botas de Azogue)
+      while (it.upgradeOf && !u.items.some(x => x.id === it.upgradeOf)) it = ITEM_BY_ID[it.upgradeOf];
+      return it.id; }
+    return null;
+  }
+  /** Objeto activo (7.2: uno por campeón). `aim` para el Cinturón Cohete. Devuelve true si se usó. */
+  cmdItemActive(u, aim = {}) {
+    const it = u.items.find(i => i.active); if (!it || !u.alive || u.activeCd > 0 || (it.active !== 'azogue' && !canAct(u))) return false;
+    if (it.active === 'estasis') { u.invulnerable = true; u.cc.push({ kind: 'stun', t: 2.5, estasis: true }); u.moveTo = null; u.target = null; addBuff(u, 'estasis', 2.5, { onEnd: (g, x) => { x.invulnerable = false; } }); }
+    else if (it.active === 'relicario') { const v = 120 + 15 * u.level; for (const a of unitsInRadius(this, u.team, u.x, u.y, 600, { allies: true, champs: true })) addShield(this, u, a, v, 2.5, 'relicario'); }
+    else if (it.active === 'cohete') { const dx = (aim.x ?? u.x + 1) - u.x, dy = (aim.y ?? u.y) - u.y, [nx, ny] = norm(dx, dy);
+      dashTo(this, u, u.x + nx * 300, u.y + ny * 300, 1400, { onEnd: () => { for (const t of unitsInRadius(this, u.team, u.x, u.y, 250)) dealDamage(this, u, t, 100 + 0.25 * u.st.ap, 'magic', { ability: true }); } }); }
+    else if (it.active === 'azogue') { u.cc = []; }
+    else return false;
+    u.activeCd = it.activeCd || 60; this.emit('cast', { u, k: 'item', name: it.name }); return true;
   }
   spawnPet(owner, x, y, o) {
     const p = this.makeUnit('pet', owner.team, x, y, { r: 35, owner, name: o.name, life: o.life, petDmg: o.dmg,
@@ -333,7 +409,7 @@ export class Game {
     if (!v.alive) return;
     if (v.kind === 'champ') {
       const rn = getBuff(v, 'renacer');
-      if (rn && !v.p.revived) { v.p.revived = true; v.hp = 0.2 * v.st.maxHp; removeBuff(v, 'renacer'); this.emit('text', { x: v.x, y: v.y, txt: '¡Renace!', col: '#a5d6a7' }); return; }
+      if (rn && !v.p.revived) { v.p.revived = true; v.hp = (rn.item ? 0.3 : 0.2) * v.st.maxHp; removeBuff(v, 'renacer'); if (rn.item) v.p.renacerCd = this.t + 180; this.emit('text', { x: v.x, y: v.y, txt: '¡Renace!', col: '#a5d6a7' }); return; }
     }
     v.alive = false; v.hp = 0; v.channel = null; v.dash = null; v.target = null; v.moveTo = null;
     if (killer && killer.kind === 'pet') killer = killer.owner;
@@ -370,13 +446,15 @@ export class Game {
       this.giveGold(k, bounty + (this.firstBlood ? 0 : 100), true);
       if (!this.firstBlood) { this.firstBlood = true; this.emit('announce', { txt: `¡Primera sangre! ${k.name} elimina a ${v.name}`, team }); }
       if (k.kit.onTakedown) k.kit.onTakedown(this, k, v);
+      this.onTakedownExtras(k);
     }
-    for (const a of assists) { a.stats.a++; this.giveGold(a, bounty * 0.5 / Math.max(1, assists.length)); if (a.kit.onTakedown) a.kit.onTakedown(this, a, v); }
+    for (const a of assists) { a.stats.a++; this.giveGold(a, bounty * 0.5 / Math.max(1, assists.length)); if (a.kit.onTakedown) a.kit.onTakedown(this, a, v); this.onTakedownExtras(a); }
     const xs = this.champs.filter(c => c.alive && c.team === team && dist(c, v) < 1600);
     xs.forEach(c => this.addXp(c, (140 + 20 * v.level) * (1 + 0.15 * (xs.length - 1)) / xs.length));
     this.feed.push({ t: this.t, killer: k ? k.name : 'Ejecutado', victim: v.name, team, kTeam: k ? k.team : team });
     this.emit('kill', { killer: k, victim: v, team });
   }
+  onTakedownExtras(u) { runasOnTakedown(this, u, null); const z = getBuff(u, 'zancada'); if (z) z.t += 6; }
   onStructureDeath(s, killer) {
     const team = 1 - s.team;
     if (s.kind === 'tower') {
@@ -600,7 +678,14 @@ export class Game {
   updateChampion(u, think) {
     const g = this;
     for (const k in u.cds) if (u.cds[k] > 0) u.cds[k] -= TICK;
-    for (let i = 0; i < 2; i++) if (u.sumCd[i] > 0) { u.sumCd[i] -= TICK; if (u.summoners[i] === 'smite' && u.sumCd[i] <= 0 && u.smiteCharges < 2) { u.smiteCharges++; if (u.smiteCharges < 2) u.sumCd[i] = 15; } }
+    for (let i = 0; i < 2; i++) if (u.sumCd[i] > 0) u.sumCd[i] -= TICK;
+    if (u.smiteRecharge > 0) { u.smiteRecharge -= TICK; if (u.smiteRecharge <= 0) { u.smiteCharges = Math.min(2, u.smiteCharges + 1); u.smiteRecharge = u.smiteCharges < 2 ? 90 : 0; } }
+    if (u.activeCd > 0) u.activeCd -= TICK;
+    if (u.p.renacerCd && g.t >= u.p.renacerCd && u.items.some(i => i.renacer)) { u.p.renacerCd = 0; this.syncItemBuff(u); }
+    // omnivampirismo (objetos y runas): cura con todo el daño nuevo infligido; un tercio contra lo que no es campeón
+    if (u.st.omnivamp) { const dc = u.stats.champDmg - (u.p.ovC || 0), dn = (u.stats.dmg - u.stats.champDmg) - (u.p.ovN || 0); if (dc > 0 || dn > 0) heal(this, null, u, u.st.omnivamp * (Math.max(0, dc) + Math.max(0, dn) / 3)); }
+    u.p.ovC = u.stats.champDmg; u.p.ovN = u.stats.dmg - u.stats.champDmg;
+    runasTick(this, u);
     if (u.wardRecharge > 0) { u.wardRecharge -= TICK; if (u.wardRecharge <= 0) { u.wardCharges = Math.min(2, u.wardCharges + 1); u.wardRecharge = u.wardCharges < 2 ? 120 : 0; } }
     // regeneración
     const fountain = this.inFountain(u);
@@ -745,6 +830,7 @@ export class Game {
     if (hasCC(u, 'blind')) { this.emit('text', { x: t.x, y: t.y, txt: 'Fallo', col: '#bbb' }); return; }
     const hit = { mult: 1, extra: [], after: [], crit: this.rand() < (u.st.crit || 0) };
     if (u.kit && u.kit.onAttack) u.kit.onAttack(this, u, t, hit);
+    if (u.kind === 'champ') runasOnAttack(this, u, t, hit);
     let dmg = u.st.ad * hit.mult * (hit.crit ? 1 + u.st.critDmg : 1);
     if (u.kind === 'pet') dmg = u.petDmg;
     if (u.kind === 'tower') {

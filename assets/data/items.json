@@ -6,7 +6,8 @@
     "stats": {
       "ad": 10
     },
-    "unique": null
+    "unique": null,
+    "tier": "basico"
   },
   {
     "id": "tomo_amplificador",
@@ -15,7 +16,8 @@
     "stats": {
       "ap": 20
     },
-    "unique": null
+    "unique": null,
+    "tier": "basico"
   },
   {
     "id": "cinturon_gigante",
@@ -24,7 +26,28 @@
     "stats": {
       "hp": 350
     },
-    "unique": null
+    "unique": null,
+    "tier": "basico"
+  },
+  {
+    "id": "capa_de_lino",
+    "name": "Capa de Lino",
+    "cost": 300,
+    "stats": {
+      "armor": 15
+    },
+    "unique": null,
+    "tier": "basico"
+  },
+  {
+    "id": "amuleto_nulo",
+    "name": "Amuleto Nulo",
+    "cost": 450,
+    "stats": {
+      "mr": 25
+    },
+    "unique": null,
+    "tier": "basico"
   },
   {
     "id": "botas",
@@ -33,7 +56,120 @@
     "stats": {
       "ms": 25
     },
-    "unique": null
+    "unique": null,
+    "tier": "botas",
+    "nivel": 1,
+    "slot": "botas"
+  },
+  {
+    "id": "botas_de_azogue",
+    "name": "Botas de Azogue",
+    "cost": 1200,
+    "stats": {
+      "ms": 45,
+      "mr": 15,
+      "tenacity": 0.3
+    },
+    "unique": "Nivel 2. +30% de tenacidad.",
+    "tier": "botas",
+    "nivel": 2,
+    "slot": "botas",
+    "upgradeOf": "botas"
+  },
+  {
+    "id": "botas_de_acero",
+    "name": "Botas de Acero",
+    "cost": 1200,
+    "stats": {
+      "ms": 45,
+      "armor": 15
+    },
+    "unique": "Nivel 2. Los ataques básicos te hacen un 10% menos de daño.",
+    "tier": "botas",
+    "nivel": 2,
+    "slot": "botas",
+    "upgradeOf": "botas",
+    "attackReduct": 0.1
+  },
+  {
+    "id": "grebas_del_frenesi",
+    "name": "Grebas del Frenesí",
+    "cost": 1200,
+    "stats": {
+      "ms": 45,
+      "as": 0.25
+    },
+    "unique": "Nivel 2. +25% de velocidad de ataque.",
+    "tier": "botas",
+    "nivel": 2,
+    "slot": "botas",
+    "upgradeOf": "botas"
+  },
+  {
+    "id": "botas_de_lucidez",
+    "name": "Botas de Lucidez",
+    "cost": 1000,
+    "stats": {
+      "ms": 45,
+      "ah": 10,
+      "sumHaste": 0.1
+    },
+    "unique": "Nivel 2. +10 celeridad y hechizos de invocador un 10% más rápidos.",
+    "tier": "botas",
+    "nivel": 2,
+    "slot": "botas",
+    "upgradeOf": "botas"
+  },
+  {
+    "id": "trituradoras_encadenadas",
+    "name": "Trituradoras Encadenadas",
+    "cost": 2200,
+    "stats": {
+      "ms": 55,
+      "mr": 25,
+      "hp": 150,
+      "tenacity": 0.35
+    },
+    "unique": "Nivel 3 (desde el 10:00). Mejora de las Botas de Azogue.",
+    "tier": "botas",
+    "nivel": 3,
+    "slot": "botas",
+    "upgradeOf": "botas_de_azogue",
+    "since": 600
+  },
+  {
+    "id": "avance_blindado",
+    "name": "Avance Blindado",
+    "cost": 2200,
+    "stats": {
+      "ms": 55,
+      "armor": 30,
+      "hp": 150
+    },
+    "unique": "Nivel 3 (desde el 10:00). Mejora de las Botas de Acero; ataques básicos −12%.",
+    "tier": "botas",
+    "nivel": 3,
+    "slot": "botas",
+    "upgradeOf": "botas_de_acero",
+    "since": 600,
+    "attackReduct": 0.12
+  },
+  {
+    "id": "lucidez_carmesi",
+    "name": "Lucidez Carmesí",
+    "cost": 2000,
+    "stats": {
+      "ms": 55,
+      "ah": 20,
+      "sumHaste": 0.15,
+      "omnivamp": 0.05
+    },
+    "unique": "Nivel 3 (desde el 10:00). Mejora de las Botas de Lucidez; +5% omnivampirismo.",
+    "tier": "botas",
+    "nivel": 3,
+    "slot": "botas",
+    "upgradeOf": "botas_de_lucidez",
+    "since": 600
   },
   {
     "id": "filo_del_ocaso",
@@ -43,7 +179,8 @@
       "ad": 55,
       "crit": 0.2
     },
-    "unique": "Golpes críticos +35% daño."
+    "unique": "Golpes críticos +35% daño.",
+    "tier": "legendario"
   },
   {
     "id": "arco_de_tormenta",
@@ -53,7 +190,8 @@
       "ad": 35,
       "as": 0.35
     },
-    "unique": "Cada 3er ataque encadena un rayo (60 mágico)."
+    "unique": "Cada 3er ataque encadena un rayo (60 mágico).",
+    "tier": "legendario"
   },
   {
     "id": "baculo_de_ceniza",
@@ -62,7 +200,8 @@
     "stats": {
       "ap": 90
     },
-    "unique": "+30% de poder de habilidad total."
+    "unique": "+30% de poder de habilidad total.",
+    "tier": "legendario"
   },
   {
     "id": "orbe_del_vacio",
@@ -72,7 +211,8 @@
       "ap": 70,
       "mpen": 0.3
     },
-    "unique": "Penetración mágica 30%."
+    "unique": "Penetración mágica 30%.",
+    "tier": "legendario"
   },
   {
     "id": "coraza_de_hondaforja",
@@ -82,7 +222,8 @@
       "hp": 400,
       "armor": 60
     },
-    "unique": "Refleja 25% del daño de ataques recibidos."
+    "unique": "Refleja 25% del daño de ataques recibidos.",
+    "tier": "legendario"
   },
   {
     "id": "manto_onirico",
@@ -92,7 +233,8 @@
       "hp": 350,
       "mr": 60
     },
-    "unique": "+2% vida máx./s fuera de combate."
+    "unique": "+2% vida máx./s fuera de combate.",
+    "tier": "legendario"
   },
   {
     "id": "hacha_de_colmillo",
@@ -103,7 +245,8 @@
       "hp": 300,
       "ah": 20
     },
-    "unique": "Tras usar una habilidad, el siguiente ataque inflige +100% AD base."
+    "unique": "Tras usar una habilidad, el siguiente ataque inflige +100% AD base.",
+    "tier": "legendario"
   },
   {
     "id": "incensario_dorado",
@@ -113,6 +256,142 @@
       "ap": 45,
       "heal_power": 0.12
     },
-    "unique": "Curar o escudar a un aliado le da +25% vel. ataque 4 s."
+    "unique": "Curar o escudar a un aliado le da +25% vel. ataque 4 s.",
+    "tier": "legendario"
+  },
+  {
+    "id": "sed_de_sangre",
+    "name": "Sed de Sangre",
+    "cost": 3200,
+    "stats": {
+      "ad": 65,
+      "ls": 0.15
+    },
+    "unique": "Robo de vida 15%.",
+    "tier": "legendario"
+  },
+  {
+    "id": "garra_sangrienta",
+    "name": "Garra Sangrienta",
+    "cost": 3000,
+    "stats": {
+      "ad": 40,
+      "hp": 300,
+      "ah": 15,
+      "omnivamp": 0.08
+    },
+    "unique": "Omnivampirismo 8%: todo el daño cura.",
+    "tier": "legendario"
+  },
+  {
+    "id": "yelmo_del_abismo",
+    "name": "Yelmo del Abismo",
+    "cost": 2800,
+    "stats": {
+      "hp": 400,
+      "mr": 45,
+      "ap": 40,
+      "mana": 300
+    },
+    "unique": "Vida, resistencia mágica y maná para magos de primera línea.",
+    "tier": "legendario"
+  },
+  {
+    "id": "cuchilla_del_verdugo",
+    "name": "Cuchilla del Verdugo",
+    "cost": 3000,
+    "stats": {
+      "ad": 40,
+      "hp": 200,
+      "ah": 20,
+      "arpen": 0.3
+    },
+    "unique": "Penetración de armadura 30%.",
+    "tier": "legendario"
+  },
+  {
+    "id": "capa_del_angel",
+    "name": "Capa del Ángel",
+    "cost": 3200,
+    "stats": {
+      "ad": 45,
+      "armor": 40
+    },
+    "unique": "Al morir renaces con el 30% de vida (180 s de enfriamiento).",
+    "tier": "legendario",
+    "renacer": 180
+  },
+  {
+    "id": "eco_de_brasas",
+    "name": "Eco de Brasas",
+    "cost": 2800,
+    "stats": {
+      "ap": 100,
+      "ah": 10,
+      "mana": 500
+    },
+    "unique": "Daño de habilidad a un campeón: eco de 40 (+10% PH) mágico en área (9 s).",
+    "tier": "legendario",
+    "eco": 9
+  },
+  {
+    "id": "reloj_de_estasis",
+    "name": "Reloj de Estasis",
+    "cost": 3300,
+    "stats": {
+      "ap": 110,
+      "armor": 40
+    },
+    "unique": "ACTIVO: estasis 2,5 s (invulnerable e inmóvil). 90 s.",
+    "tier": "activo",
+    "slot": "activo",
+    "active": "estasis",
+    "activeCd": 90
+  },
+  {
+    "id": "relicario_de_hierro",
+    "name": "Relicario de Hierro",
+    "cost": 2600,
+    "stats": {
+      "hp": 300,
+      "armor": 30,
+      "mr": 30,
+      "ah": 10
+    },
+    "unique": "ACTIVO: escudo de 120 (+15/nivel) a ti y a los aliados cercanos 2,5 s. 90 s.",
+    "tier": "activo",
+    "slot": "activo",
+    "active": "relicario",
+    "activeCd": 90
+  },
+  {
+    "id": "cinturon_cohete",
+    "name": "Cinturón Cohete",
+    "cost": 3000,
+    "stats": {
+      "ap": 80,
+      "hp": 300,
+      "ah": 15
+    },
+    "unique": "ACTIVO: impulso de 300 u y ráfaga de 100 (+25% PH) mágico. 40 s.",
+    "tier": "activo",
+    "slot": "activo",
+    "active": "cohete",
+    "activeCd": 40
+  },
+  {
+    "id": "azogue_vital",
+    "name": "Azogue Vital",
+    "cost": 2900,
+    "stats": {
+      "ad": 40,
+      "mr": 35,
+      "ls": 0.1
+    },
+    "unique": "ACTIVO: elimina todos los controles de masas. 90 s.",
+    "tier": "activo",
+    "slot": "activo",
+    "active": "azogue",
+    "activeCd": 90
   }
 ]

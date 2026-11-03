@@ -1,0 +1,283 @@
+{
+ "meta": {
+  "partidas": 45,
+  "ronda": 15,
+  "tope_min": 10,
+  "hilos": 7,
+  "fecha": "2026-11-03T15:53:38.839Z",
+  "segundos": 172,
+  "objetos_medios_por_bot": 1
+ },
+ "sets": [
+  {
+   "id": "brannoc_1",
+   "games": 13,
+   "wins": 8,
+   "winrate": 0.6154
+  },
+  {
+   "id": "brannoc_2",
+   "games": 14,
+   "wins": 7,
+   "winrate": 0.5
+  },
+  {
+   "id": "brannoc_3",
+   "games": 17,
+   "wins": 12,
+   "winrate": 0.7059
+  },
+  {
+   "id": "morgra_1",
+   "games": 11,
+   "wins": 5,
+   "winrate": 0.4545
+  },
+  {
+   "id": "morgra_2",
+   "games": 13,
+   "wins": 7,
+   "winrate": 0.5385
+  },
+  {
+   "id": "morgra_3",
+   "games": 10,
+   "wins": 6,
+   "winrate": 0.6
+  },
+  {
+   "id": "ossuar_1",
+   "games": 10,
+   "wins": 3,
+   "winrate": 0.3
+  },
+  {
+   "id": "ossuar_2",
+   "games": 12,
+   "wins": 6,
+   "winrate": 0.5
+  },
+  {
+   "id": "ossuar_3",
+   "games": 5,
+   "wins": 1,
+   "winrate": 0.2
+  },
+  {
+   "id": "kaelith_1",
+   "games": 6,
+   "wins": 3,
+   "winrate": 0.5
+  },
+  {
+   "id": "kaelith_2",
+   "games": 6,
+   "wins": 2,
+   "winrate": 0.3333
+  },
+  {
+   "id": "kaelith_3",
+   "games": 7,
+   "wins": 3,
+   "winrate": 0.4286
+  },
+  {
+   "id": "tharok_1",
+   "games": 10,
+   "wins": 5,
+   "winrate": 0.5
+  },
+  {
+   "id": "tharok_2",
+   "games": 5,
+   "wins": 3,
+   "winrate": 0.6
+  },
+  {
+   "id": "tharok_3",
+   "games": 4,
+   "wins": 0,
+   "winrate": 0
+  },
+  {
+   "id": "yssra_1",
+   "games": 5,
+   "wins": 1,
+   "winrate": 0.2
+  },
+  {
+   "id": "yssra_2",
+   "games": 2,
+   "wins": 1,
+   "winrate": 0.5
+  },
+  {
+   "id": "yssra_3",
+   "games": 11,
+   "wins": 3,
+   "winrate": 0.2727
+  },
+  {
+   "id": "vaelor_1",
+   "games": 11,
+   "wins": 6,
+   "winrate": 0.5455
+  },
+  {
+   "id": "vaelor_2",
+   "games": 13,
+   "wins": 9,
+   "winrate": 0.6923
+  },
+  {
+   "id": "vaelor_3",
+   "games": 4,
+   "wins": 0,
+   "winrate": 0
+  },
+  {
+   "id": "nyxe_1",
+   "games": 13,
+   "wins": 9,
+   "winrate": 0.6923
+  },
+  {
+   "id": "nyxe_2",
+   "games": 6,
+   "wins": 3,
+   "winrate": 0.5
+  },
+  {
+   "id": "nyxe_3",
+   "games": 7,
+   "wins": 5,
+   "winrate": 0.7143
+  },
+  {
+   "id": "zerath_1",
+   "games": 6,
+   "wins": 2,
+   "winrate": 0.3333
+  },
+  {
+   "id": "zerath_2",
+   "games": 1,
+   "wins": 0,
+   "winrate": 0
+  },
+  {
+   "id": "zerath_3",
+   "games": 11,
+   "wins": 6,
+   "winrate": 0.5455
+  },
+  {
+   "id": "lyra_1",
+   "games": 9,
+   "wins": 4,
+   "winrate": 0.4444
+  },
+  {
+   "id": "lyra_2",
+   "games": 14,
+   "wins": 8,
+   "winrate": 0.5714
+  },
+  {
+   "id": "lyra_3",
+   "games": 22,
+   "wins": 13,
+   "winrate": 0.5909
+  },
+  {
+   "id": "gearix_1",
+   "games": 11,
+   "wins": 4,
+   "winrate": 0.3636
+  },
+  {
+   "id": "gearix_2",
+   "games": 20,
+   "wins": 8,
+   "winrate": 0.4
+  },
+  {
+   "id": "gearix_3",
+   "games": 14,
+   "wins": 8,
+   "winrate": 0.5714
+  },
+  {
+   "id": "sable_1",
+   "games": 11,
+   "wins": 6,
+   "winrate": 0.5455
+  },
+  {
+   "id": "sable_2",
+   "games": 4,
+   "wins": 1,
+   "winrate": 0.25
+  },
+  {
+   "id": "sable_3",
+   "games": 6,
+   "wins": 3,
+   "winrate": 0.5
+  },
+  {
+   "id": "rakhar_1",
+   "games": 7,
+   "wins": 3,
+   "winrate": 0.4286
+  },
+  {
+   "id": "rakhar_2",
+   "games": 8,
+   "wins": 5,
+   "winrate": 0.625
+  },
+  {
+   "id": "rakhar_3",
+   "games": 1,
+   "wins": 1,
+   "winrate": 1
+  },
+  {
+   "id": "elowen_1",
+   "games": 25,
+   "wins": 18,
+   "winrate": 0.72
+  },
+  {
+   "id": "elowen_2",
+   "games": 6,
+   "wins": 2,
+   "winrate": 0.3333
+  },
+  {
+   "id": "elowen_3",
+   "games": 14,
+   "wins": 7,
+   "winrate": 0.5
+  },
+  {
+   "id": "aurik_1",
+   "games": 21,
+   "wins": 10,
+   "winrate": 0.4762
+  },
+  {
+   "id": "aurik_2",
+   "games": 17,
+   "wins": 6,
+   "winrate": 0.3529
+  },
+  {
+   "id": "aurik_3",
+   "games": 7,
+   "wins": 2,
+   "winrate": 0.2857
+  }
+ ]
+}

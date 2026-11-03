@@ -10,20 +10,103 @@ from champions_src import CHAMPIONS, CLASS_STATS, PRESENTATION, VFX_BY_ABILITY_T
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "assets/data"
 
-ITEMS = [  # id, nombre, coste, stats, efecto único
- ("espada_larga","Espada Larga",350,{"ad":10},None),
- ("tomo_amplificador","Tomo Amplificador",435,{"ap":20},None),
- ("cinturon_gigante","Cinturón de Gigante",900,{"hp":350},None),
- ("botas","Botas",300,{"ms":25},None),
- ("filo_del_ocaso","Filo del Ocaso",3000,{"ad":55,"crit":0.20},"Golpes críticos +35% daño."),
- ("arco_de_tormenta","Arco de Tormenta",2900,{"ad":35,"as":0.35},"Cada 3er ataque encadena un rayo (60 mágico)."),
- ("baculo_de_ceniza","Báculo de Ceniza",3100,{"ap":90},"+30% de poder de habilidad total."),
- ("orbe_del_vacio","Orbe del Vacío",2800,{"ap":70,"mpen":0.30},"Penetración mágica 30%."),
- ("coraza_de_hondaforja","Coraza de Hondaforja",2900,{"hp":400,"armor":60},"Refleja 25% del daño de ataques recibidos."),
- ("manto_onirico","Manto Onírico",2800,{"hp":350,"mr":60},"+2% vida máx./s fuera de combate."),
- ("hacha_de_colmillo","Hacha de Colmillo",3200,{"ad":45,"hp":300,"ah":20},"Tras usar una habilidad, el siguiente ataque inflige +100% AD base."),
- ("incensario_dorado","Incensario Dorado",2300,{"ap":45,"heal_power":0.12},"Curar o escudar a un aliado le da +25% vel. ataque 4 s."),
+ITEMS = [  # id, nombre, coste, stats, efecto único, extras {tier, upgradeOf, slot, since, active}
+ # básicos
+ ("espada_larga","Espada Larga",350,{"ad":10},None,{"tier":"basico"}),
+ ("tomo_amplificador","Tomo Amplificador",435,{"ap":20},None,{"tier":"basico"}),
+ ("cinturon_gigante","Cinturón de Gigante",900,{"hp":350},None,{"tier":"basico"}),
+ ("capa_de_lino","Capa de Lino",300,{"armor":15},None,{"tier":"basico"}),
+ ("amuleto_nulo","Amuleto Nulo",450,{"mr":25},None,{"tier":"basico"}),
+ # botas (reglas 7.2: nivel 1 → nivel 2 a 1200 → nivel 3 desde el 10:00, +1000). Solo un par: slot «botas».
+ ("botas","Botas",300,{"ms":25},None,{"tier":"botas","nivel":1,"slot":"botas"}),
+ ("botas_de_azogue","Botas de Azogue",1200,{"ms":45,"mr":15,"tenacity":0.30},"Nivel 2. +30% de tenacidad.",{"tier":"botas","nivel":2,"slot":"botas","upgradeOf":"botas"}),
+ ("botas_de_acero","Botas de Acero",1200,{"ms":45,"armor":15},"Nivel 2. Los ataques básicos te hacen un 10% menos de daño.",{"tier":"botas","nivel":2,"slot":"botas","upgradeOf":"botas","attackReduct":0.10}),
+ ("grebas_del_frenesi","Grebas del Frenesí",1200,{"ms":45,"as":0.25},"Nivel 2. +25% de velocidad de ataque.",{"tier":"botas","nivel":2,"slot":"botas","upgradeOf":"botas"}),
+ ("botas_de_lucidez","Botas de Lucidez",1000,{"ms":45,"ah":10,"sumHaste":0.10},"Nivel 2. +10 celeridad y hechizos de invocador un 10% más rápidos.",{"tier":"botas","nivel":2,"slot":"botas","upgradeOf":"botas"}),
+ ("trituradoras_encadenadas","Trituradoras Encadenadas",2200,{"ms":55,"mr":25,"hp":150,"tenacity":0.35},"Nivel 3 (desde el 10:00). Mejora de las Botas de Azogue.",{"tier":"botas","nivel":3,"slot":"botas","upgradeOf":"botas_de_azogue","since":600}),
+ ("avance_blindado","Avance Blindado",2200,{"ms":55,"armor":30,"hp":150},"Nivel 3 (desde el 10:00). Mejora de las Botas de Acero; ataques básicos −12%.",{"tier":"botas","nivel":3,"slot":"botas","upgradeOf":"botas_de_acero","since":600,"attackReduct":0.12}),
+ ("lucidez_carmesi","Lucidez Carmesí",2000,{"ms":55,"ah":20,"sumHaste":0.15,"omnivamp":0.05},"Nivel 3 (desde el 10:00). Mejora de las Botas de Lucidez; +5% omnivampirismo.",{"tier":"botas","nivel":3,"slot":"botas","upgradeOf":"botas_de_lucidez","since":600}),
+ # legendarios
+ ("filo_del_ocaso","Filo del Ocaso",3000,{"ad":55,"crit":0.20},"Golpes críticos +35% daño.",{"tier":"legendario"}),
+ ("arco_de_tormenta","Arco de Tormenta",2900,{"ad":35,"as":0.35},"Cada 3er ataque encadena un rayo (60 mágico).",{"tier":"legendario"}),
+ ("baculo_de_ceniza","Báculo de Ceniza",3100,{"ap":90},"+30% de poder de habilidad total.",{"tier":"legendario"}),
+ ("orbe_del_vacio","Orbe del Vacío",2800,{"ap":70,"mpen":0.30},"Penetración mágica 30%.",{"tier":"legendario"}),
+ ("coraza_de_hondaforja","Coraza de Hondaforja",2900,{"hp":400,"armor":60},"Refleja 25% del daño de ataques recibidos.",{"tier":"legendario"}),
+ ("manto_onirico","Manto Onírico",2800,{"hp":350,"mr":60},"+2% vida máx./s fuera de combate.",{"tier":"legendario"}),
+ ("hacha_de_colmillo","Hacha de Colmillo",3200,{"ad":45,"hp":300,"ah":20},"Tras usar una habilidad, el siguiente ataque inflige +100% AD base.",{"tier":"legendario"}),
+ ("incensario_dorado","Incensario Dorado",2300,{"ap":45,"heal_power":0.12},"Curar o escudar a un aliado le da +25% vel. ataque 4 s.",{"tier":"legendario"}),
+ ("sed_de_sangre","Sed de Sangre",3200,{"ad":65,"ls":0.15},"Robo de vida 15%.",{"tier":"legendario"}),
+ ("garra_sangrienta","Garra Sangrienta",3000,{"ad":40,"hp":300,"ah":15,"omnivamp":0.08},"Omnivampirismo 8%: todo el daño cura.",{"tier":"legendario"}),
+ ("yelmo_del_abismo","Yelmo del Abismo",2800,{"hp":400,"mr":45,"ap":40,"mana":300},"Vida, resistencia mágica y maná para magos de primera línea.",{"tier":"legendario"}),
+ ("cuchilla_del_verdugo","Cuchilla del Verdugo",3000,{"ad":40,"hp":200,"ah":20,"arpen":0.30},"Penetración de armadura 30%.",{"tier":"legendario"}),
+ ("capa_del_angel","Capa del Ángel",3200,{"ad":45,"armor":40},"Al morir renaces con el 30% de vida (180 s de enfriamiento).",{"tier":"legendario","renacer":180}),
+ ("eco_de_brasas","Eco de Brasas",2800,{"ap":100,"ah":10,"mana":500},"Daño de habilidad a un campeón: eco de 40 (+10% PH) mágico en área (9 s).",{"tier":"legendario","eco":9}),
+ # objetos activos (7.2): solo UNO por campeón (slot «activo»); se usan con la tecla/botón de objeto activo
+ ("reloj_de_estasis","Reloj de Estasis",3300,{"ap":110,"armor":40},"ACTIVO: estasis 2,5 s (invulnerable e inmóvil). 90 s.",{"tier":"activo","slot":"activo","active":"estasis","activeCd":90}),
+ ("relicario_de_hierro","Relicario de Hierro",2600,{"hp":300,"armor":30,"mr":30,"ah":10},"ACTIVO: escudo de 120 (+15/nivel) a ti y a los aliados cercanos 2,5 s. 90 s.",{"tier":"activo","slot":"activo","active":"relicario","activeCd":90}),
+ ("cinturon_cohete","Cinturón Cohete",3000,{"ap":80,"hp":300,"ah":15},"ACTIVO: impulso de 300 u y ráfaga de 100 (+25% PH) mágico. 40 s.",{"tier":"activo","slot":"activo","active":"cohete","activeCd":40}),
+ ("azogue_vital","Azogue Vital",2900,{"ad":40,"mr":35,"ls":0.10},"ACTIVO: elimina todos los controles de masas. 90 s.",{"tier":"activo","slot":"activo","active":"azogue","activeCd":90}),
 ]
+
+# Sets de objetos por campeón: 3 por clase (6 objetos: botas de nivel 2 + 4 legendarios + 1 activo o legendario),
+# con su página de runas y sus dos hechizos según la posición. La popularidad y el % de victorias los escribe
+# tools/simular_sets.mjs (partidas reales entre bots) y aquí se CONSERVAN si ya existen en item_sets.json.
+SET_TEMPLATES = {
+ "Tanque": [
+  ("Muralla",   ["botas_de_acero","coraza_de_hondaforja","manto_onirico","relicario_de_hierro","yelmo_del_abismo","cinturon_gigante"], ("garra_del_sepulcro",["placas_de_hueso","segundo_aliento","raices_profundas"],"triunfo")),
+  ("Vanguardia",["botas_de_azogue","hacha_de_colmillo","coraza_de_hondaforja","manto_onirico","capa_del_angel","cinturon_gigante"], ("senor_de_la_escarcha",["placas_de_hueso","inquebrantable","raices_profundas"],"trascendencia")),
+  ("Custodio",  ["botas_de_acero","relicario_de_hierro","manto_onirico","coraza_de_hondaforja","yelmo_del_abismo","capa_del_angel"], ("custodio",["placas_de_hueso","segundo_aliento","raices_profundas"],"ardor")),
+ ],
+ "Luchador": [
+  ("Sangría",   ["botas_de_acero","garra_sangrienta","hacha_de_colmillo","coraza_de_hondaforja","sed_de_sangre","capa_del_angel"], ("vencedor",["brutal","triunfo","golpe_de_gracia"],"segundo_aliento")),
+  ("Verdugo",   ["botas_de_azogue","hacha_de_colmillo","cuchilla_del_verdugo","manto_onirico","capa_del_angel","azogue_vital"], ("asedio",["brutal","triunfo","ardor"],"inquebrantable")),
+  ("Garra",     ["botas_de_acero","sed_de_sangre","hacha_de_colmillo","capa_del_angel","garra_sangrienta","manto_onirico"], ("garra_del_sepulcro",["placas_de_hueso","segundo_aliento","raices_profundas"],"brutal")),
+ ],
+ "Mago": [
+  ("Incendio",  ["botas_de_lucidez","baculo_de_ceniza","orbe_del_vacio","eco_de_brasas","reloj_de_estasis","yelmo_del_abismo"], ("tormenta_rapida",["golpe_barato","impacto_subito","trofeos"],"caudal_de_mana")),
+  ("Cometa",    ["botas_de_lucidez","eco_de_brasas","baculo_de_ceniza","yelmo_del_abismo","orbe_del_vacio","reloj_de_estasis"], ("cometa_de_ceniza",["caudal_de_mana","trascendencia","chamuscar"],"brutal")),
+  ("Cohete",    ["botas_de_azogue","cinturon_cohete","baculo_de_ceniza","orbe_del_vacio","eco_de_brasas","yelmo_del_abismo"], ("luciernaga",["caudal_de_mana","trascendencia","tormenta_creciente"],"triunfo")),
+ ],
+ "Tirador": [
+  ("Crítico",   ["grebas_del_frenesi","filo_del_ocaso","arco_de_tormenta","sed_de_sangre","cuchilla_del_verdugo","capa_del_angel"], ("compas_letal",["brutal","triunfo","golpe_de_gracia"],"cazador_incansable")),
+  ("Tormenta",  ["grebas_del_frenesi","arco_de_tormenta","filo_del_ocaso","sed_de_sangre","azogue_vital","capa_del_angel"], ("pies_de_viento",["ardor","triunfo","golpe_de_gracia"],"raices_profundas")),
+  ("Verdugo",   ["botas_de_azogue","cuchilla_del_verdugo","filo_del_ocaso","sed_de_sangre","arco_de_tormenta","capa_del_angel"], ("vencedor",["brutal","triunfo","ardor"],"impacto_subito")),
+ ],
+ "Asesino": [
+  ("Sombra",    ["botas_de_acero","cuchilla_del_verdugo","hacha_de_colmillo","sed_de_sangre","capa_del_angel","filo_del_ocaso"], ("tormenta_rapida",["golpe_barato","impacto_subito","cazador_incansable"],"brutal")),
+  ("Emboscada", ["botas_de_azogue","hacha_de_colmillo","cuchilla_del_verdugo","garra_sangrienta","azogue_vital","manto_onirico"], ("siega_sombria",["golpe_barato","trofeos","cazador_incansable"],"triunfo")),
+  ("Primer Tajo",["botas_de_acero","cuchilla_del_verdugo","filo_del_ocaso","sed_de_sangre","capa_del_angel","coraza_de_hondaforja"], ("primer_tajo",["impacto_subito","trofeos","cazador_incansable"],"golpe_de_gracia")),
+ ],
+ "Soporte": [
+  ("Guardián",  ["botas_de_azogue","incensario_dorado","relicario_de_hierro","manto_onirico","coraza_de_hondaforja","yelmo_del_abismo"], ("custodio",["placas_de_hueso","segundo_aliento","raices_profundas"],"caudal_de_mana")),
+  ("Luciérnaga",["botas_de_lucidez","incensario_dorado","eco_de_brasas","manto_onirico","yelmo_del_abismo","relicario_de_hierro"], ("luciernaga",["caudal_de_mana","trascendencia","chamuscar"],"segundo_aliento")),
+  ("Escarcha",  ["botas_de_acero","relicario_de_hierro","coraza_de_hondaforja","manto_onirico","incensario_dorado","capa_del_angel"], ("senor_de_la_escarcha",["placas_de_hueso","inquebrantable","raices_profundas"],"triunfo")),
+ ],
+}
+SUMMONERS_BY_POSITION = {"jungle": ["flash","smite"], "top": ["flash","teleport"], "mid": ["flash","ignite"], "bot": ["flash","heal"], "support": ["flash","exhaust"]}
+
+def position_of(c):
+    """Posición principal según el rol del campeón (misma regla que ROLE_OF en world.js)."""
+    r = c["role"]
+    if "Jungla" in r: return "jungle"
+    if c["cls"] == "Soporte": return "support"
+    if c["cls"] == "Tirador": return "bot"
+    if "Mid" in r: return "mid"
+    return "top"
+
+def item_sets(prev):
+    """3 sets por campeón; conserva popularidad/victorias de la simulación anterior por id."""
+    old = {s["id"]: s for s in prev}
+    out = []
+    for c in CHAMPIONS:
+        pos = position_of(c)
+        for i, (name, items, (key, minors, sec)) in enumerate(SET_TEMPLATES[c["cls"]]):
+            sid = f"{c['id']}_{i+1}"
+            o = old.get(sid, {})
+            out.append(dict(id=sid, champ=c["id"], name=name, featured=(i == 0), items=items,
+                            runes=dict(key=key, minors=minors, secondary=sec), summoners=SUMMONERS_BY_POSITION[pos],
+                            popularity=o.get("popularity", 0), games=o.get("games", 0), wins=o.get("wins", 0), winrate=o.get("winrate", 0.0)))
+    return out
 
 MAPS = [
  dict(id="grieta_ceniza",name="La Grieta de Ceniza",mode="5v5 clásico",size=[14000,14000],lanes=3,towers_per_lane=3,
@@ -161,7 +244,12 @@ def main():
                 level18=at_level(stats_for(c), 18)) for c in CHAMPIONS]
     for o in out: o.pop("cls"); o["class"] = o.pop("class_")
     (DATA / "champions.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
-    (DATA / "items.json").write_text(json.dumps([dict(id=i, name=n, cost=c, stats=s, unique=u) for i, n, c, s, u in ITEMS], ensure_ascii=False, indent=2), encoding="utf-8")
+    (DATA / "items.json").write_text(json.dumps([dict(id=i, name=n, cost=c, stats=s, unique=u, **x) for i, n, c, s, u, x in ITEMS], ensure_ascii=False, indent=2), encoding="utf-8")
+    sets_path = DATA / "item_sets.json"
+    prev_sets = json.loads(sets_path.read_text(encoding="utf-8")) if sets_path.exists() else []
+    if isinstance(prev_sets, dict): prev_sets = prev_sets.get("sets", [])
+    (sets_path).write_text(json.dumps(item_sets(prev_sets), ensure_ascii=False, indent=1), encoding="utf-8")
+    runes = (DATA / "runes.json").read_text(encoding="utf-8")
     (DATA / "maps.json").write_text(json.dumps(MAPS, ensure_ascii=False, indent=2), encoding="utf-8")
     pres = [presentation_for(c) for c in CHAMPIONS]
     (DATA / "champion_presentation.json").write_text(json.dumps(pres, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -170,6 +258,8 @@ def main():
         + "export const CHAMPIONS = " + json.dumps(out, ensure_ascii=False) + ";\n"
         + "export const ITEMS = " + (DATA / "items.json").read_text(encoding="utf-8") + ";\n"
         + "export const MAPS = " + (DATA / "maps.json").read_text(encoding="utf-8") + ";\n"
+        + "export const ITEM_SETS = " + sets_path.read_text(encoding="utf-8") + ";\n"
+        + "export const RUNES = " + runes + ";\n"
         + "export const PRESENTATION = " + json.dumps(pres, ensure_ascii=False) + ";\n", encoding="utf-8")
     (ROOT / "design/gdd").mkdir(parents=True, exist_ok=True)
     (ROOT / "design/gdd/champion-roster.md").write_text(roster_md(CHAMPIONS, burst), encoding="utf-8")

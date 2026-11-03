@@ -46,7 +46,8 @@ with sync_playwright() as p:
 
     # ---------- menú en una columna ----------
     pg.goto(URL); time.sleep(0.4)
-    check('menú móvil: una columna, sin scroll horizontal', js(pg, "() => getComputedStyle(document.querySelector('.layout')).gridTemplateColumns.split(' ').length === 1 && document.documentElement.scrollWidth <= innerWidth"))
+    # La selección es ahora la de Wild Rift (aliados | rejilla | rivales) también en apaisado móvil: lo que importa es que quepa sin scroll horizontal
+    check('menú móvil: selección Wild Rift de 3 columnas que cabe sin scroll horizontal', js(pg, "() => { const c = document.getElementById('selCuerpo'); return !!c && getComputedStyle(c).gridTemplateColumns.split(' ').length === 3 && document.documentElement.scrollWidth <= innerWidth && document.querySelectorAll('.rejilla [data-champ]').length === 15; }"))
     check('menú móvil: botón JUGAR de al menos 44 px', js(pg, "() => document.getElementById('play').getBoundingClientRect().height >= 44"))
     check('#rotate oculto en apaisado', not pg.is_visible('#rotate'))
     pg.click('[data-map="grieta_ceniza"]'); pg.click('[data-champ="kaelith"]'); shot(pg, 'menu')

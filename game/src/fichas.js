@@ -3,7 +3,8 @@
 // Muestra retrato 3D girando (modelo desde window.__MODELS o fetch; sin modelo, retrato 2D con iniciales),
 // clase/raza/rol, pasiva y las 4 habilidades con números reales, tipo de ataque, aspectos (fija u.skin a través
 // de onElegir / fichas.skins) y «Ver ataques» (Attack + Cast en el retrato con el efecto de vfx.js).
-// Responsive hasta 844×390. Sin tocar main.js: añade un botón «Ficha» flotante cuando hay campeón seleccionado.
+// Responsive hasta 844×390. El botón «Ficha» (#fichaBtn) vive en la barra inferior de la selección Wild Rift (index.html);
+// si no existe en el HTML se crea flotante. Los botones «Aspecto» y el doble toque en la rejilla también abren la ficha.
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';

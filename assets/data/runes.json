@@ -1,0 +1,40 @@
+{
+  "branches": [
+    { "id": "acero",  "name": "Acero",  "color": "#ffca28", "desc": "Ataques sostenidos y duelos largos" },
+    { "id": "sombra", "name": "Sombra", "color": "#ef5350", "desc": "Daño explosivo y caza" },
+    { "id": "roca",   "name": "Roca",   "color": "#66bb6a", "desc": "Resistencia y protección" },
+    { "id": "arcano", "name": "Arcano", "color": "#7e57c2", "desc": "Habilidades, maná y movilidad" }
+  ],
+  "runes": [
+    { "id": "asedio",             "branch": "acero",  "slot": "clave", "name": "Asedio",               "icon": "⚔", "desc": "Tres ataques básicos seguidos a un campeón infligen 30 (+6/nivel) de daño adaptativo y lo dejan expuesto: recibe +8% de daño durante 6 s." },
+    { "id": "compas_letal",       "branch": "acero",  "slot": "clave", "name": "Compás Letal",         "icon": "♪", "desc": "Atacar a un campeón da +10% de velocidad de ataque por carga (máx. 6, 6 s). Con 6 cargas, +50 de alcance." },
+    { "id": "pies_de_viento",     "branch": "acero",  "slot": "clave", "name": "Pies de Viento",       "icon": "🌬", "desc": "Cada 2 s, el siguiente ataque cura 5 (+1,5/nivel) y da +20% de velocidad de movimiento durante 1 s." },
+    { "id": "vencedor",           "branch": "acero",  "slot": "clave", "name": "Vencedor",             "icon": "⚑", "desc": "Cada golpe o habilidad a un campeón da una carga (máx. 6, 6 s): +2 AD o +4 PH por carga. Con 6 cargas, 9% de omnivampirismo (5% a distancia)." },
+    { "id": "tormenta_rapida",    "branch": "sombra", "slot": "clave", "name": "Tormenta Rápida",      "icon": "⚡", "desc": "Golpear a un campeón 3 veces en 3 s descarga un rayo de 30 (+8/nivel) de daño adaptativo. 20 s de enfriamiento." },
+    { "id": "siega_sombria",      "branch": "sombra", "slot": "clave", "name": "Siega Sombría",        "icon": "☠", "desc": "Dañar a un campeón con menos del 50% de vida inflige 20 (+5/nivel) + 5 por alma de daño adaptativo y recoge un alma. 25 s; 1 s tras un derribo." },
+    { "id": "primer_tajo",        "branch": "sombra", "slot": "clave", "name": "Primer Tajo",          "icon": "➶", "desc": "Si golpeas a un campeón antes de que te golpee a ti: +15 de oro y +7% de daño durante 3 s. 25 s de enfriamiento." },
+    { "id": "garra_del_sepulcro", "branch": "roca",   "slot": "clave", "name": "Garra del Sepulcro",   "icon": "✊", "desc": "Cada 3 s en combate cargas la garra: el siguiente ataque inflige 3% de tu vida máxima en daño mágico, cura el 1,5% y te da +3 de vida máxima para siempre." },
+    { "id": "custodio",           "branch": "roca",   "slot": "clave", "name": "Custodio",             "icon": "🛡", "desc": "Cuando un campeón te golpea, tú y el aliado más cercano (350 u) ganáis un escudo de 40 (+10/nivel) durante 2 s. 60 s de enfriamiento." },
+    { "id": "senor_de_la_escarcha","branch": "roca",  "slot": "clave", "name": "Señor de la Escarcha", "icon": "❄", "desc": "Inmovilizar a un campeón crea una zona de hielo (ralentiza 30% durante 2 s) y te da +30 de armadura y RM durante 2,5 s. 20 s." },
+    { "id": "luciernaga",         "branch": "arcano", "slot": "clave", "name": "Luciérnaga",           "icon": "✧", "desc": "Dañar a un campeón con una habilidad inflige 10 (+3/nivel) de daño mágico extra; curar o escudar a un aliado le da un escudo de 20 (+4/nivel). 3 s." },
+    { "id": "cometa_de_ceniza",   "branch": "arcano", "slot": "clave", "name": "Cometa de Ceniza",     "icon": "☄", "desc": "Dañar a un campeón con una habilidad hace caer un cometa de 30 (+6/nivel) de daño mágico 0,6 s después. 12 s de enfriamiento." },
+    { "id": "paso_de_fase",       "branch": "arcano", "slot": "clave", "name": "Paso de Fase",         "icon": "⟫", "desc": "Golpear a un campeón 3 veces en 4 s da +30% de velocidad de movimiento y +10 de celeridad durante 3 s. 15 s." },
+
+    { "id": "brutal",             "branch": "acero",  "slot": "menor", "name": "Brutal",               "icon": "✦", "desc": "+6 AD y +10 PH.", "stats": { "ad": 6, "ap": 10 } },
+    { "id": "triunfo",            "branch": "acero",  "slot": "menor", "name": "Triunfo",              "icon": "♛", "desc": "Al participar en un derribo curas el 10% de la vida que te falta y ganas 20 de oro." },
+    { "id": "ardor",              "branch": "acero",  "slot": "menor", "name": "Ardor",                "icon": "🔥", "desc": "+10% de velocidad de ataque.", "stats": { "as": 0.10 } },
+    { "id": "golpe_de_gracia",    "branch": "acero",  "slot": "menor", "name": "Golpe de Gracia",      "icon": "⚔", "desc": "+8% de daño a campeones con menos del 40% de vida." },
+    { "id": "golpe_barato",       "branch": "sombra", "slot": "menor", "name": "Golpe Barato",         "icon": "✂", "desc": "Dañar a un campeón bajo control de masas inflige 10 (+2/nivel) de daño verdadero extra. 4 s." },
+    { "id": "impacto_subito",     "branch": "sombra", "slot": "menor", "name": "Impacto Súbito",       "icon": "➹", "desc": "+8% de penetración de armadura y mágica.", "stats": { "arpen": 0.08, "mpen": 0.08 } },
+    { "id": "trofeos",            "branch": "sombra", "slot": "menor", "name": "Trofeos",              "icon": "👁", "desc": "Cada derribo da +2 AD o +4 PH (máx. 5 trofeos)." },
+    { "id": "cazador_incansable", "branch": "sombra", "slot": "menor", "name": "Cazador Incansable",   "icon": "🐾", "desc": "+12 de velocidad de movimiento.", "stats": { "ms": 12 } },
+    { "id": "placas_de_hueso",    "branch": "roca",   "slot": "menor", "name": "Placas de Hueso",      "icon": "🦴", "desc": "+8 de armadura y +8 de resistencia mágica.", "stats": { "armor": 8, "mr": 8 } },
+    { "id": "segundo_aliento",    "branch": "roca",   "slot": "menor", "name": "Segundo Aliento",      "icon": "♻", "desc": "Con menos del 50% de vida regeneras 4 (+0,5/nivel) de vida por segundo extra." },
+    { "id": "inquebrantable",     "branch": "roca",   "slot": "menor", "name": "Inquebrantable",       "icon": "⛓", "desc": "+20% de tenacidad.", "stats": { "tenacity": 0.20 } },
+    { "id": "raices_profundas",   "branch": "roca",   "slot": "menor", "name": "Raíces Profundas",     "icon": "🌱", "desc": "+100 de vida máxima.", "stats": { "maxHp": 100 } },
+    { "id": "trascendencia",      "branch": "arcano", "slot": "menor", "name": "Trascendencia",        "icon": "⌛", "desc": "+10 de celeridad de habilidades.", "stats": { "ah": 10 } },
+    { "id": "caudal_de_mana",     "branch": "arcano", "slot": "menor", "name": "Caudal de Maná",       "icon": "💧", "desc": "+200 de maná máximo.", "stats": { "mana": 200 } },
+    { "id": "tormenta_creciente", "branch": "arcano", "slot": "menor", "name": "Tormenta Creciente",   "icon": "🌩", "desc": "Cada 5 minutos ganas +4 AD y +7 PH acumulables." },
+    { "id": "chamuscar",          "branch": "arcano", "slot": "menor", "name": "Chamuscar",            "icon": "♨", "desc": "Dañar a un campeón con una habilidad lo quema: 15 (+2/nivel) de daño mágico tras 1 s. 10 s." }
+  ]
+}

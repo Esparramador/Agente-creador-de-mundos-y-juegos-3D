@@ -1,8 +1,11 @@
 // Punto de entrada del navegador: menús, entrada, bucle de juego, audio, tienda, marcador, opciones y tutorial.
-import { Game, CHAMP_BY_ID } from './world.js';
+import { Game, CHAMP_BY_ID, ITEM_BY_ID, SETS_BY_CHAMP, elegirSet } from './world.js';
 import { CHAMPIONS, ITEMS, MAPS } from './data.js';
 import { Renderer } from './render.js';
-import { SUMMONERS } from './kits.js';
+import { SUMMONERS, SUMMONERS_BY_POSITION } from './kits.js';
+import * as SEL from './seleccion.js';
+import { BRANCHES, RUNE_BY_ID, KEYSTONES, minorsOf, branchOf, validarPagina, paginaRecomendada, idsDe } from './runas.js';
+import { RETRATOS } from './retratos.js';
 import { BUILDS } from './ai.js';
 import { TICK, dist } from './core.js';
 import { World3D } from './render3d.js';
@@ -11,9 +14,9 @@ import { montarFichas } from './fichas.js';
 import { initVfx } from './vfx.js';
 
 // ---------------- ajustes (localStorage) ----------------
-const DEFAULT_KEYS = { castQ: 'KeyQ', castW: 'KeyW', castE: 'KeyE', castR: 'KeyR', sum0: 'KeyD', sum1: 'KeyF', ward: 'Digit4', recall: 'KeyB', shop: 'KeyP',
+const DEFAULT_KEYS = { castQ: 'KeyQ', castW: 'KeyW', castE: 'KeyE', castR: 'KeyR', sum0: 'KeyD', sum1: 'KeyF', item: 'Digit1', ward: 'Digit4', recall: 'KeyB', shop: 'KeyP',
   score: 'Tab', lock: 'KeyY', center: 'Space', attackMove: 'KeyA', stop: 'KeyS', ping: 'KeyG' };
-const ACTION_NAMES = { castQ: 'Habilidad Q', castW: 'Habilidad W', castE: 'Habilidad E', castR: 'Definitiva R', sum0: 'Invocador 1', sum1: 'Invocador 2', ward: 'Guardián',
+const ACTION_NAMES = { castQ: 'Habilidad Q', castW: 'Habilidad W', castE: 'Habilidad E', castR: 'Definitiva R', sum0: 'Invocador 1', sum1: 'Invocador 2', item: 'Objeto activo', ward: 'Guardián',
   recall: 'Volver a base', shop: 'Tienda', score: 'Marcador', lock: 'Bloquear cámara', center: 'Centrar cámara', attackMove: 'Movimiento con ataque', stop: 'Detenerse', ping: 'Señal (+clic)' };
 const S = Object.assign({ quickCast: true, colorblind: false, uiScale: 1, volume: 0.4, minimapScale: 1, touch: 'auto', vfx: 'alto', keys: { ...DEFAULT_KEYS } }, JSON.parse(localStorage.getItem('cdc_settings') || '{}'));
 // touch: 'auto' | 'on' | 'off' (controles táctiles); vfx: 'alto' | 'bajo' | 'off' (efectos, lo lee vfx.js); ?touch=1 fuerza el modo móvil (pruebas)
@@ -35,7 +38,8 @@ const FACTION_SOUND = { 'Horda de Colmillo Rojo': ['square', 110], 'Bosque Onír
   'Orden del Sol Partido': ['square', 520], 'Abismo de Coral': ['sine', 300], 'Clanes de Hondaforja': ['triangle', 160], 'Reino Velado': ['sawtooth', 140], 'Consorcio de Engranajes': ['square', 380],
   'Hermandad del Velo': ['triangle', 250], 'Tribus de las Dunas': ['sawtooth', 200] };
 
-// ---------------- estado de menú ----------------
+// ---------------- estado de menú: selección de campeón al estilo Wild Rift ----------------
+// Lógica pura en seleccion.js (posiciones, bots aliados, rivales, filtros, cuenta atrás); aquí solo el DOM.
 const $ = id => document.getElementById(id);
 const MODES = [
   { id: 'grieta_ceniza', name: 'La Grieta de Ceniza', desc: '5v5 clásico · 3 carriles, jungla, dragones, Heraldo y Señor · 25-35 min' },
@@ -44,38 +48,222 @@ const MODES = [
   { id: 'tutorial', name: 'Tutorial', desc: 'Aprende lo básico en 5 pasos en la Grieta contra bots fáciles' },
 ];
 const CLASS_COL = { Tanque: '#8d6e63', Luchador: '#e57373', Mago: '#9575cd', Tirador: '#81c784', Asesino: '#546e7a', Soporte: '#4dd0e1' };
-const state = { mode: 'grieta_ceniza', diff: 'normal', champ: null, rerolls: 2 };
-// Ficha de campeón (G): botón flotante y doble clic en la tarjeta; guarda el aspecto elegido por campeón
-const fichas = montarFichas({ onElegir: (id, skin) => { state.champ = id; state.skin = skin; renderMenu(); } });
+const NOMBRES_BOT = ['Kovar', 'Mirla', 'Dastan', 'Yura', 'Ferro'];
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const state = { mode: 'grieta_ceniza', diff: 'normal', champ: null, rerolls: 2, skin: null, sel: null, cuenta: null, sums: ['flash', 'ignite'],
+  itemSet: null, setId: null, runes: null, runesConfigured: false, filtro: { rol: 'todos', texto: '' }, slotActivo: 0, tabSets: 'DESTACADO', iniciada: false };
+// equipamiento guardado por campeón (hechizos, set, runas) y páginas de runas con nombre
+const LOADOUT = JSON.parse(localStorage.getItem('cdc_loadout') || '{}');
+const saveLoadout = () => { if (state.champ) LOADOUT[state.champ] = { sums: state.sums, setId: state.setId, itemSet: state.itemSet, runes: state.runes, runesConfigured: state.runesConfigured }; localStorage.setItem('cdc_loadout', JSON.stringify(LOADOUT)); };
+const PERSONAL = JSON.parse(localStorage.getItem('cdc_sets_personal') || '{}');   // champ -> [6 ids]
+const PAGINAS = JSON.parse(localStorage.getItem('cdc_runas') || '[]');            // [{ nombre, page }]
+const retrato = id => RETRATOS[id] ? `background-image:url(${RETRATOS[id]})` : '';
+const retratoHtml = (id, cls = 'ret') => { const c = CHAMP_BY_ID[id]; return c ? `<div class="${cls}" style="${retrato(id)}" title="${esc(c.name)}">${RETRATOS[id] ? '' : esc(c.name[0])}</div>` : `<div class="${cls} vacio">?</div>`; };
+const sumIco = (id, cls = 'sumMini') => { const s = SUMMONERS[id]; return s ? `<div class="${cls}" style="background:linear-gradient(160deg,${s.col}55,#0b1220)" title="${esc(s.name)}">${s.icon}</div>` : `<div class="${cls}"></div>`; };
+const ITEM_ICON = { espada_larga: '🗡', tomo_amplificador: '📘', cinturon_gigante: '❤', capa_de_lino: '🧥', amuleto_nulo: '🔰', botas: '👢', botas_de_azogue: '👢', botas_de_acero: '🥾', grebas_del_frenesi: '👟', botas_de_lucidez: '🩴',
+  trituradoras_encadenadas: '⛓', avance_blindado: '🛡', lucidez_carmesi: '🩸', filo_del_ocaso: '⚔', arco_de_tormenta: '🏹', baculo_de_ceniza: '🔥', orbe_del_vacio: '🔮', coraza_de_hondaforja: '🛡', manto_onirico: '🧿',
+  hacha_de_colmillo: '🪓', incensario_dorado: '🏺', sed_de_sangre: '🩸', garra_sangrienta: '🐾', yelmo_del_abismo: '⛑', cuchilla_del_verdugo: '🔪', capa_del_angel: '🕊', eco_de_brasas: '✴', reloj_de_estasis: '⌛', relicario_de_hierro: '📿', cinturon_cohete: '🚀', azogue_vital: '💧' };
+const objIco = (id, sw) => { const it = ITEM_BY_ID[id]; return `<div class="obj" title="${esc(it ? it.name + ' (' + it.cost + ')' : id)}"><div class="ico" data-obj="${id}">${ITEM_ICON[id] || '▪'}</div>${sw ? '<div class="sw">↻</div>' : ''}</div>`; };
+const runaIco = (id, cls = '') => { const r = RUNE_BY_ID[id]; const b = BRANCHES.find(x => x.id === r?.branch); return `<div class="runaIco ${cls}" style="border-color:${b ? b.color : '#555'}" title="${esc(r ? r.name + ': ' + r.desc : id)}">${r ? r.icon : '?'}</div>`; };
+const setsDe = id => SETS_BY_CHAMP(id);
+const fmtPct = x => (x * 100).toFixed(2).replace('.', ',') + ' %';
+
+// Ficha de campeón (G): botón «Ficha» en la barra inferior y doble clic en la tarjeta; guarda el aspecto elegido por campeón
+const fichas = montarFichas({ onElegir: (id, skin, o) => { state.skin = skin; if (!o || !o.soloAspecto) setChamp(id); renderMenu(); } });
+
+function nuevaSala() {
+  state.sel = SEL.crearSeleccion({ nombres: NOMBRES_BOT });
+  state.cuenta = SEL.crearCuentaAtras(60); state.revelados = false; state.iniciada = false;
+}
+/** Hechizos por defecto para la posición del jugador (la jungla lleva Juicio; el tutorial también; el Puente, Bola de Nieve). */
+function sumsPorDefecto() {
+  if (state.mode === 'puente_niebla') return ['flash', 'snowball'];
+  if (state.mode === 'tutorial') return ['flash', 'smite'];
+  return (SUMMONERS_BY_POSITION[state.sel.pos] || ['flash', 'ignite']).slice();
+}
+function setChamp(id) {
+  if (!id) return; SEL.elegirCampeon(state.sel, id); state.champ = id;
+  const lo = LOADOUT[id], set = elegirSet(id);
+  state.setId = lo?.setId ?? (set ? set.id : null); state.itemSet = lo?.itemSet || (set ? set.items.slice() : []);
+  state.runes = lo?.runes && validarPagina(lo.runes).ok ? lo.runes : paginaRecomendada(id);
+  state.runesConfigured = !!lo?.runesConfigured;
+  state.sums = lo?.sums && state.mode !== 'puente_niebla' && state.mode !== 'tutorial' ? lo.sums.slice() : sumsPorDefecto();
+  if (state.sel.pos === 'jungle' && state.mode === 'grieta_ceniza' && !state.sums.includes('smite')) state.sums[1] = 'smite';
+}
 
 function renderMenu() {
-  $('maps').innerHTML = MODES.map(m => `<div class="card map-card ${state.mode === m.id ? 'sel' : ''}" data-map="${m.id}"><b>${m.name}</b><div class="muted">${m.desc}</div></div>`).join('');
-  $('diffs').innerHTML = [['facil', 'Fácil'], ['normal', 'Normal'], ['dificil', 'Difícil']].map(([id, n]) => `<div class="card ${state.diff === id ? 'sel' : ''}" data-diff="${id}">${n}</div>`).join('');
+  if (!state.sel) nuevaSala();
   const aram = state.mode === 'puente_niebla';
-  $('aramNote').textContent = aram ? `(ARAM: campeón aleatorio — te quedan ${state.rerolls} cambios)` : '';
-  $('champs').innerHTML = CHAMPIONS.map(c => `<div class="card champ ${state.champ === c.id ? 'sel' : ''}" data-champ="${c.id}" style="${aram && state.champ !== c.id ? 'opacity:.35' : ''}">
-    <div class="ico" style="background:${CLASS_COL[c.class]}">${c.name[0]}</div><b>${c.name}</b><small>${c.class} · ${c.race}</small><small>${c.role}</small><small>${'★'.repeat(c.difficulty)}</small></div>`).join('');
-  document.querySelectorAll('[data-map]').forEach(e => e.onclick = () => { state.mode = e.dataset.map; if (state.mode === 'puente_niebla') { state.rerolls = 2; state.champ = rndChamp(); } renderMenu(); });
+  $('maps').innerHTML = MODES.map(m => `<div class="card map-card ${state.mode === m.id ? 'sel' : ''}" data-map="${m.id}" title="${esc(m.desc)}"><b>${m.name}</b><div class="muted">${m.desc}</div></div>`).join('');
+  $('diffs').innerHTML = [['facil', 'Fácil'], ['normal', 'Normal'], ['dificil', 'Difícil']].map(([id, n]) => `<div class="card ${state.diff === id ? 'sel' : ''}" data-diff="${id}">${n}</div>`).join('');
+  $('aramNote').textContent = aram ? `ARAM: campeón aleatorio — te quedan ${state.rerolls} cambios` : '';
+  document.querySelectorAll('[data-map]').forEach(e => e.onclick = () => { state.mode = e.dataset.map; if (state.mode === 'puente_niebla') { state.rerolls = 2; setChamp(rndChamp()); } else if (state.champ) setChamp(state.champ); renderMenu(); });
   document.querySelectorAll('[data-diff]').forEach(e => e.onclick = () => { state.diff = e.dataset.diff; renderMenu(); });
-  document.querySelectorAll('[data-champ]').forEach(e => e.onclick = () => { if (aram) return; state.champ = e.dataset.champ; renderMenu(); });
-  const sums = Object.entries(SUMMONERS).filter(([id]) => id !== 'snowball');
-  for (const i of [0, 1]) { const sel = $('sum' + i); if (!sel.options.length) { sel.innerHTML = sums.map(([id, s]) => `<option value="${id}">${s.name}</option>`).join(''); sel.value = i ? 'ignite' : 'flash'; } sel.disabled = aram; }
-  if (state.mode === 'tutorial') { $('sum0').value = 'flash'; $('sum1').value = 'smite'; }
-  renderDetail(); $('play').disabled = !state.champ;
+  renderCabecera(); renderAliados(); renderFiltros(); renderRejilla(); renderRivales(); renderDetail(); renderBarra();
+  $('play').disabled = !state.champ;
+  $('play').textContent = state.champ ? (aram ? 'JUGAR' : 'Fijar preselección') : 'Elige un campeón';
+}
+function renderCabecera() {
+  const sel = state.sel, j = SEL.jugador(sel);
+  $('presAliados').innerHTML = sel.aliados.map(a => a.esJugador ? (state.champ ? retratoHtml(state.champ, 'c jug') : '<div class="c vacio jug">?</div>') : retratoHtml(a.champ, 'c')).join('');
+  $('presRivales').innerHTML = sel.rivales.map(r => r.visible ? retratoHtml(r.champ, 'c') : '<div class="c vacio">⊘</div>').join('');
+  $('cabTitulo').textContent = state.revelados ? 'LOS RIVALES HAN ELEGIDO' : 'LOS RIVALES ESTÁN ELIGIENDO';
+  $('cuenta').textContent = state.cuenta.segundos; $('cuenta').classList.toggle('urgente', state.cuenta.segundos <= 10);
+}
+function renderAliados() {
+  const sel = state.sel;
+  $('aliados').innerHTML = sel.aliados.map(a => {
+    const sums = a.esJugador ? state.sums : (SUMMONERS_BY_POSITION[a.pos] || ['flash', 'ignite']);
+    const c = a.esJugador ? state.champ : a.champ, pos = SEL.POS_BY_ID[a.pos];
+    return `<div class="fila ${a.esJugador ? 'jug' : ''}" data-ally="${a.pos}"><div class="sums">${sums.map(s => sumIco(s)).join('')}</div>${c ? retratoHtml(c) : '<div class="ret">?</div>'}
+      <div><div class="pos">${pos.icon} ${pos.nombre}</div><div class="nom">${esc(a.esJugador ? 'Tú' : a.nombre)}${c ? ` <span class="muted">· ${esc(CHAMP_BY_ID[c].name)}</span>` : ''}</div></div>
+      ${a.esJugador ? '' : `<button class="swap" data-swap="${a.pos}" title="Pedir cambio de posición">⇄</button>`}</div>`; }).join('');
+  document.querySelectorAll('[data-swap]').forEach(b => b.onclick = () => { if (SEL.intercambiarPosicion(state.sel, b.dataset.swap)) { if (state.champ) setChamp(state.champ); else state.sums = sumsPorDefecto(); renderMenu(); } });
+}
+function renderFiltros() {
+  const f = $('filtros');
+  if (!f.children.length) {
+    f.innerHTML = SEL.ROLES_FILTRO.map(r => `<button data-rol="${r.id}" title="${r.nombre}">${r.icon}</button>`).join('') + '<input id="buscar" placeholder="🔍 Buscar" autocomplete="off">';
+    f.querySelectorAll('[data-rol]').forEach(b => b.onclick = () => { state.filtro.rol = b.dataset.rol; renderFiltros(); renderRejilla(); });
+    $('buscar').oninput = e => { state.filtro.texto = e.target.value; renderRejilla(); };
+  }
+  f.querySelectorAll('[data-rol]').forEach(b => b.classList.toggle('sel', b.dataset.rol === state.filtro.rol));
+}
+function renderRejilla() {
+  const aram = state.mode === 'puente_niebla', rec = new Set(SEL.recomendados(state.sel.pos)), ali = new Set(state.sel.aliados.filter(a => !a.esJugador).map(a => a.champ));
+  $('champs').innerHTML = SEL.filtrar(state.filtro).map(c => `<div class="card champ ${state.champ === c.id ? 'sel' : ''}" data-champ="${c.id}" style="${aram && state.champ !== c.id ? 'opacity:.35' : ''}" title="${esc(c.class + ' · ' + c.role)}">
+    <div class="ret" style="${retrato(c.id)}">${RETRATOS[c.id] ? '' : `<div class="ini" style="background:${CLASS_COL[c.class]}">${c.name[0]}</div>`}${rec.has(c.id) ? '<span class="rec">REC.</span>' : ''}${ali.has(c.id) ? '<span class="ali">ALIADO</span>' : ''}</div><b>${c.name}</b></div>`).join('');
+  document.querySelectorAll('[data-champ]').forEach(e => e.onclick = () => { if (aram) return; setChamp(e.dataset.champ); renderMenu(); });
+}
+function renderRivales() {
+  $('rivales').innerHTML = state.sel.rivales.map(r => `<div class="fila ${r.visible ? 'visto' : ''}" data-rival="${r.pos}"><div>${esc(r.nombre)}${r.visible ? `<br><span class="muted">${esc(CHAMP_BY_ID[r.champ].name)}</span>` : ''}</div>${r.visible ? retratoHtml(r.champ) : '<div class="ret">⊘</div>'}</div>`).join('');
+}
+function renderBarra() {
+  for (const i of [0, 1]) { const sel = $('sum' + i); if (!sel.options.length) sel.innerHTML = Object.entries(SUMMONERS).map(([id, s]) => `<option value="${id}">${s.name}</option>`).join(''); sel.value = state.sums[i]; sel.disabled = state.mode === 'puente_niebla';
+    const b = $('selSum' + i); const s = SUMMONERS[state.sums[i]]; b.innerHTML = s ? s.icon : ''; b.style.background = s ? `linear-gradient(160deg,${s.col}66,#0b1220)` : ''; b.title = s ? `${s.name} (${['D', 'F'][i]}): ${s.desc}` : ''; b.classList.toggle('activo', state.slotActivo === i); }
+  $('btnAspecto').disabled = $('btnRunas').disabled = $('btnSets').disabled = !state.champ;
+  $('runasBadge').classList.toggle('off', state.runesConfigured || !state.champ);
 }
 function rndChamp() { return CHAMPIONS[Math.floor(Math.random() * CHAMPIONS.length)].id; }
 function renderDetail() {
-  const c = CHAMP_BY_ID[state.champ]; if (!c) { $('detail').innerHTML = '<i>Selecciona un campeón para ver sus habilidades.</i>'; return; }
+  const c = CHAMP_BY_ID[state.champ]; if (!c) { $('detail').innerHTML = '<i>Toca un campeón para ver sus habilidades; doble toque abre la ficha.</i>'; return; }
   const b = c.base_stats;
-  $('detail').innerHTML = `<h2 style="margin-top:0">${c.name}, <span style="color:#ccc">${c.title}</span></h2>
-   <div><span class="pill">${c.class}</span><span class="pill">${c.race}</span><span class="pill">${c.faction}</span><span class="pill">${c.role}</span><span class="pill">Daño ${c.damage}</span><span class="pill">${c.resource}</span></div>
-   <p class="muted"><i>${c.lore}</i></p>
-   <div class="muted">Vida ${b.hp} (+${b.hp_g}) · AD ${b.ad} · Armadura ${b.armor} · RM ${b.mr} · Vel. ataque ${b.attack_speed} · Vel. ${b.ms} · Alcance ${b.range}</div>
-   <div class="ab"><b>Pasiva — ${c.passive.name}:</b> ${c.passive.desc}</div>
-   ${c.abilities.map(a => `<div class="ab"><b>${a.key} — ${a.name}</b> <span class="muted">(${a.type}, CD ${a.cooldown.join('/')} s${a.cost ? ', coste ' + a.cost : ''})</span><br>${a.desc}<br><span class="muted">Valor ${a.base.join('/')} ${Object.entries(a.ratio).map(([k, v]) => `+ ${Math.round(v * 100)}% ${k.toUpperCase()}`).join(' ')}</span></div>`).join('')}
-   ${state.mode === 'puente_niebla' ? `<button id="reroll" ${state.rerolls ? '' : 'disabled'}>🎲 Cambiar campeón (${state.rerolls})</button>` : ''}`;
-  const rr = $('reroll'); if (rr) rr.onclick = () => { if (state.rerolls > 0) { state.rerolls--; state.champ = rndChamp(); renderMenu(); } };
+  $('detail').innerHTML = `<b style="color:#ffd54f">${c.name}</b>, ${esc(c.title)} <span class="pill">${c.class}</span><span class="pill">${esc(c.role)}</span><span class="pill">Daño ${c.damage}</span>
+   <span class="muted">· Vida ${b.hp} · AD ${b.ad} · Arm ${b.armor} · RM ${b.mr} · Vel. ${b.ms} · Alc. ${b.range}</span>
+   <div class="abs"><div class="ab" title="${esc(c.passive.desc)}"><b>P — ${esc(c.passive.name)}</b></div>
+   ${c.abilities.map(a => `<div class="ab" title="${esc(a.desc)} (CD ${a.cooldown.join('/')} s)"><b>${a.key} — ${esc(a.name)}</b></div>`).join('')}</div>
+   ${state.mode === 'puente_niebla' ? `<button id="reroll" style="margin-top:6px" ${state.rerolls ? '' : 'disabled'}>🎲 Cambiar campeón (${state.rerolls})</button>` : ''}`;
+  const rr = $('reroll'); if (rr) rr.onclick = () => { if (state.rerolls > 0) { state.rerolls--; setChamp(rndChamp()); renderMenu(); } };
 }
+
+// ---- cuenta atrás real (60 s): se detiene mientras hay una ficha, un panel o un diálogo abierto; a 0 fija el campeón marcado o uno al azar ----
+let cuentaT = performance.now();
+setInterval(() => {
+  const now = performance.now(), dt = (now - cuentaT) / 1000; cuentaT = now;
+  if (!state.sel || state.iniciada || !$('menu').classList.contains('on') || document.querySelector('#fichas.on, .lateral.on, #help.on, #pause.on')) return;
+  const c = state.cuenta.tick(dt);
+  if (c.revelar && !state.revelados) { state.revelados = true; state.sel.rivales.forEach(r => r.visible = true); renderCabecera(); renderRivales(); }
+  else { $('cuenta').textContent = c.segundos; $('cuenta').classList.toggle('urgente', c.segundos <= 10); }
+  if (c.agotada) { if (!state.champ) setChamp(SEL.campeonFinal(state.sel)); renderMenu(); startGame(); }
+}, 250);
+
+// ---- paneles laterales ----
+function abrirPanel(id) { document.querySelectorAll('.lateral').forEach(p => p.classList.toggle('on', p.id === id)); $('velo').classList.toggle('on', !!id); }
+$('velo').onclick = () => abrirPanel(null);
+const cabPanel = (titulo) => `<div class="cab"><h2>${titulo}</h2><button class="cerrar" data-cerrar>×</button></div>`;
+function renderHechizos() {
+  const lista = Object.entries(SUMMONERS).filter(([id, s]) => !s.aram || state.mode === 'puente_niebla');
+  const p = $('panelHechizos');
+  p.innerHTML = `${cabPanel('AJUSTES DE HECHIZOS')}<div class="sub">ELIGE UN HECHIZO <span class="muted">(sustituye la ranura ${['D', 'F'][state.slotActivo]} marcada)</span></div>
+    <div class="grid9">${lista.map(([id, s]) => `<button class="hechizo ${state.sums.includes(id) ? 'sel' : ''}" data-sum="${id}" style="background:linear-gradient(160deg,${s.col}66,#0b1220)" title="${esc(s.name)}">${s.icon}</button>`).join('')}</div>
+    <div class="desc" id="sumDesc">${lista.map(([id, s]) => '').join('')}</div>
+    <div class="elegidos">${[0, 1].map(i => { const s = SUMMONERS[state.sums[i]]; return `<button class="hechizo grande ${state.slotActivo === i ? 'sel' : ''}" data-slot="${i}" style="background:linear-gradient(160deg,${s.col}66,#0b1220)" title="${esc(s.name)} (${['D', 'F'][i]})">${s.icon}</button>`; }).join('')}</div>`;
+  const desc = id => { const s = SUMMONERS[id]; $('sumDesc').innerHTML = `<b style="color:#e9d8a6">${esc(s.name)}</b> · enfriamiento ${s.cd} s${s.charges ? ' · 2 cargas' : ''}<br>${esc(s.desc)}`; };
+  desc(state.sums[state.slotActivo]);
+  p.querySelector('[data-cerrar]').onclick = () => abrirPanel(null);
+  p.querySelectorAll('[data-slot]').forEach(b => b.onclick = () => { state.slotActivo = +b.dataset.slot; renderHechizos(); renderBarra(); });
+  p.querySelectorAll('[data-sum]').forEach(b => { b.onmouseenter = () => desc(b.dataset.sum); b.onclick = () => {
+    if (state.mode === 'puente_niebla') return; const id = b.dataset.sum, i = state.slotActivo, j = 1 - i;
+    if (state.sums[j] === id) state.sums[j] = state.sums[i];
+    state.sums[i] = id; state.slotActivo = j; saveLoadout(); renderHechizos(); renderBarra(); renderAliados(); }; });
+}
+function renderSets() {
+  const p = $('panelSets'), tabs = ['PERSONAL', 'DESTACADO', 'POPULAR', 'MEJORES JUGADORES'];
+  const sets = setsDe(state.champ);
+  let lista = state.tabSets === 'DESTACADO' ? sets.filter(s => s.featured) : state.tabSets === 'POPULAR' ? sets.slice().sort((a, b) => b.popularity - a.popularity) : state.tabSets === 'MEJORES JUGADORES' ? sets.slice().sort((a, b) => b.winrate - a.winrate) : [];
+  const etq = state.tabSets === 'MEJORES JUGADORES' ? 'MEJORES JUGADORES' : state.tabSets;
+  const card = s => `<div class="set ${state.setId === s.id ? 'sel' : ''}" data-set="${s.id}"><span class="etq">${etq}</span> <span class="muted">${esc(s.name)}</span>
+     <div class="datos"><b>Popularidad: ${s.popularity}</b> <b>Porcentaje de victorias: ${fmtPct(s.winrate)}</b></div>
+     <div class="fila6">${s.items.map((id, i) => objIco(id, i >= 3)).join('')}</div>
+     <div class="filaR">${runaIco(s.runes.key, 'clave')}${s.runes.minors.map(id => runaIco(id)).join('')}${runaIco(s.runes.secondary)}${s.summoners.map(id => sumIco(id, 'sumIco')).join('')}</div>
+     ${state.setId === s.id ? '<div class="accion ok" title="Seleccionado">✓</div>' : `<button class="accion" data-aplicar="${s.id}" title="Aplicar este set">⬇</button>`}</div>`;
+  const mios = PERSONAL[state.champ] || [];
+  const personal = `<div class="personal"><div class="set ${state.setId === 'personal' ? 'sel' : ''}"><span class="etq">PERSONAL</span> <span class="muted">Tu set de 6: toca un objeto para añadirlo o quitarlo (se guarda en este dispositivo)</span>
+     <div class="slots">${[0, 1, 2, 3, 4, 5].map(i => mios[i] ? `<div class="obj" title="${esc(ITEM_BY_ID[mios[i]].name)}"><div class="ico" data-quitar="${i}">${ITEM_ICON[mios[i]] || '▪'}</div></div>` : '<div class="obj"><div class="ico" style="opacity:.4">+</div></div>').join('')}</div>
+     <div class="muted">Coste total: ${mios.reduce((a, id) => a + (ITEM_BY_ID[id]?.cost || 0), 0)} de oro</div>
+     ${mios.length === 6 ? (state.setId === 'personal' ? '<div class="accion ok">✓</div>' : '<button class="accion" data-aplicar="personal" title="Aplicar">⬇</button>') : ''}</div>
+     <div class="inv">${ITEMS.map(it => `<div class="card item ${mios.includes(it.id) ? 'en' : ''}" data-anadir="${it.id}"><b>${ITEM_ICON[it.id] || ''} ${esc(it.name)}</b><span style="color:#ffd54f">${it.cost}</span> · ${Object.entries(it.stats).map(([a, b]) => `+${b < 1 ? Math.round(b * 100) + '%' : b} ${STAT_ES[a] || a}`).join(' · ')}</div>`).join('')}</div></div>`;
+  p.innerHTML = `${cabPanel('SETS DE OBJETOS · ' + esc(CHAMP_BY_ID[state.champ].name))}<div class="tabs">${tabs.map(t => `<button class="${state.tabSets === t ? 'sel' : ''}" data-tab="${t}">${t}</button>`).join('')}</div>
+    <div style="margin-top:10px">${state.tabSets === 'PERSONAL' ? personal : (lista.map(card).join('') || '<p class="muted">Sin sets.</p>')}</div>`;
+  p.querySelector('[data-cerrar]').onclick = () => abrirPanel(null);
+  p.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { state.tabSets = b.dataset.tab; renderSets(); });
+  p.querySelectorAll('[data-aplicar]').forEach(b => b.onclick = () => aplicarSet(b.dataset.aplicar));
+  p.querySelectorAll('[data-anadir]').forEach(b => b.onclick = () => { const l = PERSONAL[state.champ] = (PERSONAL[state.champ] || []).slice(); const id = b.dataset.anadir; const i = l.indexOf(id);
+    if (i >= 0) l.splice(i, 1); else { const it = ITEM_BY_ID[id]; if (l.length >= 6) return; if (it.slot && l.some(x => ITEM_BY_ID[x].slot === it.slot)) return; l.push(id); }
+    localStorage.setItem('cdc_sets_personal', JSON.stringify(PERSONAL)); if (state.setId === 'personal') { state.itemSet = l.slice(); saveLoadout(); } renderSets(); });
+  p.querySelectorAll('[data-quitar]').forEach(b => b.onclick = () => { const l = PERSONAL[state.champ]; l.splice(+b.dataset.quitar, 1); localStorage.setItem('cdc_sets_personal', JSON.stringify(PERSONAL)); renderSets(); });
+}
+/** Aplica un set (id de item_sets.json o 'personal'): objetos para la compra rápida, runas y hechizos. */
+function aplicarSet(id) {
+  if (id === 'personal') { const l = PERSONAL[state.champ] || []; if (l.length !== 6) return false; state.setId = 'personal'; state.itemSet = l.slice(); }
+  else { const s = setsDe(state.champ).find(x => x.id === id); if (!s) return false; state.setId = s.id; state.itemSet = s.items.slice();
+    state.runes = { key: s.runes.key, minors: s.runes.minors.slice(), secondary: s.runes.secondary }; state.runesConfigured = true;
+    if (state.mode !== 'puente_niebla') { state.sums = s.summoners.slice(); if (state.sel.pos === 'jungle' && !state.sums.includes('smite')) state.sums[1] = 'smite'; } }
+  saveLoadout(); renderSets(); renderBarra(); renderAliados(); return true;
+}
+// ---- runas: 1 clave + 3 menores de su rama + 1 menor de otra rama; páginas guardadas; recomendada por campeón ----
+let runasEd = null;   // página en edición {key, minors, secondary} y rama secundaria elegida
+function renderRunas() {
+  const p = $('panelRunas');
+  if (!runasEd) runasEd = { ...state.runes, minors: state.runes.minors.slice() };
+  const rama = branchOf(runasEd.key), ramaSec = branchOf(runasEd.secondary) || BRANCHES.find(b => b.id !== rama).id;
+  const bInfo = id => BRANCHES.find(b => b.id === id);
+  const runaBtn = (r, sel, off) => `<button class="runa ${sel ? 'sel' : ''} ${off ? 'off' : ''}" data-runa="${r.id}" title="${esc(r.desc)}"><span class="i">${r.icon}</span>${esc(r.name)}</button>`;
+  const v = validarPagina(runasEd);
+  p.innerHTML = `${cabPanel('RUNAS · ' + esc(CHAMP_BY_ID[state.champ].name))}
+    <div class="sub">RAMA PRIMARIA — ${esc(bInfo(rama).name)} <span class="muted">· ${esc(bInfo(rama).desc)}</span></div>
+    <div class="ramas">${BRANCHES.map(b => `<button data-rama="${b.id}" class="${b.id === rama ? 'sel' : ''}" style="border-color:${b.color};${b.id === rama ? 'background:' + b.color : ''}">${esc(b.name)}</button>`).join('')}</div>
+    <div class="claves">${KEYSTONES.filter(r => r.branch === rama).map(r => runaBtn(r, r.id === runasEd.key)).join('')}</div>
+    <div class="sub">3 MENORES DE ${esc(bInfo(rama).name).toUpperCase()}</div>
+    <div class="menores">${minorsOf(rama).map(r => runaBtn(r, runasEd.minors.includes(r.id))).join('')}</div>
+    <div class="sub">RAMA SECUNDARIA — 1 MENOR</div>
+    <div class="ramas">${BRANCHES.filter(b => b.id !== rama).map(b => `<button data-ramasec="${b.id}" class="${b.id === ramaSec ? 'sel' : ''}" style="border-color:${b.color};${b.id === ramaSec ? 'background:' + b.color : ''}">${esc(b.name)}</button>`).join('')}</div>
+    <div class="menores">${minorsOf(ramaSec).map(r => runaBtn(r, runasEd.secondary === r.id)).join('')}</div>
+    <div class="sub">PÁGINAS GUARDADAS</div>
+    <div class="paginas">${PAGINAS.map((pg, i) => `<button data-pagina="${i}" title="${idsDe(pg.page).map(id => RUNE_BY_ID[id]?.name).join(' · ')}">${esc(pg.nombre)}</button>`).join('') || '<span class="muted">Ninguna todavía.</span>'}</div>
+    <div class="accionesR"><button id="runasRec">★ Recomendada para ${esc(CHAMP_BY_ID[state.champ].name)}</button><button id="runasGuardar">💾 Guardar página</button><button class="big" id="runasAplicar" ${v.ok ? '' : 'disabled'} style="font-size:14px;padding:8px 20px">Aplicar</button>
+      <span class="muted" id="runasError" style="color:#ff8a80">${v.ok ? '' : esc(v.errores.join(' · '))}</span></div>`;
+  p.querySelector('[data-cerrar]').onclick = () => abrirPanel(null);
+  p.querySelectorAll('[data-rama]').forEach(b => b.onclick = () => { const r = b.dataset.rama; if (r === rama) return; runasEd.key = KEYSTONES.find(k => k.branch === r).id; runasEd.minors = minorsOf(r).slice(0, 3).map(x => x.id); if (branchOf(runasEd.secondary) === r) runasEd.secondary = minorsOf(BRANCHES.find(x => x.id !== r).id)[0].id; renderRunas(); });
+  p.querySelectorAll('[data-ramasec]').forEach(b => b.onclick = () => { runasEd.secondary = minorsOf(b.dataset.ramasec)[0].id; renderRunas(); });
+  p.querySelectorAll('[data-runa]').forEach(b => b.onclick = () => { const r = RUNE_BY_ID[b.dataset.runa];
+    if (r.slot === 'clave') runasEd.key = r.id;
+    else if (r.branch === rama) { const i = runasEd.minors.indexOf(r.id); if (i >= 0) runasEd.minors.splice(i, 1); else { if (runasEd.minors.length >= 3) runasEd.minors.shift(); runasEd.minors.push(r.id); } }
+    else runasEd.secondary = r.id;
+    renderRunas(); });
+  p.querySelectorAll('[data-pagina]').forEach(b => b.onclick = () => { const pg = PAGINAS[+b.dataset.pagina]; runasEd = { ...pg.page, minors: pg.page.minors.slice() }; renderRunas(); });
+  $('runasRec').onclick = () => { runasEd = paginaRecomendada(state.champ); renderRunas(); };
+  $('runasGuardar').onclick = () => { if (!validarPagina(runasEd).ok) return; PAGINAS.push({ nombre: `${CHAMP_BY_ID[state.champ].name} · ${RUNE_BY_ID[runasEd.key].name}`, page: { ...runasEd, minors: runasEd.minors.slice() } }); localStorage.setItem('cdc_runas', JSON.stringify(PAGINAS)); renderRunas(); };
+  $('runasAplicar').onclick = () => aplicarRunas({ ...runasEd, minors: runasEd.minors.slice() });
+}
+function aplicarRunas(page) { if (!validarPagina(page).ok) return false; state.runes = page; state.runesConfigured = true; saveLoadout(); renderBarra(); abrirPanel(null); return true; }
+
+$('btnAspecto').onclick = () => { if (state.champ) fichas.abrir(state.champ); };
+$('btnRunas').onclick = () => { if (!state.champ) return; runasEd = null; renderRunas(); abrirPanel('panelRunas'); };
+$('btnSets').onclick = () => { if (!state.champ) return; renderSets(); abrirPanel('panelSets'); };
+for (const i of [0, 1]) { $('selSum' + i).onclick = () => { if (!state.champ) return; state.slotActivo = i; renderHechizos(); abrirPanel('panelHechizos'); renderBarra(); };
+  $('sum' + i).onchange = e => { state.sums[i] = e.target.value; renderBarra(); renderAliados(); }; }
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.querySelector('.lateral.on')) { abrirPanel(null); e.stopPropagation(); } }, true);
 
 // ---------------- partida ----------------
 let G = null, R = null, paused = false, tutorial = null, touch = null;
@@ -89,7 +277,10 @@ function startGame() {
   const tut = state.mode === 'tutorial';
   const mapId = tut ? 'grieta_ceniza' : state.mode;
   const sums = mapId === 'puente_niebla' ? ['flash', 'snowball'] : [$('sum0').value, $('sum1').value];
-  G = new Game({ mapId, difficulty: tut ? 'facil' : state.diff, picks: { 0: [state.champ] }, playerSummoners: sums, seed: (Date.now() % 1e9) | 0 });
+  state.iniciada = true;
+  // alineación de la sala (aliados con su posición, rivales revelados) salvo en el Puente, que es aleatorio
+  const lineup = state.sel && mapId !== 'puente_niebla' ? SEL.alineacion(state.sel, { champ: state.champ, summoners: sums, itemSet: state.itemSet, runes: state.runes, setId: state.setId }) : null;
+  G = new Game({ mapId, difficulty: tut ? 'facil' : state.diff, picks: { 0: [state.champ] }, lineup, playerSummoners: sums, playerItemSet: state.itemSet, playerRunes: state.runes, seed: (Date.now() % 1e9) | 0 });
   window.G = G;
   if (fichas.skins[state.champ]) G.player.skin = fichas.skins[state.champ];   // Rakhar: 'felino' | 'lagarto'
   S.mobile = esMovil(); document.body.classList.toggle('mobile', S.mobile); // ANTES de World3D y Renderer: ambos leen settings.mobile
@@ -209,7 +400,8 @@ function doCast(key, aim) {
 function summoner(i, aim) {
   const p = G.player; if (!p || !p.alive) return; const sid = p.summoners[i], sp = SUMMONERS[sid];
   const given = !!aim; aim = aim || aimFor(sp);
-  if (sid === 'smite') aim.unit = !given && hover && hover.team !== p.team && !hover.structure && hover.kind !== 'champ' ? hover : nearestTo(aim.x, aim.y, 400, u => u.team !== p.team && (u.kind === 'monster' || u.kind === 'minion'));
+  const evo = (p.p.smiteUses || 0) >= 3; // Juicio Gélido: también sobre campeones
+  if (sid === 'smite') aim.unit = !given && hover && hover.team !== p.team && !hover.structure && (hover.kind !== 'champ' || evo) ? hover : nearestTo(aim.x, aim.y, 400, u => u.team !== p.team && (u.kind === 'monster' || u.kind === 'minion' || (evo && u.kind === 'champ')));
   if (!G.cmdSummoner(p, i, aim)) say(p.sumCd[i] > 0 ? `${sp.name} en enfriamiento (${Math.ceil(p.sumCd[i])} s)` : `${sp.name}: sin objetivo válido`);
 }
 function say(txt) { if (G.player) R.texts.push({ x: G.player.x, y: G.player.y - 150, txt, col: '#ffcdd2', age: 0 }); }
@@ -249,6 +441,7 @@ addEventListener('keydown', e => {
   for (const k of ['Q', 'W', 'E', 'R']) if (code === K['cast' + k]) { e.preventDefault(); if (e.ctrlKey || e.metaKey) G.cmdLevel(p, k); else if (!e.repeat) cast(k); return; }
   if (code === K.sum0 && !e.repeat) return summoner(0);
   if (code === K.sum1 && !e.repeat) return summoner(1);
+  if (code === K.item && !e.repeat && p) { if (!G.cmdItemActive(p, { x: mouse.wx, y: mouse.wy })) say(p.items.some(i => i.active) ? (p.activeCd > 0 ? `Objeto activo en enfriamiento (${Math.ceil(p.activeCd)} s)` : 'No puedes usarlo ahora') : 'No llevas ningún objeto activo'); return; }
   if (code === K.ward && p) { if (G.cmdWard(p, mouse.wx, mouse.wy)) { if (tutorial) tutorial.steps[3][1] = true; } else say(p.wardCharges ? 'Demasiado lejos (máx. 600)' : 'Sin cargas de guardián'); return; }
   if (code === K.recall && p) { if (!G.cmdRecall(p)) say('No puedes volver ahora'); return; }
   if (code === K.lock) { R.cam.locked = !R.cam.locked; say(R.cam.locked ? 'Cámara bloqueada' : 'Cámara libre'); return; }
@@ -283,15 +476,15 @@ function renderShop(force) {
   const sig = `${Math.floor(p.gold)}|${p.items.length}|${can}`; if (!force && sig === shopSig) return; shopSig = sig;
   $('shopGold').textContent = `— ${Math.floor(p.gold)} de oro`;
   $('shopNote').textContent = can ? 'Estás en la fuente: puedes comprar.' : 'Solo puedes comprar en tu fuente o mientras estás muerto (B para volver a base).';
-  const rec = new Set(BUILDS[p.data.class]);
-  $('shopItems').innerHTML = ITEMS.map(it => `<div class="card item ${rec.has(it.id) ? 'rec' : ''} ${(!can || p.gold < it.cost || p.items.length >= 6) ? 'off' : ''}" data-buy="${it.id}">
-    <b>${it.name}</b> <span style="float:right;color:#ffd54f">${it.cost}</span><br>${Object.entries(it.stats).map(([a, b]) => `+${b < 1 ? Math.round(b * 100) + '%' : b} ${STAT_ES[a] || a}`).join(' · ')}
-    ${it.unique ? `<br><i class="muted">${it.unique}</i>` : ''}${rec.has(it.id) ? '<br><span style="color:#81c784">Recomendado</span>' : ''}</div>`).join('');
+  const rec = new Set(p.itemSet && p.itemSet.length ? p.itemSet : BUILDS[p.data.class]), next = G.nextSetItem(p);
+  $('shopItems').innerHTML = ITEMS.map(it => { const c = G.canBuy(p, it.id); return `<div class="card item ${rec.has(it.id) ? 'rec' : ''} ${c.ok ? '' : 'off'}" data-buy="${it.id}" title="${c.why || ''}">
+    <b>${it.name}</b> <span style="float:right;color:#ffd54f">${c.cost}${c.prev ? ' (mejora)' : ''}</span><br>${Object.entries(it.stats).map(([a, b]) => `+${b < 1 ? Math.round(b * 100) + '%' : b} ${STAT_ES[a] || a}`).join(' · ')}
+    ${it.unique ? `<br><i class="muted">${it.unique}</i>` : ''}${next === it.id ? '<br><span style="color:#81c784">Siguiente del set</span>' : rec.has(it.id) ? '<br><span style="color:#81c784">Del set</span>' : ''}${c.why && c.why !== 'sin oro' && c.why !== 'fuera de la fuente' ? `<br><span style="color:#ff8a80">${c.why}</span>` : ''}</div>`; }).join('');
   $('shopInv').innerHTML = p.items.map((it, i) => `<div class="card item" data-sell="${i}"><b>${it.name}</b><br>vender: ${Math.round(it.cost * 0.7)}</div>`).join('') || '<span class="muted">Vacío</span>';
   document.querySelectorAll('[data-buy]').forEach(e => e.onclick = () => { if (!G.buy(p, e.dataset.buy)) say('No puedes comprarlo ahora'); renderShop(true); });
   document.querySelectorAll('[data-sell]').forEach(e => e.onclick = () => { G.sell(p, +e.dataset.sell); renderShop(true); });
 }
-const STAT_ES = { ad: 'AD', ap: 'PH', hp: 'vida', armor: 'armadura', mr: 'RM', as: 'vel. ataque', ms: 'vel. mov.', crit: 'crítico', ah: 'AH', mpen: 'pen. mágica', heal_power: 'poder de curación' };
+const STAT_ES = { ad: 'AD', ap: 'PH', hp: 'vida', armor: 'armadura', mr: 'RM', as: 'vel. ataque', ms: 'vel. mov.', crit: 'crítico', ah: 'AH', mpen: 'pen. mágica', heal_power: 'poder de curación', ls: 'robo de vida', arpen: 'pen. armadura', tenacity: 'tenacidad', omnivamp: 'omnivampirismo', mana: 'maná', sumHaste: 'celeridad de invocador' };
 
 // ---------------- marcador ----------------
 function scoreTable() {
@@ -345,6 +538,7 @@ $('helpBody').innerHTML = `<table>
   <tr><td><span class="kbd">Q</span> <span class="kbd">W</span> <span class="kbd">E</span> <span class="kbd">R</span></td><td>Habilidades, apuntan al cursor (lanzamiento rápido; se puede cambiar en Opciones)</td></tr>
   <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">Q/W/E/R</span></td><td>Subir rango de habilidad (o clic en el +)</td></tr>
   <tr><td><span class="kbd">D</span> <span class="kbd">F</span></td><td>Hechizos de invocador</td></tr>
+  <tr><td><span class="kbd">1</span></td><td>Objeto activo (Reloj de Estasis, Relicario, Cinturón Cohete, Azogue Vital)</td></tr>
   <tr><td><span class="kbd">A</span>+clic</td><td>Movimiento con ataque</td></tr>
   <tr><td><span class="kbd">S</span></td><td>Detenerse</td></tr>
   <tr><td><span class="kbd">4</span></td><td>Guardián en el cursor (2 cargas)</td></tr>
@@ -387,4 +581,4 @@ function showEnd() {
 $('play').onclick = () => { if (state.champ) startGame(); };
 renderMenu();
 // acceso para pruebas automatizadas
-window.__cdc = { state, startGame, renderMenu, get G() { return G; }, get R() { return R; }, get touch() { return touch; }, cast, summoner, togglePause, UI, S };
+window.__cdc = { state, startGame, renderMenu, setChamp, aplicarSet, aplicarRunas, abrirPanel, SEL, get G() { return G; }, get R() { return R; }, get touch() { return touch; }, cast, summoner, togglePause, UI, S };

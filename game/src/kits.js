@@ -365,29 +365,46 @@ function kaelQ(g, u, aim, v, isRecast) {
   return true;
 }
 
-// Hechizos de invocador (combat-core.md §Hechizos de invocador)
+// Hechizos de invocador (combat-core.md §Hechizos; enfriamientos de design/ux/wild-rift-fuentes.md §3).
+// Nombres propios de Coronas de Ceniza. `icon`/`col` los usan la selección y el HUD; `pos` = posiciones que suelen llevarlo.
 export const SUMMONERS = {
-  flash:    { name: 'Destello',    cd: 300, t: 'point', range: 400 },
-  ignite:   { name: 'Prender',     cd: 180, t: 'unit',  range: 600 },
-  heal:     { name: 'Curar',       cd: 240, t: 'self' },
-  smite:    { name: 'Castigo',     cd: 15,  t: 'unit',  range: 500, charges: 2 },
-  teleport: { name: 'Teleportar',  cd: 360, t: 'self' },
-  barrier:  { name: 'Barrera',     cd: 180, t: 'self' },
-  snowball: { name: 'Bola de Nieve', cd: 40, t: 'skill', range: 1600 },
+  flash:    { name: 'Parpadeo',      cd: 150, t: 'point', range: 400, icon: '✦', col: '#ffd54f', desc: 'Salto instantáneo de 400 unidades hacia el punto.' },
+  ghost:    { name: 'Zancada',       cd: 90,  t: 'self',              icon: '👣', col: '#4fc3f7', desc: '+35% de velocidad de movimiento durante 8 s; +6 s por cada derribo.' },
+  heal:     { name: 'Sanar',         cd: 100, t: 'self',              icon: '✚', col: '#81c784', desc: 'Cura 110 (+17/nivel) a ti y al aliado cercano más herido, y +30% de velocidad 1 s.' },
+  barrier:  { name: 'Muralla',       cd: 100, t: 'self',              icon: '▣', col: '#ffe082', desc: 'Escudo de 120 (+26/nivel) durante 2,5 s.' },
+  exhaust:  { name: 'Extenuar',      cd: 100, t: 'unit',  range: 650, icon: '☍', col: '#80cbc4', desc: 'El campeón enemigo inflige un 40% menos de daño y queda ralentizado un 35% durante 2,5 s.' },
+  ignite:   { name: 'Brasa',         cd: 100, t: 'unit',  range: 600, icon: '🔥', col: '#ff7043', desc: '72 (+18/nivel) de daño verdadero en 5 s, lo revela y reduce sus curaciones un 60%.' },
+  smite:    { name: 'Juicio',        cd: 15,  t: 'unit',  range: 500, charges: 2, icon: '⚒', col: '#ffab40', desc: '600 de daño verdadero a un monstruo o súbdito y te cura 70 (+10/nivel). 2 cargas (una cada 90 s). Al tercer uso evoluciona a Juicio Gélido: 1000 de daño y se puede lanzar a campeones (ralentiza 30% 2 s).' },
+  cleanse:  { name: 'Purga',         cd: 110, t: 'self',              icon: '✺', col: '#ce93d8', desc: 'Elimina todos los controles de masas y te hace inmune a ellos 0,25 s.' },
+  teleport: { name: 'Portal',        cd: 150, t: 'self',              icon: '◎', col: '#9fa8da', desc: 'Canaliza 3 s y te lleva junto al aliado o guardián más avanzado (a una torre antes del 6:00).' },
+  snowball: { name: 'Bola de Nieve', cd: 40,  t: 'skill', range: 1600, icon: '❄', col: '#e1f5fe', desc: 'Solo en el Puente: lanza una bola y relánzala para saltar al enemigo alcanzado.', aram: true },
 };
+/** Hechizos recomendados por posición (consenso de comunidad: wild-rift-fuentes.md §3). Jungla siempre con Juicio. */
+export const SUMMONERS_BY_POSITION = { jungle: ['flash', 'smite'], top: ['flash', 'teleport'], mid: ['flash', 'ignite'], bot: ['flash', 'heal'], support: ['flash', 'exhaust'] };
 export function castSummoner(g, u, id, aim) {
   switch (id) {
     case 'flash': { const [x, y] = g.clampToMap(...ptIn(u, aim, 400)); fx(g, { kind: 'circle', x: u.x, y: u.y, r: 50, team: u.team, col: '#ffee58' }); u.x = x; u.y = y; u.dash = null; u.moveTo = null; g.unstick(u); return true; }
+    case 'ghost': addBuff(u, 'zancada', 8, { pct: { ms: 0.35 } }); return true;
     case 'ignite': { const t = aim.unit; if (!t || t.team === u.team || dist(u, t) > 600 + t.r) return false;
-      const tot = 70 + 20 * u.level; addBuff(t, 'grievous', 5); addBuff(t, 'prender', 5, { onTick: (g2, x) => dealDamage(g, u, x, tot / 5 * TICK, 'true', { dot: true, noProc: true }) }); return true; }
-    case 'heal': { const amt = 75 + 15 * u.level; heal(g, null, u, amt); addBuff(u, 'curar_ms', 1, { pct: { ms: 0.3 } });
+      const tot = 72 + 18 * (u.level - 1); addBuff(t, 'grievous', 5); addBuff(t, 'prender', 5, { src: u, onTick: (g2, x) => { x.lastRevealed = g2.t; dealDamage(g2, u, x, tot / 5 * TICK, 'true', { dot: true, noProc: true }); } }); return true; }
+    case 'heal': { const amt = 110 + 17 * (u.level - 1); heal(g, null, u, amt); addBuff(u, 'curar_ms', 1, { pct: { ms: 0.3 } });
       const a = g.units.filter(x => x.alive && x.kind === 'champ' && x.team === u.team && x !== u && dist(x, u) < 850).sort((a, b) => a.hp / a.st.maxHp - b.hp / b.st.maxHp)[0];
-      if (a) heal(g, null, a, amt); return true; }
-    case 'smite': { const t = aim.unit; if (!t || t.team === u.team || t.kind === 'champ' || t.structure || dist(u, t) > 500 + t.r) return false;
-      dealDamage(g, u, t, 600 + 35 * (u.level - 1), 'true', { noProc: true }); return true; }
-    case 'teleport': { const tw = g.units.filter(x => x.alive && x.structure && x.team === u.team && x.kind === 'tower').sort((a, b) => dist(b, g.base(u.team)) - dist(a, g.base(u.team)))[0];
-      if (!tw) return false; u.channel = { t: 4, every: 99, acc: 0, fn() {}, onEnd() { [u.x, u.y] = g.clampToMap(tw.x + 150, tw.y + 150); g.unstick(u); } }; return true; }
-    case 'barrier': addShield(g, u, u, 95 + 20 * u.level, 2); return true;
+      if (a) { heal(g, null, a, amt); addBuff(a, 'curar_ms', 1, { pct: { ms: 0.3 } }); } return true; }
+    case 'barrier': addShield(g, u, u, 120 + 26 * (u.level - 1), 2.5); return true;
+    case 'exhaust': { const t = aim.unit; if (!t || t.team === u.team || t.kind !== 'champ' || dist(u, t) > 650 + t.r) return false;
+      addBuff(t, 'extenuado', 2.5, { stats: { dmgOut: -0.4 } }); applyCC(g, t, 'slow', 2.5, { val: 0.35 }); return true; }
+    case 'smite': { const t = aim.unit; const evo = (u.p.smiteUses || 0) >= 3;
+      if (!t || t.team === u.team || t.structure || dist(u, t) > 500 + t.r) return false;
+      if (t.kind === 'champ') { if (!evo) return false; dealDamage(g, u, t, 20 + 8 * u.level, 'true', { noProc: true }); applyCC(g, t, 'slow', 2, { val: 0.3 }); }
+      else { dealDamage(g, u, t, evo ? 1000 : 600, 'true', { noProc: true }); heal(g, null, u, 70 + 10 * u.level); }
+      u.p.smiteUses = (u.p.smiteUses || 0) + 1; return true; }
+    case 'cleanse': u.cc = []; u.unstoppable = true; g.after(0.25, () => { u.unstoppable = false; }); addBuff(u, 'purga', 0.25); return true;
+    case 'teleport': {
+      const b = g.base(u.team);
+      const towers = g.units.filter(x => x.alive && x.kind === 'tower' && x.team === u.team);
+      const cands = g.t < 360 ? towers : [...g.units.filter(x => x.alive && x.team === u.team && (x.kind === 'ward' || (x.kind === 'champ' && x !== u))), ...towers];
+      const tw = cands.sort((p, q) => dist(q, b) - dist(p, b))[0];
+      if (!tw) return false; u.channel = { t: 3, every: 99, acc: 0, fn() {}, onEnd() { [u.x, u.y] = g.clampToMap(tw.x + 150, tw.y + 150); g.unstick(u); } }; return true; }
     case 'snowball': {
       if (u.recast.snow > g.t && u.p.snowT && u.p.snowT.alive) { const t = u.p.snowT; u.recast.snow = 0; dashTo(g, u, t.x, t.y, 1600); return 'recast'; }
       const [dx, dy] = dirOf(u, aim);

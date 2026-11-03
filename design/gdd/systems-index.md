@@ -12,3 +12,4 @@
 | 8 | Flujo de partida (selección, carga, fin) | `match-flow.md` | MVP | Diseñado | 2, 4 |
 | 9 | Red (LAN, autoritativa) | ADR pendiente | Demo+ | Pendiente | todos |
 | 10 | Audio y efectos visuales | `ui-hud-controls.md` §Audio/VFX | Demo | Diseñado | 2 |
+| 11 | Selección Wild Rift: sala, hechizos, runas y sets de objetos | `runes-and-item-sets.md` | MVP | Implementado y verificado | 1, 2, 3, 7 |

@@ -13,6 +13,7 @@ from playwright.sync_api import sync_playwright
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 HTML = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / 'dist' / 'coronas-de-ceniza.html'
 SHOTS = ROOT / 'tests' / 'screenshots'; SHOTS.mkdir(parents=True, exist_ok=True)
+EVID = ROOT.parent / 'production' / 'qa' / 'evidence'; EVID.mkdir(parents=True, exist_ok=True)
 results, errors = [], []
 
 def check(name, cond, detail=''):
@@ -52,9 +53,56 @@ with sync_playwright() as p:
     check('menú: 15 campeones', pg.locator('[data-champ]').count() == 15)
     check('menú: 4 modos (3 mapas + tutorial)', pg.locator('[data-map]').count() == 4)
     check('menú: JUGAR deshabilitado sin campeón', pg.is_disabled('#play'))
+    # selección al estilo Wild Rift (design/ux/wild-rift-disposicion.md §2–§4)
+    sala = js(pg, "() => { const s = __cdc.state.sel; return { pos: s.pos, aliados: s.aliados.length, bots: s.aliados.filter(a => !a.esJugador && a.champ).length, rivales: s.rivales.length, ocultos: s.rivales.filter(r => !r.visible).length } }")
+    check('selección: 4 bots aliados con posición y 5 rivales ocultos', sala['aliados'] == 5 and sala['bots'] == 4 and sala['rivales'] == 5 and sala['ocultos'] == 5, str(sala))
+    check('selección: lista de aliados con posición, 2 hechizos y ⇄ en los bots', pg.locator('#aliados .fila').count() == 5 and pg.locator('#aliados [data-swap]').count() == 4 and pg.locator('#aliados .sumMini').count() == 10)
+    c0 = int(pg.text_content('#cuenta'))
+    try: pg.wait_for_function("() => +document.getElementById('cuenta').textContent < 60", timeout=15000)
+    except Exception: pass
+    c1 = int(pg.text_content('#cuenta')); r = js(pg, "() => __cdc.state.cuenta.restante")
+    check('selección: cuenta atrás real desde 60', c0 <= 60 and 0 < c1 < 60 and r < 60, f'{c0} → {c1} ({r})')
+    pg.click('#filtros [data-rol="Mago"]'); time.sleep(0.1)
+    check('selección: el filtro por rol reduce la rejilla a 3 magos', pg.locator('[data-champ]').count() == 3)
+    pg.fill('#buscar', 'kae'); time.sleep(0.1); check('selección: buscar por nombre', pg.locator('[data-champ]').count() == 0)
+    pg.click('#filtros [data-rol="todos"]'); check('selección: «todos» + búsqueda «kae» = Kaelith', pg.locator('[data-champ]').count() == 1); pg.fill('#buscar', '')
     pg.click('[data-champ="kaelith"]')
     check('menú: ficha con pasiva y 4 habilidades', pg.locator('#detail .ab').count() == 5)
-    pg.screenshot(path=str(SHOTS / '01_seleccion.png'))
+    check('selección: marco dorado al elegido e insignias de recomendado', pg.locator('[data-champ="kaelith"].sel').count() == 1 and pg.locator('.rejilla .rec').count() >= 1)
+    check('runas: insignia «1» mientras no se configuran', not js(pg, "() => document.getElementById('runasBadge').classList.contains('off')"))
+    pos0 = js(pg, "() => __cdc.state.sel.pos"); otra = js(pg, "() => __cdc.state.sel.aliados.find(a => !a.esJugador).pos")
+    pg.click(f'#aliados [data-swap="{otra}"]'); time.sleep(0.1)
+    check('selección: ⇄ cambia la posición con el bot (acepta)', js(pg, "() => __cdc.state.sel.pos") == otra and pos0 != otra)
+    pg.screenshot(path=str(SHOTS / '01_seleccion.png')); pg.screenshot(path=str(EVID / '2026-11-03-seleccion-campeon.png'))
+    # panel de hechizos (captura 08): 9 hechizos, tocar uno sustituye la ranura marcada y cambia #sum0
+    pg.click('#selSum0'); time.sleep(0.3)
+    check('hechizos: panel con 9 hechizos y los 2 elegidos', pg.is_visible('#panelHechizos') and pg.locator('#panelHechizos [data-sum]').count() == 9 and pg.locator('#panelHechizos [data-slot]').count() == 2)
+    pg.screenshot(path=str(EVID / '2026-11-03-seleccion-hechizos.png'))
+    pg.click('#panelHechizos [data-sum="ghost"]'); time.sleep(0.1)
+    check('hechizos: tocar Zancada cambia #sum0', js(pg, "() => document.getElementById('sum0').value") == 'ghost' and js(pg, "() => __cdc.state.sums[0]") == 'ghost')
+    pg.click('#panelHechizos [data-cerrar]')
+    # sets de objetos (captura 09): pestañas, popularidad y % de victorias, aplicar cambia el set
+    pg.click('#btnSets'); time.sleep(0.3); pg.click('#panelSets [data-tab="POPULAR"]'); time.sleep(0.2)
+    nsets = pg.locator('#panelSets .set').count(); txt = pg.text_content('#panelSets')
+    check('sets: pestaña POPULAR con ≥ 2 sets, popularidad y porcentaje de victorias', nsets >= 2 and 'Popularidad:' in txt and 'Porcentaje de victorias:' in txt and '%' in txt)
+    pg.screenshot(path=str(EVID / '2026-11-03-seleccion-sets.png'))
+    set2 = js(pg, "() => document.querySelector('#panelSets [data-aplicar]').dataset.aplicar")
+    pg.click(f'#panelSets [data-aplicar="{set2}"]'); time.sleep(0.1)
+    check('sets: aplicar un set cambia state.itemSet (6 objetos) y lo marca con ✓', js(pg, f"() => __cdc.state.setId === '{set2}' && __cdc.state.itemSet.length === 6") and pg.locator('#panelSets .set.sel .accion.ok').count() == 1)
+    pg.click('#panelSets [data-tab="PERSONAL"]'); time.sleep(0.1)
+    for it in ['botas_de_acero', 'coraza_de_hondaforja', 'manto_onirico', 'hacha_de_colmillo', 'capa_del_angel', 'relicario_de_hierro']: pg.click(f'#panelSets [data-anadir="{it}"]')
+    check('sets: PERSONAL compone un set de 6 tocando objetos (localStorage)', pg.locator('#panelSets [data-aplicar="personal"]').count() == 1 and len(js(pg, "() => JSON.parse(localStorage.getItem('cdc_sets_personal')).kaelith")) == 6)
+    pg.click('#panelSets [data-cerrar]')
+    # runas (⊕ con «1»): rama primaria + 3 menores + secundaria; aplicar quita el «1»
+    check('runas: aplicar un set configura las runas y quita el «1»', js(pg, "() => document.getElementById('runasBadge').classList.contains('off')"))
+    js(pg, "() => { __cdc.state.runesConfigured = false; __cdc.renderMenu(); }")
+    pg.click('#btnRunas'); time.sleep(0.3)
+    check('runas: panel con 4 ramas y 13 claves en total', pg.is_visible('#panelRunas') and pg.locator('#panelRunas [data-rama]').count() == 4 and js(pg, "() => __cdc.SEL && 13"))
+    pg.screenshot(path=str(EVID / '2026-11-03-seleccion-runas.png'))
+    pg.click('#panelRunas [data-rama="roca"]'); time.sleep(0.1); pg.click('#panelRunas [data-runa="garra_del_sepulcro"]'); time.sleep(0.1); pg.click('#panelRunas [data-runa="raices_profundas"]'); time.sleep(0.1)
+    check('runas: elegir rama Roca, Garra del Sepulcro y Raíces Profundas', js(pg, "() => document.querySelector('#panelRunas [data-runa=\"garra_del_sepulcro\"]').classList.contains('sel') && document.querySelector('#panelRunas [data-runa=\"raices_profundas\"]').classList.contains('sel')"))
+    pg.click('#panelRunas #runasAplicar'); time.sleep(0.1)
+    check('runas: aplicar guarda la página (con Raíces Profundas) y quita el «1»', js(pg, "() => __cdc.state.runes.key === 'garra_del_sepulcro' && __cdc.state.runes.minors.includes('raices_profundas')") and js(pg, "() => document.getElementById('runasBadge').classList.contains('off')"))
     pg.click('#helpBtn'); check('menú: ayuda de controles', pg.is_visible('#help')); pg.click('#help button')
 
     # ---------- Grieta: partida jugada con ratón y teclado ----------
@@ -62,8 +110,13 @@ with sync_playwright() as p:
     check('Grieta: el lienzo dibuja el mapa', nonblack(pg) > 200)
     m3 = js(pg, "() => { const r = __cdc.r3d; if (!r) return null; let skinned = 0; for (const o of r.objs.values()) if (o.userData.mixer) skinned++; return { models: Object.keys(r.templates).length, objs: r.objs.size, skinned, champ: r.objs.get(__cdc.G.player.id)?.userData.spec.model } }")
     check('3D: ≥40 modelos glTF (32 unidades CC0 + estructuras + mapa) y Kaelith con su modelo definitivo', m3 and m3['models'] >= 40 and m3['skinned'] >= 5 and m3['champ'] == 'champ_kaelith', str(m3))
-    st = js(pg, "() => { const G = __cdc.G; return { n: G.champs.length, name: G.player.name, team: G.player.team, role: G.player.role } }")
+    st = js(pg, "() => { const G = __cdc.G; return { n: G.champs.length, name: G.player.name, team: G.player.team, role: G.player.role, rivales: G.champs.filter(c => c.team === 1).map(c => c.cid), set: G.player.itemSet, setId: G.player.setId, runes: G.player.runes, sums: G.player.summoners, hp: G.player.st.maxHp, basehp: G.player.base.hp, jungla: G.champs.filter(c => c.team === 0 && c.role === 'jungle').map(c => c.summoners) } }")
     check('Grieta: 10 campeones y jugador Kaelith', st['n'] == 10 and st['name'] == 'Kaelith', str(st))
+    sala = js(pg, "() => ({ rivales: __cdc.state.sel.rivales.map(r => r.champ), pos: __cdc.state.sel.pos })")
+    check('Grieta: la alineación de la sala manda (rivales revelados = rivales de la partida; jugador en su posición)', st['rivales'] == sala['rivales'] and st['role'] == sala['pos'], str(st) + str(sala))
+    check('Grieta: G.player.itemSet = set aplicado (contrato con la compra rápida del HUD) y G.player.runes', st['set'] == js(pg, "() => __cdc.state.itemSet") and st['setId'] == set2 and st['runes']['key'] == 'garra_del_sepulcro', str(st))
+    check('Grieta: las runas aplicadas cambian una estadística (Raíces Profundas: +100 de vida máx.)', abs(st['hp'] - st['basehp'] - 100) < 0.5, str(st))
+    check('Grieta: la jungla aliada lleva Juicio', all('smite' in s for s in st['jungla']), str(st))
     pg.screenshot(path=str(SHOTS / '02_grieta_inicio.png'))
     # tienda en la fuente: comprar botas
     pg.keyboard.press('p'); time.sleep(0.2); check('tienda: se abre con P', pg.is_visible('#shop'))
@@ -97,8 +150,9 @@ with sync_playwright() as p:
     pg.keyboard.press('4'); time.sleep(0.1)
     check('tecla 4 coloca un guardián', js(pg, "() => __cdc.G.units.some(u => u.kind === 'ward' && u.team === __cdc.G.player.team)"))
     ready(pg)
+    js(pg, "() => { const p = __cdc.G.player; p.summoners = ['flash', 'ignite']; p.sumCd = [0, 0]; }")
     xb = js(pg, "() => __cdc.G.player.x"); pg.mouse.move(200, 450); pg.keyboard.press('d'); time.sleep(0.1)
-    check('D lanza Destello', js(pg, "() => __cdc.G.player.sumCd[0] > 0"), str(js(pg, "() => { const p = __cdc.G.player; return { alive: p.alive, cc: p.cc.map(c => c.kind), ch: !!p.channel, dash: !!p.dash, sums: p.summoners } }")))
+    check('D lanza Parpadeo (Destello)', js(pg, "() => __cdc.G.player.sumCd[0] > 0"), str(js(pg, "() => { const p = __cdc.G.player; return { alive: p.alive, cc: p.cc.map(c => c.kind), ch: !!p.channel, dash: !!p.dash, sums: p.summoners } }")))
     ready(pg)
     pg.keyboard.press('b'); time.sleep(0.1)
     check('B inicia la vuelta a base', js(pg, "() => !!(__cdc.G.player.channel && __cdc.G.player.channel.recall)"))
@@ -148,7 +202,7 @@ with sync_playwright() as p:
     # ---------- Tutorial ----------
     new_game(pg, 'tutorial', 'lyra')
     check('tutorial: panel visible con 5 pasos', pg.is_visible('#tutorial') and pg.locator('#tutorial li').count() == 5)
-    check('tutorial: bots en Fácil y Castigo en F', js(pg, "() => __cdc.G.difficulty === 'facil' && __cdc.G.player.summoners[1] === 'smite'"))
+    check('tutorial: bots en Fácil y Juicio (Castigo) en F', js(pg, "() => __cdc.G.difficulty === 'facil' && __cdc.G.player.summoners[1] === 'smite'"))
     pg.screenshot(path=str(SHOTS / '11_tutorial.png'))
 
     # ---------- modo 2D de respaldo (sin WebGL o desactivado en Opciones) ----------

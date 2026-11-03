@@ -1,5 +1,6 @@
 // IA de bots (design/gdd/bots-ai.md): capa estratégica (objetivos/agrupación) + táctica (pelea, último golpe, huida).
 import { dist, norm, hasCC, mitigation, canCast } from './core.js';
+import { ITEMS } from './data.js';
 
 export const DIFF = {
   facil:   { acc: 0.5,  lh: 0.4, skip: 0.45, strat: false, dodge: false, fight: 1.4 },
@@ -14,20 +15,27 @@ export const BUILDS = {
   Asesino:  ['botas', 'hacha_de_colmillo', 'filo_del_ocaso', 'espada_larga', 'coraza_de_hondaforja', 'espada_larga'],
   Soporte:  ['botas', 'incensario_dorado', 'manto_onirico', 'tomo_amplificador', 'coraza_de_hondaforja', 'cinturon_gigante'],
 };
-const ITEM_COST = { botas: 300, espada_larga: 350, tomo_amplificador: 435, cinturon_gigante: 900, filo_del_ocaso: 3000, arco_de_tormenta: 2900, baculo_de_ceniza: 3100,
-  orbe_del_vacio: 2800, coraza_de_hondaforja: 2900, manto_onirico: 2800, hacha_de_colmillo: 3200, incensario_dorado: 2300 };
+const ITEM_COST = Object.fromEntries(ITEMS.map(i => [i.id, i.cost]));
+const ITEM_BY_ID = Object.fromEntries(ITEMS.map(i => [i.id, i]));
 
 const power = u => u.hp * (u.st.ad * u.st.as + u.st.ap * 0.6 + 30 + u.level * 12) / 100;
 
+// Los bots compran siguiendo su set (u.itemSet, de item_sets.json); sin set, la build por clase. Al 10:00 mejoran las botas al nivel 3.
+function nextItem(g, u) {
+  const n = u.itemSet && u.itemSet.length ? g.nextSetItem(u) : (BUILDS[u.data.class][u.items.length] || null);
+  if (n) return n;
+  const boots = u.items.find(i => i.slot === 'botas' && i.nivel === 2);
+  if (boots) { const up = ITEMS.find(i => i.upgradeOf === boots.id); if (up && (!up.since || g.t >= up.since)) return up.id; }
+  return null;
+}
 function shop(g, u) {
-  const b = BUILDS[u.data.class];
   let guard = 6;
-  while (guard-- && u.items.length < 6) {
-    const next = b[u.items.length]; if (!next || u.gold < ITEM_COST[next]) break;
-    if (!g.buy(u, next)) break;
+  while (guard--) {
+    const next = nextItem(g, u); if (!next) break;
+    if (!g.canBuy(u, next).ok || !g.buy(u, next)) break;
   }
 }
-function nextCost(u) { const n = BUILDS[u.data.class][u.items.length]; return n ? ITEM_COST[n] : 1e9; }
+function nextCost(u) { const n = u.itemSet && u.itemSet.length ? u.itemSet.find(id => !u.items.some(x => x.id === id || x.upgradeOf === id)) : BUILDS[u.data.class][u.items.length]; return n ? ITEM_COST[n] : 1e9; }
 
 function aimAt(g, u, t, D) {
   const lead = Math.min(0.5, dist(u, t) / 1500);
@@ -65,18 +73,30 @@ function tryAbilities(g, u, t, ctx, D) {
 
 function useSummoners(g, u, t, ctx, fleeing) {
   const my = u.hp / u.st.maxHp;
+  // objeto activo: estasis/relicario/azogue al apuro, cohete para entrar
+  const act = u.items.find(i => i.active);
+  if (act && u.activeCd <= 0) {
+    if (act.active === 'estasis' && my < 0.25 && ctx.enemiesNear) g.cmdItemActive(u);
+    if (act.active === 'relicario' && ctx.enemiesNear && ctx.allies.some(a => a.hp / a.st.maxHp < 0.5)) g.cmdItemActive(u);
+    if (act.active === 'azogue' && hasCC(u, 'stun') || act.active === 'azogue' && hasCC(u, 'root')) g.cmdItemActive(u);
+    if (act.active === 'cohete' && t && t.kind === 'champ' && ctx.fight && dist(u, t) < 600) g.cmdItemActive(u, { x: t.x, y: t.y });
+  }
   u.summoners.forEach((s, i) => {
-    if (u.sumCd[i] > 0 && !(s === 'smite' && u.smiteCharges > 0)) return;
+    if (u.sumCd[i] > 0) return;
     if (s === 'heal' && my < 0.3 && ctx.enemiesNear) g.cmdSummoner(u, i, {});
     if (s === 'barrier' && my < 0.25 && ctx.enemiesNear) g.cmdSummoner(u, i, {});
+    if (s === 'ghost' && (fleeing || ctx.fight) && ctx.enemiesNear) g.cmdSummoner(u, i, {});
+    if (s === 'exhaust' && t && t.kind === 'champ' && ctx.enemiesNear && (my < 0.5 || t.hp / t.st.maxHp < 0.4) && dist(u, t) < 650) g.cmdSummoner(u, i, { unit: t });
+    if (s === 'cleanse' && (hasCC(u, 'stun') || hasCC(u, 'root') || hasCC(u, 'taunt') || hasCC(u, 'fear')) && ctx.enemiesNear) g.cmdSummoner(u, i, {});
+    if (s === 'teleport' && !ctx.enemiesNear && my > 0.6 && g.inFountain(u) && g.t > 120 && g.t < 900) g.cmdSummoner(u, i, {});
     if (s === 'ignite' && t && t.kind === 'champ' && t.hp / t.st.maxHp < 0.3 && dist(u, t) < 600) g.cmdSummoner(u, i, { unit: t });
     if (s === 'flash' && fleeing && my < 0.15 && ctx.closest && dist(ctx.closest, u) < 450) { const b = g.base(u.team); const [dx, dy] = norm(b.x - u.x, b.y - u.y); g.cmdSummoner(u, i, { x: u.x + dx * 400, y: u.y + dy * 400 }); }
     if (s === 'snowball' && t && t.kind === 'champ' && ctx.fight && dist(u, t) < 1500) g.cmdSummoner(u, i, { x: t.x, y: t.y });
   });
 }
 function smiteIf(g, u, m) {
-  const i = u.summoners.indexOf('smite'); if (i < 0 || u.smiteCharges <= 0) return;
-  const dmg = 600 + 35 * (u.level - 1);
+  const i = u.summoners.indexOf('smite'); if (i < 0 || u.smiteCharges <= 0 || u.sumCd[i] > 0) return;
+  const dmg = (u.p.smiteUses || 0) >= 3 ? 1000 : 600;
   if (m && m.alive && (m.epicType || (m.big && (m.camp.type === 'golem' || m.camp.type === 'bestia')) || u.smiteCharges === 2) && m.hp <= dmg && dist(u, m) < 500 + m.r) g.cmdSummoner(u, i, { unit: m });
 }
 

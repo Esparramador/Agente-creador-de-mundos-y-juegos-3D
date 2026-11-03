@@ -1,0 +1,1397 @@
+[
+ {
+  "id": "brannoc_1",
+  "champ": "brannoc",
+  "name": "Muralla",
+  "featured": true,
+  "items": [
+   "botas_de_acero",
+   "coraza_de_hondaforja",
+   "manto_onirico",
+   "relicario_de_hierro",
+   "yelmo_del_abismo",
+   "cinturon_gigante"
+  ],
+  "runes": {
+   "key": "garra_del_sepulcro",
+   "minors": [
+    "placas_de_hueso",
+    "segundo_aliento",
+    "raices_profundas"
+   ],
+   "secondary": "triunfo"
+  },
+  "summoners": [
+   "flash",
+   "teleport"
+  ],
+  "popularity": 13,
+  "games": 13,
+  "wins": 8,
+  "winrate": 0.6153846153846154
+ },
+ {
+  "id": "brannoc_2",
+  "champ": "brannoc",
+  "name": "Vanguardia",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "hacha_de_colmillo",
+   "coraza_de_hondaforja",
+   "manto_onirico",
+   "capa_del_angel",
+   "cinturon_gigante"
+  ],
+  "runes": {
+   "key": "senor_de_la_escarcha",
+   "minors": [
+    "placas_de_hueso",
+    "inquebrantable",
+    "raices_profundas"
+   ],
+   "secondary": "trascendencia"
+  },
+  "summoners": [
+   "flash",
+   "teleport"
+  ],
+  "popularity": 14,
+  "games": 14,
+  "wins": 7,
+  "winrate": 0.5
+ },
+ {
+  "id": "brannoc_3",
+  "champ": "brannoc",
+  "name": "Custodio",
+  "featured": false,
+  "items": [
+   "botas_de_acero",
+   "relicario_de_hierro",
+   "manto_onirico",
+   "coraza_de_hondaforja",
+   "yelmo_del_abismo",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "custodio",
+   "minors": [
+    "placas_de_hueso",
+    "segundo_aliento",
+    "raices_profundas"
+   ],
+   "secondary": "ardor"
+  },
+  "summoners": [
+   "flash",
+   "teleport"
+  ],
+  "popularity": 17,
+  "games": 17,
+  "wins": 12,
+  "winrate": 0.7058823529411765
+ },
+ {
+  "id": "morgra_1",
+  "champ": "morgra",
+  "name": "Muralla",
+  "featured": true,
+  "items": [
+   "botas_de_acero",
+   "coraza_de_hondaforja",
+   "manto_onirico",
+   "relicario_de_hierro",
+   "yelmo_del_abismo",
+   "cinturon_gigante"
+  ],
+  "runes": {
+   "key": "garra_del_sepulcro",
+   "minors": [
+    "placas_de_hueso",
+    "segundo_aliento",
+    "raices_profundas"
+   ],
+   "secondary": "triunfo"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 11,
+  "games": 11,
+  "wins": 5,
+  "winrate": 0.45454545454545453
+ },
+ {
+  "id": "morgra_2",
+  "champ": "morgra",
+  "name": "Vanguardia",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "hacha_de_colmillo",
+   "coraza_de_hondaforja",
+   "manto_onirico",
+   "capa_del_angel",
+   "cinturon_gigante"
+  ],
+  "runes": {
+   "key": "senor_de_la_escarcha",
+   "minors": [
+    "placas_de_hueso",
+    "inquebrantable",
+    "raices_profundas"
+   ],
+   "secondary": "trascendencia"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 13,
+  "games": 13,
+  "wins": 7,
+  "winrate": 0.5384615384615384
+ },
+ {
+  "id": "morgra_3",
+  "champ": "morgra",
+  "name": "Custodio",
+  "featured": false,
+  "items": [
+   "botas_de_acero",
+   "relicario_de_hierro",
+   "manto_onirico",
+   "coraza_de_hondaforja",
+   "yelmo_del_abismo",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "custodio",
+   "minors": [
+    "placas_de_hueso",
+    "segundo_aliento",
+    "raices_profundas"
+   ],
+   "secondary": "ardor"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 10,
+  "games": 10,
+  "wins": 6,
+  "winrate": 0.6
+ },
+ {
+  "id": "ossuar_1",
+  "champ": "ossuar",
+  "name": "Muralla",
+  "featured": true,
+  "items": [
+   "botas_de_acero",
+   "coraza_de_hondaforja",
+   "manto_onirico",
+   "relicario_de_hierro",
+   "yelmo_del_abismo",
+   "cinturon_gigante"
+  ],
+  "runes": {
+   "key": "garra_del_sepulcro",
+   "minors": [
+    "placas_de_hueso",
+    "segundo_aliento",
+    "raices_profundas"
+   ],
+   "secondary": "triunfo"
+  },
+  "summoners": [
+   "flash",
+   "teleport"
+  ],
+  "popularity": 10,
+  "games": 10,
+  "wins": 3,
+  "winrate": 0.3
+ },
+ {
+  "id": "ossuar_2",
+  "champ": "ossuar",
+  "name": "Vanguardia",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "hacha_de_colmillo",
+   "coraza_de_hondaforja",
+   "manto_onirico",
+   "capa_del_angel",
+   "cinturon_gigante"
+  ],
+  "runes": {
+   "key": "senor_de_la_escarcha",
+   "minors": [
+    "placas_de_hueso",
+    "inquebrantable",
+    "raices_profundas"
+   ],
+   "secondary": "trascendencia"
+  },
+  "summoners": [
+   "flash",
+   "teleport"
+  ],
+  "popularity": 12,
+  "games": 12,
+  "wins": 6,
+  "winrate": 0.5
+ },
+ {
+  "id": "ossuar_3",
+  "champ": "ossuar",
+  "name": "Custodio",
+  "featured": false,
+  "items": [
+   "botas_de_acero",
+   "relicario_de_hierro",
+   "manto_onirico",
+   "coraza_de_hondaforja",
+   "yelmo_del_abismo",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "custodio",
+   "minors": [
+    "placas_de_hueso",
+    "segundo_aliento",
+    "raices_profundas"
+   ],
+   "secondary": "ardor"
+  },
+  "summoners": [
+   "flash",
+   "teleport"
+  ],
+  "popularity": 5,
+  "games": 5,
+  "wins": 1,
+  "winrate": 0.2
+ },
+ {
+  "id": "kaelith_1",
+  "champ": "kaelith",
+  "name": "Sangría",
+  "featured": true,
+  "items": [
+   "botas_de_acero",
+   "garra_sangrienta",
+   "hacha_de_colmillo",
+   "coraza_de_hondaforja",
+   "sed_de_sangre",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "vencedor",
+   "minors": [
+    "brutal",
+    "triunfo",
+    "golpe_de_gracia"
+   ],
+   "secondary": "segundo_aliento"
+  },
+  "summoners": [
+   "flash",
+   "teleport"
+  ],
+  "popularity": 6,
+  "games": 6,
+  "wins": 3,
+  "winrate": 0.5
+ },
+ {
+  "id": "kaelith_2",
+  "champ": "kaelith",
+  "name": "Verdugo",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "hacha_de_colmillo",
+   "cuchilla_del_verdugo",
+   "manto_onirico",
+   "capa_del_angel",
+   "azogue_vital"
+  ],
+  "runes": {
+   "key": "asedio",
+   "minors": [
+    "brutal",
+    "triunfo",
+    "ardor"
+   ],
+   "secondary": "inquebrantable"
+  },
+  "summoners": [
+   "flash",
+   "teleport"
+  ],
+  "popularity": 6,
+  "games": 6,
+  "wins": 2,
+  "winrate": 0.3333333333333333
+ },
+ {
+  "id": "kaelith_3",
+  "champ": "kaelith",
+  "name": "Garra",
+  "featured": false,
+  "items": [
+   "botas_de_acero",
+   "sed_de_sangre",
+   "hacha_de_colmillo",
+   "capa_del_angel",
+   "garra_sangrienta",
+   "manto_onirico"
+  ],
+  "runes": {
+   "key": "garra_del_sepulcro",
+   "minors": [
+    "placas_de_hueso",
+    "segundo_aliento",
+    "raices_profundas"
+   ],
+   "secondary": "brutal"
+  },
+  "summoners": [
+   "flash",
+   "teleport"
+  ],
+  "popularity": 7,
+  "games": 7,
+  "wins": 3,
+  "winrate": 0.42857142857142855
+ },
+ {
+  "id": "tharok_1",
+  "champ": "tharok",
+  "name": "Sangría",
+  "featured": true,
+  "items": [
+   "botas_de_acero",
+   "garra_sangrienta",
+   "hacha_de_colmillo",
+   "coraza_de_hondaforja",
+   "sed_de_sangre",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "vencedor",
+   "minors": [
+    "brutal",
+    "triunfo",
+    "golpe_de_gracia"
+   ],
+   "secondary": "segundo_aliento"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 10,
+  "games": 10,
+  "wins": 5,
+  "winrate": 0.5
+ },
+ {
+  "id": "tharok_2",
+  "champ": "tharok",
+  "name": "Verdugo",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "hacha_de_colmillo",
+   "cuchilla_del_verdugo",
+   "manto_onirico",
+   "capa_del_angel",
+   "azogue_vital"
+  ],
+  "runes": {
+   "key": "asedio",
+   "minors": [
+    "brutal",
+    "triunfo",
+    "ardor"
+   ],
+   "secondary": "inquebrantable"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 5,
+  "games": 5,
+  "wins": 3,
+  "winrate": 0.6
+ },
+ {
+  "id": "tharok_3",
+  "champ": "tharok",
+  "name": "Garra",
+  "featured": false,
+  "items": [
+   "botas_de_acero",
+   "sed_de_sangre",
+   "hacha_de_colmillo",
+   "capa_del_angel",
+   "garra_sangrienta",
+   "manto_onirico"
+  ],
+  "runes": {
+   "key": "garra_del_sepulcro",
+   "minors": [
+    "placas_de_hueso",
+    "segundo_aliento",
+    "raices_profundas"
+   ],
+   "secondary": "brutal"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 4,
+  "games": 4,
+  "wins": 0,
+  "winrate": 0
+ },
+ {
+  "id": "yssra_1",
+  "champ": "yssra",
+  "name": "Sangría",
+  "featured": true,
+  "items": [
+   "botas_de_acero",
+   "garra_sangrienta",
+   "hacha_de_colmillo",
+   "coraza_de_hondaforja",
+   "sed_de_sangre",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "vencedor",
+   "minors": [
+    "brutal",
+    "triunfo",
+    "golpe_de_gracia"
+   ],
+   "secondary": "segundo_aliento"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 5,
+  "games": 5,
+  "wins": 1,
+  "winrate": 0.2
+ },
+ {
+  "id": "yssra_2",
+  "champ": "yssra",
+  "name": "Verdugo",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "hacha_de_colmillo",
+   "cuchilla_del_verdugo",
+   "manto_onirico",
+   "capa_del_angel",
+   "azogue_vital"
+  ],
+  "runes": {
+   "key": "asedio",
+   "minors": [
+    "brutal",
+    "triunfo",
+    "ardor"
+   ],
+   "secondary": "inquebrantable"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 2,
+  "games": 2,
+  "wins": 1,
+  "winrate": 0.5
+ },
+ {
+  "id": "yssra_3",
+  "champ": "yssra",
+  "name": "Garra",
+  "featured": false,
+  "items": [
+   "botas_de_acero",
+   "sed_de_sangre",
+   "hacha_de_colmillo",
+   "capa_del_angel",
+   "garra_sangrienta",
+   "manto_onirico"
+  ],
+  "runes": {
+   "key": "garra_del_sepulcro",
+   "minors": [
+    "placas_de_hueso",
+    "segundo_aliento",
+    "raices_profundas"
+   ],
+   "secondary": "brutal"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 11,
+  "games": 11,
+  "wins": 3,
+  "winrate": 0.2727272727272727
+ },
+ {
+  "id": "vaelor_1",
+  "champ": "vaelor",
+  "name": "Incendio",
+  "featured": true,
+  "items": [
+   "botas_de_lucidez",
+   "baculo_de_ceniza",
+   "orbe_del_vacio",
+   "eco_de_brasas",
+   "reloj_de_estasis",
+   "yelmo_del_abismo"
+  ],
+  "runes": {
+   "key": "tormenta_rapida",
+   "minors": [
+    "golpe_barato",
+    "impacto_subito",
+    "trofeos"
+   ],
+   "secondary": "caudal_de_mana"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 11,
+  "games": 11,
+  "wins": 6,
+  "winrate": 0.5454545454545454
+ },
+ {
+  "id": "vaelor_2",
+  "champ": "vaelor",
+  "name": "Cometa",
+  "featured": false,
+  "items": [
+   "botas_de_lucidez",
+   "eco_de_brasas",
+   "baculo_de_ceniza",
+   "yelmo_del_abismo",
+   "orbe_del_vacio",
+   "reloj_de_estasis"
+  ],
+  "runes": {
+   "key": "cometa_de_ceniza",
+   "minors": [
+    "caudal_de_mana",
+    "trascendencia",
+    "chamuscar"
+   ],
+   "secondary": "brutal"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 13,
+  "games": 13,
+  "wins": 9,
+  "winrate": 0.6923076923076923
+ },
+ {
+  "id": "vaelor_3",
+  "champ": "vaelor",
+  "name": "Cohete",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "cinturon_cohete",
+   "baculo_de_ceniza",
+   "orbe_del_vacio",
+   "eco_de_brasas",
+   "yelmo_del_abismo"
+  ],
+  "runes": {
+   "key": "luciernaga",
+   "minors": [
+    "caudal_de_mana",
+    "trascendencia",
+    "tormenta_creciente"
+   ],
+   "secondary": "triunfo"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 4,
+  "games": 4,
+  "wins": 0,
+  "winrate": 0
+ },
+ {
+  "id": "nyxe_1",
+  "champ": "nyxe",
+  "name": "Incendio",
+  "featured": true,
+  "items": [
+   "botas_de_lucidez",
+   "baculo_de_ceniza",
+   "orbe_del_vacio",
+   "eco_de_brasas",
+   "reloj_de_estasis",
+   "yelmo_del_abismo"
+  ],
+  "runes": {
+   "key": "tormenta_rapida",
+   "minors": [
+    "golpe_barato",
+    "impacto_subito",
+    "trofeos"
+   ],
+   "secondary": "caudal_de_mana"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 13,
+  "games": 13,
+  "wins": 9,
+  "winrate": 0.6923076923076923
+ },
+ {
+  "id": "nyxe_2",
+  "champ": "nyxe",
+  "name": "Cometa",
+  "featured": false,
+  "items": [
+   "botas_de_lucidez",
+   "eco_de_brasas",
+   "baculo_de_ceniza",
+   "yelmo_del_abismo",
+   "orbe_del_vacio",
+   "reloj_de_estasis"
+  ],
+  "runes": {
+   "key": "cometa_de_ceniza",
+   "minors": [
+    "caudal_de_mana",
+    "trascendencia",
+    "chamuscar"
+   ],
+   "secondary": "brutal"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 6,
+  "games": 6,
+  "wins": 3,
+  "winrate": 0.5
+ },
+ {
+  "id": "nyxe_3",
+  "champ": "nyxe",
+  "name": "Cohete",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "cinturon_cohete",
+   "baculo_de_ceniza",
+   "orbe_del_vacio",
+   "eco_de_brasas",
+   "yelmo_del_abismo"
+  ],
+  "runes": {
+   "key": "luciernaga",
+   "minors": [
+    "caudal_de_mana",
+    "trascendencia",
+    "tormenta_creciente"
+   ],
+   "secondary": "triunfo"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 7,
+  "games": 7,
+  "wins": 5,
+  "winrate": 0.7142857142857143
+ },
+ {
+  "id": "zerath_1",
+  "champ": "zerath",
+  "name": "Incendio",
+  "featured": true,
+  "items": [
+   "botas_de_lucidez",
+   "baculo_de_ceniza",
+   "orbe_del_vacio",
+   "eco_de_brasas",
+   "reloj_de_estasis",
+   "yelmo_del_abismo"
+  ],
+  "runes": {
+   "key": "tormenta_rapida",
+   "minors": [
+    "golpe_barato",
+    "impacto_subito",
+    "trofeos"
+   ],
+   "secondary": "caudal_de_mana"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 6,
+  "games": 6,
+  "wins": 2,
+  "winrate": 0.3333333333333333
+ },
+ {
+  "id": "zerath_2",
+  "champ": "zerath",
+  "name": "Cometa",
+  "featured": false,
+  "items": [
+   "botas_de_lucidez",
+   "eco_de_brasas",
+   "baculo_de_ceniza",
+   "yelmo_del_abismo",
+   "orbe_del_vacio",
+   "reloj_de_estasis"
+  ],
+  "runes": {
+   "key": "cometa_de_ceniza",
+   "minors": [
+    "caudal_de_mana",
+    "trascendencia",
+    "chamuscar"
+   ],
+   "secondary": "brutal"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 1,
+  "games": 1,
+  "wins": 0,
+  "winrate": 0
+ },
+ {
+  "id": "zerath_3",
+  "champ": "zerath",
+  "name": "Cohete",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "cinturon_cohete",
+   "baculo_de_ceniza",
+   "orbe_del_vacio",
+   "eco_de_brasas",
+   "yelmo_del_abismo"
+  ],
+  "runes": {
+   "key": "luciernaga",
+   "minors": [
+    "caudal_de_mana",
+    "trascendencia",
+    "tormenta_creciente"
+   ],
+   "secondary": "triunfo"
+  },
+  "summoners": [
+   "flash",
+   "ignite"
+  ],
+  "popularity": 11,
+  "games": 11,
+  "wins": 6,
+  "winrate": 0.5454545454545454
+ },
+ {
+  "id": "lyra_1",
+  "champ": "lyra",
+  "name": "Crítico",
+  "featured": true,
+  "items": [
+   "grebas_del_frenesi",
+   "filo_del_ocaso",
+   "arco_de_tormenta",
+   "sed_de_sangre",
+   "cuchilla_del_verdugo",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "compas_letal",
+   "minors": [
+    "brutal",
+    "triunfo",
+    "golpe_de_gracia"
+   ],
+   "secondary": "cazador_incansable"
+  },
+  "summoners": [
+   "flash",
+   "heal"
+  ],
+  "popularity": 9,
+  "games": 9,
+  "wins": 4,
+  "winrate": 0.4444444444444444
+ },
+ {
+  "id": "lyra_2",
+  "champ": "lyra",
+  "name": "Tormenta",
+  "featured": false,
+  "items": [
+   "grebas_del_frenesi",
+   "arco_de_tormenta",
+   "filo_del_ocaso",
+   "sed_de_sangre",
+   "azogue_vital",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "pies_de_viento",
+   "minors": [
+    "ardor",
+    "triunfo",
+    "golpe_de_gracia"
+   ],
+   "secondary": "raices_profundas"
+  },
+  "summoners": [
+   "flash",
+   "heal"
+  ],
+  "popularity": 14,
+  "games": 14,
+  "wins": 8,
+  "winrate": 0.5714285714285714
+ },
+ {
+  "id": "lyra_3",
+  "champ": "lyra",
+  "name": "Verdugo",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "cuchilla_del_verdugo",
+   "filo_del_ocaso",
+   "sed_de_sangre",
+   "arco_de_tormenta",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "vencedor",
+   "minors": [
+    "brutal",
+    "triunfo",
+    "ardor"
+   ],
+   "secondary": "impacto_subito"
+  },
+  "summoners": [
+   "flash",
+   "heal"
+  ],
+  "popularity": 22,
+  "games": 22,
+  "wins": 13,
+  "winrate": 0.5909090909090909
+ },
+ {
+  "id": "gearix_1",
+  "champ": "gearix",
+  "name": "Crítico",
+  "featured": true,
+  "items": [
+   "grebas_del_frenesi",
+   "filo_del_ocaso",
+   "arco_de_tormenta",
+   "sed_de_sangre",
+   "cuchilla_del_verdugo",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "compas_letal",
+   "minors": [
+    "brutal",
+    "triunfo",
+    "golpe_de_gracia"
+   ],
+   "secondary": "cazador_incansable"
+  },
+  "summoners": [
+   "flash",
+   "heal"
+  ],
+  "popularity": 11,
+  "games": 11,
+  "wins": 4,
+  "winrate": 0.36363636363636365
+ },
+ {
+  "id": "gearix_2",
+  "champ": "gearix",
+  "name": "Tormenta",
+  "featured": false,
+  "items": [
+   "grebas_del_frenesi",
+   "arco_de_tormenta",
+   "filo_del_ocaso",
+   "sed_de_sangre",
+   "azogue_vital",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "pies_de_viento",
+   "minors": [
+    "ardor",
+    "triunfo",
+    "golpe_de_gracia"
+   ],
+   "secondary": "raices_profundas"
+  },
+  "summoners": [
+   "flash",
+   "heal"
+  ],
+  "popularity": 20,
+  "games": 20,
+  "wins": 8,
+  "winrate": 0.4
+ },
+ {
+  "id": "gearix_3",
+  "champ": "gearix",
+  "name": "Verdugo",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "cuchilla_del_verdugo",
+   "filo_del_ocaso",
+   "sed_de_sangre",
+   "arco_de_tormenta",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "vencedor",
+   "minors": [
+    "brutal",
+    "triunfo",
+    "ardor"
+   ],
+   "secondary": "impacto_subito"
+  },
+  "summoners": [
+   "flash",
+   "heal"
+  ],
+  "popularity": 14,
+  "games": 14,
+  "wins": 8,
+  "winrate": 0.5714285714285714
+ },
+ {
+  "id": "sable_1",
+  "champ": "sable",
+  "name": "Sombra",
+  "featured": true,
+  "items": [
+   "botas_de_acero",
+   "cuchilla_del_verdugo",
+   "hacha_de_colmillo",
+   "sed_de_sangre",
+   "capa_del_angel",
+   "filo_del_ocaso"
+  ],
+  "runes": {
+   "key": "tormenta_rapida",
+   "minors": [
+    "golpe_barato",
+    "impacto_subito",
+    "cazador_incansable"
+   ],
+   "secondary": "brutal"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 11,
+  "games": 11,
+  "wins": 6,
+  "winrate": 0.5454545454545454
+ },
+ {
+  "id": "sable_2",
+  "champ": "sable",
+  "name": "Emboscada",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "hacha_de_colmillo",
+   "cuchilla_del_verdugo",
+   "garra_sangrienta",
+   "azogue_vital",
+   "manto_onirico"
+  ],
+  "runes": {
+   "key": "siega_sombria",
+   "minors": [
+    "golpe_barato",
+    "trofeos",
+    "cazador_incansable"
+   ],
+   "secondary": "triunfo"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 4,
+  "games": 4,
+  "wins": 1,
+  "winrate": 0.25
+ },
+ {
+  "id": "sable_3",
+  "champ": "sable",
+  "name": "Primer Tajo",
+  "featured": false,
+  "items": [
+   "botas_de_acero",
+   "cuchilla_del_verdugo",
+   "filo_del_ocaso",
+   "sed_de_sangre",
+   "capa_del_angel",
+   "coraza_de_hondaforja"
+  ],
+  "runes": {
+   "key": "primer_tajo",
+   "minors": [
+    "impacto_subito",
+    "trofeos",
+    "cazador_incansable"
+   ],
+   "secondary": "golpe_de_gracia"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 6,
+  "games": 6,
+  "wins": 3,
+  "winrate": 0.5
+ },
+ {
+  "id": "rakhar_1",
+  "champ": "rakhar",
+  "name": "Sombra",
+  "featured": true,
+  "items": [
+   "botas_de_acero",
+   "cuchilla_del_verdugo",
+   "hacha_de_colmillo",
+   "sed_de_sangre",
+   "capa_del_angel",
+   "filo_del_ocaso"
+  ],
+  "runes": {
+   "key": "tormenta_rapida",
+   "minors": [
+    "golpe_barato",
+    "impacto_subito",
+    "cazador_incansable"
+   ],
+   "secondary": "brutal"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 7,
+  "games": 7,
+  "wins": 3,
+  "winrate": 0.42857142857142855
+ },
+ {
+  "id": "rakhar_2",
+  "champ": "rakhar",
+  "name": "Emboscada",
+  "featured": false,
+  "items": [
+   "botas_de_azogue",
+   "hacha_de_colmillo",
+   "cuchilla_del_verdugo",
+   "garra_sangrienta",
+   "azogue_vital",
+   "manto_onirico"
+  ],
+  "runes": {
+   "key": "siega_sombria",
+   "minors": [
+    "golpe_barato",
+    "trofeos",
+    "cazador_incansable"
+   ],
+   "secondary": "triunfo"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 8,
+  "games": 8,
+  "wins": 5,
+  "winrate": 0.625
+ },
+ {
+  "id": "rakhar_3",
+  "champ": "rakhar",
+  "name": "Primer Tajo",
+  "featured": false,
+  "items": [
+   "botas_de_acero",
+   "cuchilla_del_verdugo",
+   "filo_del_ocaso",
+   "sed_de_sangre",
+   "capa_del_angel",
+   "coraza_de_hondaforja"
+  ],
+  "runes": {
+   "key": "primer_tajo",
+   "minors": [
+    "impacto_subito",
+    "trofeos",
+    "cazador_incansable"
+   ],
+   "secondary": "golpe_de_gracia"
+  },
+  "summoners": [
+   "flash",
+   "smite"
+  ],
+  "popularity": 1,
+  "games": 1,
+  "wins": 1,
+  "winrate": 1
+ },
+ {
+  "id": "elowen_1",
+  "champ": "elowen",
+  "name": "Guardián",
+  "featured": true,
+  "items": [
+   "botas_de_azogue",
+   "incensario_dorado",
+   "relicario_de_hierro",
+   "manto_onirico",
+   "coraza_de_hondaforja",
+   "yelmo_del_abismo"
+  ],
+  "runes": {
+   "key": "custodio",
+   "minors": [
+    "placas_de_hueso",
+    "segundo_aliento",
+    "raices_profundas"
+   ],
+   "secondary": "caudal_de_mana"
+  },
+  "summoners": [
+   "flash",
+   "exhaust"
+  ],
+  "popularity": 25,
+  "games": 25,
+  "wins": 18,
+  "winrate": 0.72
+ },
+ {
+  "id": "elowen_2",
+  "champ": "elowen",
+  "name": "Luciérnaga",
+  "featured": false,
+  "items": [
+   "botas_de_lucidez",
+   "incensario_dorado",
+   "eco_de_brasas",
+   "manto_onirico",
+   "yelmo_del_abismo",
+   "relicario_de_hierro"
+  ],
+  "runes": {
+   "key": "luciernaga",
+   "minors": [
+    "caudal_de_mana",
+    "trascendencia",
+    "chamuscar"
+   ],
+   "secondary": "segundo_aliento"
+  },
+  "summoners": [
+   "flash",
+   "exhaust"
+  ],
+  "popularity": 6,
+  "games": 6,
+  "wins": 2,
+  "winrate": 0.3333333333333333
+ },
+ {
+  "id": "elowen_3",
+  "champ": "elowen",
+  "name": "Escarcha",
+  "featured": false,
+  "items": [
+   "botas_de_acero",
+   "relicario_de_hierro",
+   "coraza_de_hondaforja",
+   "manto_onirico",
+   "incensario_dorado",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "senor_de_la_escarcha",
+   "minors": [
+    "placas_de_hueso",
+    "inquebrantable",
+    "raices_profundas"
+   ],
+   "secondary": "triunfo"
+  },
+  "summoners": [
+   "flash",
+   "exhaust"
+  ],
+  "popularity": 14,
+  "games": 14,
+  "wins": 7,
+  "winrate": 0.5
+ },
+ {
+  "id": "aurik_1",
+  "champ": "aurik",
+  "name": "Guardián",
+  "featured": true,
+  "items": [
+   "botas_de_azogue",
+   "incensario_dorado",
+   "relicario_de_hierro",
+   "manto_onirico",
+   "coraza_de_hondaforja",
+   "yelmo_del_abismo"
+  ],
+  "runes": {
+   "key": "custodio",
+   "minors": [
+    "placas_de_hueso",
+    "segundo_aliento",
+    "raices_profundas"
+   ],
+   "secondary": "caudal_de_mana"
+  },
+  "summoners": [
+   "flash",
+   "exhaust"
+  ],
+  "popularity": 21,
+  "games": 21,
+  "wins": 10,
+  "winrate": 0.47619047619047616
+ },
+ {
+  "id": "aurik_2",
+  "champ": "aurik",
+  "name": "Luciérnaga",
+  "featured": false,
+  "items": [
+   "botas_de_lucidez",
+   "incensario_dorado",
+   "eco_de_brasas",
+   "manto_onirico",
+   "yelmo_del_abismo",
+   "relicario_de_hierro"
+  ],
+  "runes": {
+   "key": "luciernaga",
+   "minors": [
+    "caudal_de_mana",
+    "trascendencia",
+    "chamuscar"
+   ],
+   "secondary": "segundo_aliento"
+  },
+  "summoners": [
+   "flash",
+   "exhaust"
+  ],
+  "popularity": 17,
+  "games": 17,
+  "wins": 6,
+  "winrate": 0.35294117647058826
+ },
+ {
+  "id": "aurik_3",
+  "champ": "aurik",
+  "name": "Escarcha",
+  "featured": false,
+  "items": [
+   "botas_de_acero",
+   "relicario_de_hierro",
+   "coraza_de_hondaforja",
+   "manto_onirico",
+   "incensario_dorado",
+   "capa_del_angel"
+  ],
+  "runes": {
+   "key": "senor_de_la_escarcha",
+   "minors": [
+    "placas_de_hueso",
+    "inquebrantable",
+    "raices_profundas"
+   ],
+   "secondary": "triunfo"
+  },
+  "summoners": [
+   "flash",
+   "exhaust"
+  ],
+  "popularity": 7,
+  "games": 7,
+  "wins": 2,
+  "winrate": 0.2857142857142857
+ }
+]
