@@ -42,6 +42,7 @@ export class Renderer {
 
   draw(dt, hover) {
     const { ctx, g } = this; const p = g.player;
+    if (dt > 0) this.fps = (this.fps || 60) * 0.9 + (1 / dt) * 0.1;   // FPS suavizado (HUD móvil)
     if (p && (this.cam.locked || this.centerHeld) && (p.alive || this.centerHeld)) { this.cam.x = p.x; this.cam.y = p.y; }
     this.consumeEvents();
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
@@ -105,6 +106,7 @@ export class Renderer {
     const sh = u.buffs.reduce((s, b) => s + (b.shield > 0 ? b.shield : 0), 0); if (sh > 0) { ctx.fillStyle = '#eee'; ctx.fillRect(x - w / 2 + w * f, y, Math.min(w * (1 - f), w * sh / u.st.maxHp), h); }
     if (u.kind === 'champ') { ctx.fillStyle = '#000a'; for (let i = 1; i <= Math.floor(u.st.maxHp / 100); i++) ctx.fillRect(x - w / 2 + w * i * 100 / u.st.maxHp, y, 1, h * (i % 10 ? 0.5 : 1));
       if (u.resMax) { ctx.fillStyle = { mana: '#2979ff', energy: '#ffee58', fury: '#ff7043' }[u.resType] || '#888'; ctx.fillRect(x - w / 2, y + h + 1, w * u.res / u.resMax, 3); } }
+    if (this.s.mobile && this.g.player && u === this.g.player.target) { ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#000'; ctx.lineWidth = 2; const t = `${Math.ceil(u.hp)} / ${Math.ceil(u.st.maxHp)}`; ctx.strokeText(t, x, y + h + 12); ctx.fillText(t, x, y + h + 12); } // barra con número sobre el objetivo fijado (WR)
   }
   nearVision(pr, team) { return this.g.units.some(u => u.alive && u.team === team && (u.x - pr.x) ** 2 + (u.y - pr.y) ** 2 < 1350 ** 2); }
 
@@ -202,6 +204,7 @@ export class Renderer {
     if (sh > 0) { ctx.fillStyle = '#eeeeee'; ctx.fillRect(x - w / 2 + w * f, y, Math.min(w * (1 - f), w * sh / u.st.maxHp), h); }
     if (segs) { ctx.fillStyle = '#000000aa'; const n = Math.floor(u.st.maxHp / 100); for (let i = 1; i <= n; i++) ctx.fillRect(x - w / 2 + w * i * 100 / u.st.maxHp, y, 2, h * (i % 10 ? 0.5 : 1)); }
     if (u.kind === 'champ' && u.resMax) { ctx.fillStyle = { mana: '#2979ff', energy: '#ffee58', fury: '#ff7043' }[u.resType] || '#888'; ctx.fillRect(x - w / 2, y + h + 2, w * u.res / u.resMax, 8); }
+    if (this.s.mobile && this.g.player && u === this.g.player.target) { ctx.font = 'bold 26px sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.fillText(`${Math.ceil(u.hp)} / ${Math.ceil(u.st.maxHp)}`, x, y - 8); }
   }
   drawFog(team) {
     const g = this.g, f = this.fog, p = g.player;
@@ -223,6 +226,7 @@ export class Renderer {
   drawHUD(hover) {
     const { ctx, g } = this, p = g.player; this.hudRects = [];
     const k = (this.s.uiScale || 1) * (this.s.mobile ? 1.15 : 1), mob = !!this.s.mobile; ctx.save(); ctx.font = '14px sans-serif';
+    if (mob) this.drawTopMobile(p, k); else {
     // marcador superior
     ctx.fillStyle = '#000000b0'; ctx.fillRect(this.W / 2 - 200 * k, 0, 400 * k, 46 * k);
     ctx.textAlign = 'center'; ctx.font = `bold ${22 * k}px sans-serif`;
@@ -239,8 +243,7 @@ export class Renderer {
     }
     // arriba derecha: KDA, CS, objetivos
     if (p) {
-      // en móvil va abajo a la izquierda (zona del joystick, que se dibuja encima): arriba a la derecha están los botones y la barra compacta
-      const ky = mob ? this.H - 70 * k : 0, kx = mob ? 0 : this.W - 270 * k, tx = kx + 270 * k - 10;
+      const ky = 0, kx = this.W - 270 * k, tx = kx + 270 * k - 10;
       ctx.textAlign = 'right'; ctx.fillStyle = '#000a'; ctx.fillRect(kx, ky, 270 * k, 70 * k); ctx.fillStyle = '#fff'; ctx.font = `${15 * k}px sans-serif`;
       ctx.fillText(`KDA ${p.stats.k}/${p.stats.d}/${p.stats.a}   CS ${p.stats.cs}   Visión ${p.stats.wards}`, tx, ky + 22 * k);
       const obj = []; const en = g.epicNext || {};
@@ -253,16 +256,17 @@ export class Renderer {
       if (g.teamBonus[p.team].lord) { ctx.fillStyle = '#ce93d8'; ctx.fillText('Mejora del Señor activa', tx, ky + 62 * k); }
       else if (g.teamBonus[p.team].soul) { ctx.fillStyle = '#ffd54f'; ctx.fillText(`Alma de ${g.teamBonus[p.team].soul}`, tx, ky + 62 * k); }
     }
+    }
     // anuncios
-    let ay = 110 * k;
+    let ay = mob ? this.H * 0.22 : 110 * k;
     for (const a of this.announce) { a.age += 1 / 60; }
     this.announce = this.announce.filter(a => a.age < (a.small ? 5 : 4)).slice(-6);
     ctx.textAlign = 'center';
     for (const a of this.announce.filter(a => !a.small).slice(-2)) { ctx.font = `bold ${24 * k}px sans-serif`; ctx.fillStyle = '#000a'; const w = ctx.measureText(a.txt).width + 30; ctx.fillRect(this.W / 2 - w / 2, ay - 26 * k, w, 36 * k); ctx.fillStyle = a.team === 2 ? '#e1bee7' : this.teamCol(a.team); ctx.fillText(a.txt, this.W / 2, ay); ay += 42 * k; }
-    ctx.textAlign = 'right'; let fy = 100 * k;
-    for (const a of this.announce.filter(a => a.small)) { ctx.font = `${14 * k}px sans-serif`; ctx.fillStyle = '#000a'; const w = ctx.measureText(a.txt).width + 16; ctx.fillRect(this.W - w - 6, fy - 16 * k, w, 22 * k); ctx.fillStyle = this.teamCol(a.team); ctx.fillText(a.txt, this.W - 12, fy); fy += 26 * k; }
+    ctx.textAlign = 'right'; let fy = mob ? this.H * 0.56 : 100 * k; const fx = mob ? this.W * 0.70 : this.W - 12;   // en móvil, a la izquierda de la columna derecha y del ataque
+    for (const a of this.announce.filter(a => a.small)) { ctx.font = `${14 * k}px sans-serif`; ctx.fillStyle = '#000a'; const w = ctx.measureText(a.txt).width + 16; ctx.fillRect(fx - w - 6, fy - 16 * k, w, 22 * k); ctx.fillStyle = this.teamCol(a.team); ctx.fillText(a.txt, fx, fy); fy += 26 * k; }
     this.drawMinimap(k);
-    if (p) { if (mob) this.drawBarMobile(p, k); else this.drawBar(p, k); }
+    if (p && !mob) this.drawBar(p, k);
     if (p && !p.alive) { ctx.fillStyle = '#0008'; ctx.fillRect(0, 0, this.W, this.H); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = `bold ${34 * k}px sans-serif`;
       ctx.fillText(`Reapareces en ${Math.ceil(p.respawnAt - g.t)} s`, this.W / 2, this.H / 2 - 40); ctx.font = `${16 * k}px sans-serif`; ctx.fillText(mob ? 'Puedes comprar en la tienda mientras estás muerto' : 'Puedes comprar en la tienda (P) mientras estás muerto', this.W / 2, this.H / 2 - 10); }
     if (this.extraDraw) this.extraDraw(ctx, k);
@@ -349,39 +353,79 @@ export class Renderer {
     ctx.fillStyle = '#0b0f13f0'; ctx.strokeStyle = '#c9a227'; ctx.fillRect(x, y, w, h); ctx.strokeRect(x, y, w, h); ctx.fillStyle = '#eee'; ctx.textAlign = 'left';
     lines.forEach((l, i) => { ctx.fillStyle = i === 0 ? '#ffd54f' : '#ddd'; ctx.fillText(l, x + 10, y + 20 * k + i * 18 * k, w - 16); });
   }
-  /** HUD móvil (Wild Rift): panel compacto arriba-centro con retrato, nivel, vida/recurso, objetos y oro; las habilidades son botones DOM (touch.js). */
-  drawBarMobile(p, k) {
-    const { ctx, g } = this;
-    const W = 320 * k, H = 60 * k, x0 = this.W / 2 - W / 2, y0 = 50 * k + (g.altars.length ? 32 * k : 0);
-    ctx.fillStyle = '#101418d9'; ctx.strokeStyle = '#c9a227'; ctx.lineWidth = 1.5; ctx.fillRect(x0, y0, W, H); ctx.strokeRect(x0, y0, W, H);
-    // retrato y nivel
-    ctx.fillStyle = CLASS_COL[p.data.class]; ctx.beginPath(); ctx.arc(x0 + 26 * k, y0 + 30 * k, 20 * k, 0, 7); ctx.fill(); ctx.strokeStyle = '#66ff66'; ctx.lineWidth = 3; ctx.stroke();
-    ctx.fillStyle = '#fff'; ctx.font = `bold ${18 * k}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText(p.name[0], x0 + 26 * k, y0 + 36 * k);
-    ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(x0 + 42 * k, y0 + 46 * k, 9 * k, 0, 7); ctx.fill(); ctx.fillStyle = '#ffd54f'; ctx.font = `bold ${10 * k}px sans-serif`; ctx.fillText(p.level, x0 + 42 * k, y0 + 49.5 * k);
-    // vida y recurso
-    const bw = 150 * k, bx = x0 + 56 * k, by = y0 + 10 * k;
-    ctx.fillStyle = '#000'; ctx.fillRect(bx, by, bw, 12 * k); ctx.fillStyle = '#43a047'; ctx.fillRect(bx, by, bw * p.hp / p.st.maxHp, 12 * k);
-    const sh = p.buffs.reduce((s, b) => s + (b.shield > 0 ? b.shield : 0), 0); if (sh) { ctx.fillStyle = '#eee'; ctx.fillRect(bx + bw * p.hp / p.st.maxHp, by, Math.min(bw * (1 - p.hp / p.st.maxHp), bw * sh / p.st.maxHp), 12 * k); }
-    ctx.fillStyle = '#fff'; ctx.font = `bold ${9 * k}px sans-serif`; ctx.fillText(`${Math.ceil(p.hp)} / ${Math.ceil(p.st.maxHp)}`, bx + bw / 2, by + 9.5 * k);
-    if (p.resMax) { ctx.fillStyle = '#000'; ctx.fillRect(bx, by + 14 * k, bw, 7 * k); ctx.fillStyle = { mana: '#2979ff', energy: '#fdd835', fury: '#ff7043' }[p.resType]; ctx.fillRect(bx, by + 14 * k, bw * p.res / p.resMax, 7 * k); }
-    if (p.level < 18) { ctx.fillStyle = '#7e57c2'; ctx.fillRect(bx, by + 23 * k, bw * p.xp / (280 + 100 * (p.level - 1)), 3 * k); }
-    ctx.textAlign = 'left'; ctx.fillStyle = '#ffd54f'; ctx.font = `bold ${12 * k}px sans-serif`; ctx.fillText(`${Math.floor(p.gold)} oro`, bx, y0 + 50 * k);
-    ctx.fillStyle = '#aed581'; ctx.font = `${10 * k}px sans-serif`; ctx.fillText(`Guardián ${p.wardCharges}`, bx + 70 * k, y0 + 50 * k);
-    // objetos 3×2
-    for (let i = 0; i < 6; i++) {
-      const ix = x0 + 216 * k + (i % 3) * 32 * k, iy = y0 + 6 * k + Math.floor(i / 3) * 26 * k, s = 24 * k, it = p.items[i];
-      ctx.fillStyle = '#1c2228'; ctx.fillRect(ix, iy, s, 22 * k); ctx.strokeStyle = '#555'; ctx.lineWidth = 1; ctx.strokeRect(ix, iy, s, 22 * k);
-      if (it) { ctx.fillStyle = itemCol(it); ctx.fillRect(ix + 2, iy + 2, s - 4, 22 * k - 4); ctx.fillStyle = '#fff'; ctx.font = `bold ${8 * k}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText(it.name.slice(0, 4), ix + s / 2, iy + 14 * k); this.hudRects.push({ x: ix, y: iy, w: s, h: 22 * k, act: 'item', i }); }
+  /** HUD móvil colocado como en Wild Rift (design/ux/wild-rift-disposicion.md tabla 1; posiciones en % de W/H). Lo que es botón DOM (touch.js)
+   *  no se dibuja aquí: oro (tienda), compra rápida, habilidades, columna derecha. Aquí van: objetos comprados bajo el minimapa, retratos de los
+   *  4 aliados (23–34 %, 2–6 %), barra del objetivo fijado (43–59 %, 2–8 %), marcador + reloj (72–78 %), KDA + FPS (80–88 %), CS en círculo (85 %, 32 %),
+   *  temporizadores de objetivos, buffs/CC y la barra de puntos de las Ruinas. */
+  drawTopMobile(p, k) {
+    const { ctx, g } = this, W = this.W, H = this.H, f = Math.max(9, Math.min(13, 0.028 * W)); // tamaño base de letra
+    ctx.textBaseline = 'alphabetic';
+    const M = this.mobRects = { score: { x: 0.715 * W, y: 0.015 * H, w: 0.07 * W, h: 0.115 * H }, kda: null, cs: null, items: [], allies: [], targetBar: null };  // lo que se dibuja, para las pruebas
+    // marcador «azul vs rojo» + reloj (72–78 %, 2–6 %)
+    const sx = 0.75 * W; ctx.fillStyle = '#000000a0'; ctx.fillRect(0.715 * W, 0.015 * H, 0.07 * W, 0.115 * H);
+    ctx.textAlign = 'center'; ctx.font = `bold ${f + 2}px sans-serif`;
+    ctx.fillStyle = this.teamCol(0); ctx.fillText(`${g.kills[0]}`, sx - 0.018 * W, 0.065 * H); ctx.fillStyle = '#ddd'; ctx.font = `${f - 2}px sans-serif`; ctx.fillText('vs', sx, 0.065 * H);
+    ctx.fillStyle = this.teamCol(1); ctx.font = `bold ${f + 2}px sans-serif`; ctx.fillText(`${g.kills[1]}`, sx + 0.018 * W, 0.065 * H);
+    const mm = Math.floor(g.t / 60), ss = Math.floor(g.t % 60); ctx.fillStyle = '#fff'; ctx.font = `${f}px sans-serif`; ctx.fillText(`${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`, sx, 0.115 * H);
+    // KDA + FPS (80–88 %, 2–6 %) y CS en círculo (85 %, 32 %)
+    if (p) {
+      M.kda = { x: 0.795 * W, y: 0.015 * H, w: 0.095 * W, h: 0.115 * H }; ctx.fillStyle = '#000000a0'; ctx.fillRect(M.kda.x, M.kda.y, M.kda.w, M.kda.h);
+      ctx.fillStyle = '#fff'; ctx.font = `bold ${f}px sans-serif`; ctx.fillText(`${p.stats.k}/${p.stats.d}/${p.stats.a}`, 0.8425 * W, 0.065 * H);
+      ctx.fillStyle = '#9ccc65'; ctx.font = `${f - 2}px sans-serif`; ctx.fillText(`FPS:${Math.round(this.fps || 0)}  🗼${g.towersDown[p.team]} 🐉${g.dragons[p.team].length}`, 0.8425 * W, 0.115 * H);
+      const cr = Math.max(16, 0.03 * W), cx = 0.85 * W, cy = 0.32 * H; M.cs = { cx, cy, r: cr };
+      ctx.fillStyle = '#0a3b3bd0'; ctx.strokeStyle = '#26a69a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, cr, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#fff'; ctx.font = `bold ${f + 1}px sans-serif`; ctx.fillText(`${p.stats.cs}`, cx, cy + 2); ctx.fillStyle = '#80cbc4'; ctx.font = `${f - 3}px sans-serif`; ctx.fillText('CS', cx, cy + cr - 3);
+      // temporizadores de objetivos épicos (debajo del KDA) y mejora de equipo
+      const obj = []; const en = g.epicNext || {};
+      for (const [key, name] of [['dragon', 'Dragón'], ['herald', 'Heraldo'], ['lord', 'Señor'], ['avatar', 'Avatar']]) {
+        if (!g.map.epic[key]) continue;
+        if (g.epic[key] && g.epic[key].alive) obj.push(`${name} ¡vivo!`); else if (en[key] != null && en[key] < 1e8 && (key !== 'herald' || g.t < (g.heraldUntil ?? 1185))) obj.push(`${name} ${fmt(Math.max(0, en[key] - g.t))}`);
+        else if (en[key] == null) obj.push(`${name} ${fmt((g.epicFirst?.[key] ?? { dragon: 300, herald: 480, lord: 1200, avatar: 600 }[key]) - g.t)}`);
+      }
+      ctx.textAlign = 'right'; ctx.fillStyle = '#ffcc80'; ctx.font = `${f - 2}px sans-serif`; ctx.fillText(obj.join(' · '), 0.89 * W, 0.17 * H, 0.2 * W);
+      if (g.teamBonus[p.team].lord) { ctx.fillStyle = '#ce93d8'; ctx.fillText('Mejora del Señor', 0.89 * W, 0.215 * H); }
+      else if (g.teamBonus[p.team].soul) { ctx.fillStyle = '#ffd54f'; ctx.fillText(`Alma de ${g.teamBonus[p.team].soul}`, 0.89 * W, 0.215 * H); }
     }
-    // buffs y CC debajo del panel
-    let bxx = x0; ctx.font = `${9 * k}px sans-serif`; ctx.textAlign = 'left';
-    for (const b of p.buffs.filter(b => b.t < 1e8 && BUFF_NAMES[b.key]).slice(0, 6)) { const t = `${BUFF_NAMES[b.key]} ${Math.ceil(b.t)}s`; const w = ctx.measureText(t).width + 8; ctx.fillStyle = '#000c'; ctx.fillRect(bxx, y0 + H + 3, w, 14 * k); ctx.fillStyle = '#b2ff59'; ctx.fillText(t, bxx + 4, y0 + H + 3 + 10 * k); bxx += w + 4; }
-    for (const cc of p.cc) { const t = `${CC_NAMES[cc.kind] || cc.kind} ${cc.t.toFixed(1)}s`; const w = ctx.measureText(t).width + 8; ctx.fillStyle = '#400c'; ctx.fillRect(bxx, y0 + H + 3, w, 14 * k); ctx.fillStyle = '#ff8a80'; ctx.fillText(t, bxx + 4, y0 + H + 3 + 10 * k); bxx += w + 4; }
+    // puntos de las Ruinas, bajo la barra del objetivo
+    if (g.altars.length) {
+      const w = 0.16 * W, x0 = 0.43 * W, y0 = 0.10 * H, max = g.rules.winPoints;
+      ctx.fillStyle = '#000a'; ctx.fillRect(x0 - 2, y0 - 2, w + 4, 0.055 * H);
+      ctx.fillStyle = this.teamCol(0); ctx.fillRect(x0, y0, w / 2 * g.points[0] / max, 4); ctx.fillStyle = this.teamCol(1); ctx.fillRect(x0 + w / 2, y0, w / 2 * g.points[1] / max, 4);
+      ctx.fillStyle = '#fff'; ctx.font = `${f - 3}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText(`${Math.floor(g.points[0])} — ${Math.floor(g.points[1])} (meta ${max})`, x0 + w / 2, y0 + 0.04 * H);
+    }
+    if (!p) return;
+    // objetos comprados bajo el minimapa, a la derecha de la caja de oro (3 × 2 desde el 14 %, 35–43 % la primera fila)
+    const is = Math.max(24, 0.08 * H), ix0 = 0.07 * W + Math.max(58, 0.06 * W * (this.s.uiScale || 1)) + 6, iy0 = Math.max(0.39 * H, 0.02 * H + 0.15 * W + 3 + Math.max(40, 0.08 * H) / 2) - is / 2;
+    for (let i = 0; i < p.items.length && i < 6; i++) { const it = p.items[i], ix = ix0 + (i % 3) * (is + 3), iy = iy0 + Math.floor(i / 3) * (is + 3);
+      ctx.fillStyle = itemCol(it); ctx.fillRect(ix, iy, is, is); ctx.strokeStyle = '#c9a227'; ctx.lineWidth = 1; ctx.strokeRect(ix + 0.5, iy + 0.5, is - 1, is - 1);
+      ctx.fillStyle = '#fff'; ctx.font = `bold ${f - 3}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText(it.name.slice(0, 5), ix + is / 2, iy + is / 2 + 3); this.hudRects.push({ x: ix, y: iy, w: is, h: is, act: 'item', i }); M.items.push({ x: ix, y: iy, w: is, h: is }); }
+    // retratos de los 4 aliados con barra de vida (23–34 %, 2–6 %); contador de reaparición bajo el retrato de un caído
+    const allies = g.champs.filter(c => c.team === p.team && c !== p).slice(0, 4), pd = Math.max(18, 0.055 * H), step = (0.11 * W) / 4;
+    allies.forEach((c, i) => { const cx = 0.23 * W + step * i + pd / 2, cy = 0.02 * H + pd / 2; M.allies.push({ cx, cy, r: pd / 2, alive: c.alive });
+      ctx.fillStyle = CLASS_COL[c.data.class] || '#777'; ctx.globalAlpha = c.alive ? 1 : 0.45; ctx.beginPath(); ctx.arc(cx, cy, pd / 2, 0, 7); ctx.fill(); ctx.strokeStyle = this.teamCol(c.team); ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#fff'; ctx.font = `bold ${pd * 0.55}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText(c.name[0], cx, cy + pd * 0.2); ctx.globalAlpha = 1;
+      ctx.fillStyle = '#000c'; ctx.fillRect(cx - pd / 2, cy + pd / 2 + 2, pd, 3); ctx.fillStyle = '#43a047'; ctx.fillRect(cx - pd / 2, cy + pd / 2 + 2, pd * Math.max(0, c.hp / c.st.maxHp), 3);
+      if (!c.alive) { ctx.fillStyle = '#ff8a80'; ctx.font = `bold ${f - 2}px sans-serif`; ctx.fillText(`${Math.max(0, Math.ceil(c.respawnAt - g.t))}`, cx, cy + pd / 2 + 16); } });
+    // barra del objetivo fijado (43–59 %, 2–8 %): retrato/inicial, «vida / máx», AD, PH, armadura, RM
+    const t = p.target; if (t && t.alive) {
+      const x0 = 0.43 * W, y0 = 0.02 * H, w = 0.16 * W, h = Math.max(26, 0.07 * H), st = t.st || {}; M.targetBar = { x: x0, y: y0, w, h, name: t.name, hp: Math.ceil(t.hp), max: Math.ceil(st.maxHp) };
+      ctx.fillStyle = '#101418d9'; ctx.strokeStyle = '#ff5252'; ctx.lineWidth = 1.5; ctx.fillRect(x0, y0, w, h); ctx.strokeRect(x0, y0, w, h);
+      const pr = h * 0.36; ctx.fillStyle = t.kind === 'champ' ? (CLASS_COL[t.data.class] || '#777') : this.teamCol(t.team); ctx.beginPath(); ctx.arc(x0 + h / 2, y0 + h / 2, pr, 0, 7); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = `bold ${pr}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText((t.name || '?')[0], x0 + h / 2, y0 + h / 2 + pr * 0.35);
+      const bx = x0 + h, bw = w - h - 4, bh = Math.max(6, h * 0.25);
+      ctx.fillStyle = '#000'; ctx.fillRect(bx, y0 + 3, bw, bh); ctx.fillStyle = this.teamCol(t.team); ctx.fillRect(bx, y0 + 3, bw * Math.max(0, t.hp / st.maxHp), bh);
+      ctx.fillStyle = '#fff'; ctx.font = `bold ${Math.max(7, bh - 1)}px sans-serif`; ctx.fillText(`${Math.ceil(t.hp)} / ${Math.ceil(st.maxHp)}`, bx + bw / 2, y0 + 3 + bh - 1);
+      ctx.textAlign = 'left'; ctx.fillStyle = '#ddd'; ctx.font = `${f - 3}px sans-serif`; ctx.fillText(`AD ${st.ad | 0}  PH ${st.ap | 0}  Arm ${st.armor | 0}  RM ${st.mr | 0}`, bx, y0 + h - 4, bw);
+    }
+    // buffs y CC propios: bajo la barra del objetivo (fila a 10–14 %)
+    let bxx = 0.43 * W; const by = 0.10 * H + (g.altars.length ? 0.06 * H : 0); ctx.font = `${f - 3}px sans-serif`; ctx.textAlign = 'left';
+    for (const b of p.buffs.filter(b => b.t < 1e8 && BUFF_NAMES[b.key]).slice(0, 6)) { const tt = `${BUFF_NAMES[b.key]} ${Math.ceil(b.t)}s`; const w = ctx.measureText(tt).width + 8; ctx.fillStyle = '#000c'; ctx.fillRect(bxx, by, w, f + 3); ctx.fillStyle = '#b2ff59'; ctx.fillText(tt, bxx + 4, by + f - 1); bxx += w + 4; }
+    for (const cc of p.cc) { const tt = `${CC_NAMES[cc.kind] || cc.kind} ${cc.t.toFixed(1)}s`; const w = ctx.measureText(tt).width + 8; ctx.fillStyle = '#400c'; ctx.fillRect(bxx, by, w, f + 3); ctx.fillStyle = '#ff8a80'; ctx.fillText(tt, bxx + 4, by + f - 1); bxx += w + 4; }
   }
   drawMinimap(k) {
     const { ctx, g } = this, m = g.map; const p = g.player; const team = p ? p.team : 0;
-    const mob = !!this.s.mobile, size = (mob ? 150 : 220) * k * (this.s.minimapScale || 1), sx = size / Math.max(m.W, m.H);
-    const x0 = mob ? 8 : this.W - size - 8, y0 = mob ? 8 : this.H - size * (m.H / Math.max(m.W, m.H)) - 8;
+    const mob = !!this.s.mobile, size = (mob ? 0.15 * this.W : 220 * k) * (this.s.minimapScale || 1), sx = size / Math.max(m.W, m.H);   // móvil: cuadrado del 15 % del ancho en (7 %, 2 %) como en Wild Rift
+    const x0 = mob ? 0.07 * this.W : this.W - size - 8, y0 = mob ? 0.02 * this.H : this.H - size * (m.H / Math.max(m.W, m.H)) - 8;
     const hh = m.H * sx; this.mini = { x0, y0, sx, w: m.W * sx, h: hh };
     ctx.fillStyle = '#000'; ctx.fillRect(x0 - 3, y0 - 3, m.W * sx + 6, hh + 6); ctx.fillStyle = m.bg; ctx.fillRect(x0, y0, m.W * sx, hh);
     ctx.strokeStyle = m.laneCol; ctx.lineWidth = 6 * k; for (const lane of Object.values(m.lanes[0])) { ctx.beginPath(); lane.forEach(([x, y], i) => i ? ctx.lineTo(x0 + x * sx, y0 + y * sx) : ctx.moveTo(x0 + x * sx, y0 + y * sx)); ctx.stroke(); }
