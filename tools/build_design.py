@@ -5,7 +5,7 @@
 import json, sys, statistics
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
-from champions_src import CHAMPIONS, CLASS_STATS
+from champions_src import CHAMPIONS, CLASS_STATS, PRESENTATION, VFX_BY_ABILITY_TYPE
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "assets/data"
@@ -27,7 +27,8 @@ ITEMS = [  # id, nombre, coste, stats, efecto único
 
 MAPS = [
  dict(id="grieta_ceniza",name="La Grieta de Ceniza",mode="5v5 clásico",size=[14000,14000],lanes=3,towers_per_lane=3,
-      inhibitors=3,nexus=True,objectives=["Dragón Elemental (min 5, cada 5 min)","Heraldo de Forja (min 8)","Señor de la Ceniza (min 20)"],
+      inhibitors=0,nexus=True,objectives=["Dragón Elemental (min 6, 4:30 tras morir)","Heraldo de Forja (min 6, en el foso del Señor hasta el min 11)","Señor de la Ceniza (min 11, cada 6 min)"],
+      super_minions="Al caer la torre base de un carril (reglas Wild Rift, sin inhibidores)",
       jungle_camps=12,target_minutes=[25,35],win="Destruir el Nexo enemigo"),
  dict(id="puente_niebla",name="Puente de la Niebla",mode="5v5 ARAM (un carril)",size=[12000,3200],lanes=1,towers_per_lane=4,
       inhibitors=1,nexus=True,objectives=["Reliquias de vida cada 60 s"],jungle_camps=0,target_minutes=[15,22],
@@ -62,6 +63,11 @@ def validate(champs):
             if any(x < y for x, y in zip(a["cooldown"], a["cooldown"][1:])): err.append(f"{c['id']} {a['key']}: el CD sube con el rango")
         for f in ("race","faction","cls","role","damage","resource","lore"):
             if not c.get(f): err.append(f"{c['id']}: falta {f}")
+    for c in champs:
+        p = PRESENTATION.get(c["id"])
+        if not p: err.append(f"{c['id']}: falta PRESENTATION"); continue
+        for f in ("arma", "cuerpo", "color", "aspectos"):
+            if not p.get(f): err.append(f"{c['id']}: presentación sin {f}")
     classes = {c["cls"] for c in champs}
     if classes != set(CLASS_STATS): err.append(f"clases sin cubrir: {set(CLASS_STATS)-classes}")
     # equilibrio: daño bruto de la combinación completa a nivel 9 (rango 3 de QWE, R rango 2) sin objetos
@@ -76,6 +82,43 @@ def validate(champs):
     for k, v in burst.items():
         if not 0.4 * m <= v <= 1.9 * m: err.append(f"desequilibrio: {k} combo={v} (media {m:.0f})")
     return err, burst
+
+# Contrato de clips de los modelos definitivos (model_specs.json): Idle, Run, Attack, Cast, Death (+ Cast_Q..R opcionales)
+ANIMS = dict(Idle="Idle", Run="Run", Attack="Attack", Cast="Cast", Death="Death", Cast_Q="Cast_Q", Cast_W="Cast_W", Cast_E="Cast_E", Cast_R="Cast_R")
+OPTIONAL_ANIMS = ("Cast_Q", "Cast_W", "Cast_E", "Cast_R")
+
+def attack_type(c):
+    """melee < 200 u. de alcance; a distancia: 'magic' si el daño es mágico, si no 'ranged'."""
+    r = stats_for(c)["range"]
+    if r < 200: return "melee"
+    return "magic" if c["damage"] == "Mágico" else "ranged"
+
+def presentation_for(c):
+    p = PRESENTATION[c["id"]]; ta = attack_type(c)
+    cast = {}
+    for a in c["abilities"]:
+        k = VFX_BY_ABILITY_TYPE.get(a["type"], "auto")
+        if k == "auto": k = {"melee": "estela", "ranged": "proyectil", "magic": "glifo"}[ta]
+        cast[a["key"]] = dict(kind=k, color=p["color"], name=a["name"])
+    return dict(id=c["id"], name=c["name"], title=c["title"], tipoAtaque=ta, arma=p["arma"], cuerpo=p["cuerpo"], color=p["color"],
+                clase=c["cls"], raza=c["race"], rol=c["role"], faccion=c["faction"], recurso=c["resource"], dificultad=c["difficulty"],
+                anims=dict(ANIMS), animsOpcionales=list(OPTIONAL_ANIMS),
+                vfx=dict(spawn=dict(kind="columna", color="equipo"), cast=cast, death=dict(kind="fragmentos", color=p["color"])),
+                aspectos=[dict(id=i, nombre=n, modelo=m) for i, n, m in p["aspectos"]],
+                lore=c["lore"], pasiva=dict(c["passive"]),
+                **{a["key"]: dict(name=a["name"], type=a["type"], desc=a["desc"], cooldown=a["cooldown"], cost=a["cost"], base=a["base"], ratio=a["ratio"], range=a["range"]) for a in c["abilities"]})
+
+def presentation_md(champs):
+    L = ["", "## Ficha y presentación", "",
+         "> Sección GENERADA (agente G) desde `PRESENTATION` en `tools/champions_src.py`. Datos vivos en `assets/data/champion_presentation.json`; la ficha de selección es `game/src/fichas.js` y los efectos `game/src/vfx.js`.", "",
+         "Tipo de ataque: **cuerpo a cuerpo** si el alcance base es < 200 u.; a distancia **físico** o **mágico** según el daño. Clips obligatorios del modelo definitivo: `Idle, Run, Attack, Cast, Death` (`Cast_Q..R` opcionales).", "",
+         "| Campeón | Tipo de ataque | Arma | Cuerpo | Aspectos | Color FX | Efectos Q / W / E / R |", "|---|---|---|---|---|---|---|"]
+    T = {"melee": "Cuerpo a cuerpo", "ranged": "A distancia (físico)", "magic": "A distancia (mágico)"}
+    for c in champs:
+        p = presentation_for(c)
+        L.append(f"| **{p['name']}** | {T[p['tipoAtaque']]} | {p['arma']} | {p['cuerpo']} | {', '.join(a['nombre'] + ' (`' + a['modelo'] + '`)' for a in p['aspectos'])} | `{p['color']}` | " + " / ".join(p['vfx']['cast'][k]['kind'] for k in "QWER") + " |")
+    L += ["", "Efectos de `vfx.js`: aparición = columna de luz del color del equipo + escala desde 0 (`back.out`); reaparición = anillo expansivo; muerte = caída + desvanecido + fragmentos del color del campeón; lanzamiento = estela (cuerpo a cuerpo), proyectil con cola (distancia) o glifo bajo los pies (mágico); épicos = rugido con sacudida de cámara; torre = derrumbe; dragón = tinte por elemento."]
+    return L
 
 def roster_md(champs, burst):
     L = ["# Plantel de campeones — Coronas de Ceniza (demo)", "",
@@ -103,6 +146,7 @@ def roster_md(champs, burst):
           "## Dependencies", "- `design/gdd/combat-core.md` (fórmulas de daño, control de masas)", "- `design/gdd/progression-economy.md` (niveles, oro, objetos)", "",
           "## Tuning Knobs", "- `CLASS_STATS` (plantilla por clase) y `stats` (desviaciones por campeón) en `tools/champions_src.py`.", "- Banda de equilibrio del combo: 40%–190% de la media (validada por `--check`).", "",
           "## Acceptance Criteria", "- `python3 tools/build_design.py --check` termina sin errores.", "- Las 6 clases están cubiertas, cada campeón tiene Q/W/E/R y una pasiva, y los CD nunca suben con el rango."]
+    L += presentation_md(champs)
     return "\n".join(L) + "\n"
 
 def main():
@@ -119,14 +163,17 @@ def main():
     (DATA / "champions.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     (DATA / "items.json").write_text(json.dumps([dict(id=i, name=n, cost=c, stats=s, unique=u) for i, n, c, s, u in ITEMS], ensure_ascii=False, indent=2), encoding="utf-8")
     (DATA / "maps.json").write_text(json.dumps(MAPS, ensure_ascii=False, indent=2), encoding="utf-8")
+    pres = [presentation_for(c) for c in CHAMPIONS]
+    (DATA / "champion_presentation.json").write_text(json.dumps(pres, ensure_ascii=False, indent=2), encoding="utf-8")
     gs = ROOT / "game/src"; gs.mkdir(parents=True, exist_ok=True)
     (gs / "data.js").write_text("// GENERADO por tools/build_design.py — no editar.\n"
         + "export const CHAMPIONS = " + json.dumps(out, ensure_ascii=False) + ";\n"
         + "export const ITEMS = " + (DATA / "items.json").read_text(encoding="utf-8") + ";\n"
-        + "export const MAPS = " + (DATA / "maps.json").read_text(encoding="utf-8") + ";\n", encoding="utf-8")
+        + "export const MAPS = " + (DATA / "maps.json").read_text(encoding="utf-8") + ";\n"
+        + "export const PRESENTATION = " + json.dumps(pres, ensure_ascii=False) + ";\n", encoding="utf-8")
     (ROOT / "design/gdd").mkdir(parents=True, exist_ok=True)
     (ROOT / "design/gdd/champion-roster.md").write_text(roster_md(CHAMPIONS, burst), encoding="utf-8")
-    print("Generado: assets/data/champions.json, items.json, maps.json, design/gdd/champion-roster.md")
+    print("Generado: assets/data/champions.json, items.json, maps.json, champion_presentation.json, game/src/data.js, design/gdd/champion-roster.md")
     print("Combo N9:", burst)
 
 if __name__ == "__main__": main()

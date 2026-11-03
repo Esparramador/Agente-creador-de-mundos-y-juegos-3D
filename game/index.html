@@ -2,13 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>Coronas de Ceniza — Demo</title>
 <style>
   :root { --gold: #c9a227; --bg: #0b0f13; --panel: #141b22; --txt: #e8e6e3; }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: #000; color: var(--txt); font-family: 'Segoe UI', Roboto, sans-serif; overflow: hidden; user-select: none; }
-  canvas#game, canvas#world { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+  canvas#game, canvas#world { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
   canvas#game { cursor: crosshair; z-index: 1; }
   .screen { position: fixed; inset: 0; display: none; overflow: auto; background: radial-gradient(ellipse at top, #2a1f12 0%, #0b0f13 60%); padding: 24px 32px; z-index: 5; }
   .screen.on { display: block; }
@@ -50,11 +50,53 @@
   #tutorial .done { color: #69f0ae; text-decoration: line-through; }
   .muted { color: #8a9; font-size: 12px; }
   .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; background: #263238; margin: 2px; font-size: 12px; }
+  /* ---- controles táctiles (touch.js; solo visibles en móvil) ---- */
+  #touchUI { display: none; position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+  #touchUI .tb { position: absolute; pointer-events: auto; touch-action: none; border-radius: 50%; background: #141b22e6; border: 2px solid #8d7a3a; color: #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; line-height: 1.1; box-shadow: 0 2px 10px #000a; transition: transform .08s, background .12s; -webkit-user-select: none; user-select: none; }
+  #touchUI .tb.down { transform: scale(1.12); background: #2a2715; }
+  #touchUI .tb.hold { box-shadow: 0 0 0 4px #ffd54f88; }
+  #touchUI .tb-ab { border-color: var(--gold); font-weight: bold; }
+  #touchUI .tb-ab.off, #touchUI .tb-sum.off { opacity: .45; border-color: #555; }
+  #touchUI .tb-ab.learn { border-style: dashed; }
+  #touchUI .tb-ab.recast { border-color: #00e5ff; box-shadow: 0 0 10px #00e5ff88; }
+  #touchUI .tb-attack { background: #3a1414e6; border-color: #ff5252; font-size: 30px; }
+  #touchUI .tb-attackTower, #touchUI .tb-attackMinion { font-size: 15px; border-color: #ff8a80; }
+  #touchUI .tb-name { max-width: 90%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #touchUI .tb-attack .tb-name, #touchUI .tb-recall .tb-name, #touchUI .tb-ward .tb-name, #touchUI .tb-shop .tb-name, #touchUI .tb-score .tb-name, #touchUI .tb-lock .tb-name, #touchUI .tb-pause .tb-name { font-size: 18px; }
+  #touchUI .tb-cd { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 17px; font-weight: bold; color: #fff; }
+  #touchUI .tb-cd:not(:empty) { background: #000a; }
+  #touchUI .tb-key { position: absolute; left: 7px; bottom: 5px; font-size: 10px; color: var(--gold); }
+  #touchUI .tb-rank { position: absolute; right: 6px; bottom: 3px; font-size: 7px; letter-spacing: -1px; color: #ffd54f; }
+  #touchUI .tb-plus { display: none; position: absolute; top: -7px; right: -4px; width: 20px; height: 20px; border-radius: 50%; background: #ffd54f; color: #000; font-weight: bold; font-size: 15px; line-height: 20px; text-align: center; }
+  #touchUI .tb-ab.canrank .tb-plus { display: block; }
+  #rotate { display: none; position: fixed; inset: 0; z-index: 50; background: #0b0f13f2; color: var(--gold); font-family: Georgia, serif; font-size: 24px; align-items: center; justify-content: center; text-align: center; padding: 24px; }
+  body.mobile #touchUI { display: block; }
+  body.mobile #tutorial { left: auto; right: 12px; top: 70px; max-width: 250px; font-size: 12px; }
+  @media (orientation: portrait) { body.mobile #rotate { display: flex; } }
+  @media (max-width: 900px), (pointer: coarse) {
+    .screen { padding: calc(12px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left)); }
+    h1 { font-size: 28px; letter-spacing: 2px; }
+    .layout { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .detail { position: static; }
+    .map-card { width: 100%; }
+    .champ-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+    .shop-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .panel { padding: 12px 14px; max-width: 96vw; }
+    #score .panel, #pause .panel, #help .panel, #shop .panel { min-width: 0 !important; width: 96vw; max-width: 96vw; }
+    #score .panel { overflow-x: auto; }
+    table { font-size: 12px; }
+    th, td { padding: 4px 5px; }
+    button, select { min-height: 44px; min-width: 44px; padding: 8px 14px; }
+    .card { min-height: 44px; }
+    .overlay { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+  }
 </style>
 </head>
 <body>
 <canvas id="world"></canvas>
 <canvas id="game"></canvas>
+<div id="touchUI"></div>
+<div id="rotate">Gira el móvil<br><small style="color:#ccc;font-size:15px;font-family:sans-serif">Coronas de Ceniza se juega en horizontal</small></div>
 
 <!-- MENÚ PRINCIPAL / SELECCIÓN -->
 <div id="menu" class="screen on">

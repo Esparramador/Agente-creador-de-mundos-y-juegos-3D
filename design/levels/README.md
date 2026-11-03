@@ -21,13 +21,14 @@ node tools/bundle.mjs
 ```
 
 ## Reglas de construcción
-- **Todo lo jugable está a z = 0.** El relieve (acantilados, abismo, lecho del río a −0,12 m) es decorativo y queda fuera de la zona en la que la simulación deja moverse.
-- Las rocas y los matorrales del escenario coinciden 1:1 con los obstáculos y matorrales de la simulación. Si se mueven en `maps.js`, hay que regenerar.
+- **Todo lo jugable está a z = 0.** El relieve (acantilados, abismo, lecho del río a −0,12 m, fosos épicos a −0,2 m) es decorativo y queda fuera de la zona en la que la simulación deja moverse.
+- Las rocas, los matorrales y los **muros** del escenario coinciden 1:1 con los obstáculos, matorrales y `walls` de la simulación (los muros son crestas de +1,6 m sobre la misma polilínea que sus círculos de colisión). Si se mueven en `maps.js`, hay que regenerar.
+- Blender 5.2 en este Mac solo arranca fuera del sandbox de Claude Code (Metal): `"/Applications/Blender.app/Contents/MacOS/Blender" -b --factory-startup --python-exit-code 1 --python tools/blender/build_maps.py -- grieta_ceniza`.
 - **Rendimiento del escenario:**
 
   | Mapa | Triángulos | Peso optimizado | Llamadas de dibujo |
   |---|---|---|---|
-  | Grieta | 83 k | 0,7 MB | 3–4 |
+  | Grieta | 91 k | 0,86 MB | 5 (terreno, decorado, brillo, niebla, agua) |
   | Puente | 34 k | 0,36 MB | 3–4 |
   | Ruinas | 66 k | 0,57 MB | 3–4 |
 

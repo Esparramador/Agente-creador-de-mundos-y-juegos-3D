@@ -12,7 +12,8 @@ TEAM = [(66, 165, 245), (239, 83, 80)]
 CAMP_ES = {'golem': 'Gólem (azul)', 'bestia': 'Bestia (roja)', 'lobos': 'Lobos', 'aves': 'Aves', 'roca': 'Roca', 'sapo': 'Sapo'}
 EPIC_ES = {'dragon': 'DRAGÓN', 'herald': 'HERALDO / SEÑOR', 'lord': None, 'avatar': 'AVATAR'}
 def font(sz):
-    for f in ('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', '/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf'):
+    for f in ('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', '/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf',
+              '/System/Library/Fonts/Supplemental/Arial Bold.ttf', '/Library/Fonts/Arial Unicode.ttf'):  # Linux (CI) y macOS
         if os.path.exists(f): return ImageFont.truetype(f, sz)
     return ImageFont.load_default()
 
@@ -28,6 +29,12 @@ def plan(mid):
         label(*P((ax + bx) / 2, (ay + by) / 2 - 260), {'top': 'CARRIL SUPERIOR', 'mid': 'CARRIL CENTRAL', 'bot': 'CARRIL INFERIOR'}[name], (255, 235, 180), f)
     for (x, y, r) in m['brushes']: d.ellipse([*P(x - r, y - r), *P(x + r, y + r)], outline=(120, 220, 120, 230), width=2)
     for (x, y, r) in m['rocks']: d.ellipse([*P(x - r, y - r), *P(x + r, y + r)], outline=(200, 200, 200, 200), width=2)
+    # muros de jungla (polilíneas) y fosos: relieve en Blender, obstáculos en la simulación
+    wr = m.get('wr', 110)
+    for poly in m.get('walls') or []:
+        d.line([P(x, y) for x, y in poly], fill=(170, 150, 120, 230), width=max(3, int(2 * wr * k)), joint='curve')
+    for (x, y, r) in (m.get('pits') or {}).values():
+        d.ellipse([*P(x - r, y - r), *P(x + r, y + r)], outline=(206, 147, 216, 200), width=3)
     for t in (0, 1):
         for (x, y, lane, tier) in m['towers'][t]:
             cx, cy = P(x, y); s = max(7, W // 160); d.rectangle([cx - s, cy - s, cx + s, cy + s], fill=TEAM[t] + (255,), outline=(0, 0, 0), width=2)
@@ -48,8 +55,11 @@ def plan(mid):
     if m['bounds']:
         for yy in (m['bounds']['y0'], m['bounds']['y1']): d.line([P(0, yy), P(m['W'], yy)], fill=(255, 255, 255, 120), width=2)
     # leyenda
-    lg = [('■', TEAM[0], 'Torre Aurora (T1 exterior → T3, TN nexo)'), ('■', TEAM[1], 'Torre Crepúsculo'), ('◆', (220, 220, 220), 'Inhibidor'), ('⬢', (220, 220, 220), 'Nexo'),
-          ('●', (255, 210, 120), 'Campamento de jungla'), ('○', (120, 220, 120), 'Matorral (oculta)'), ('○', (200, 200, 200), 'Roca (bloquea)')]
+    lg = [('■', TEAM[0], 'Torre Aurora (T1 exterior → T3, TN nexo)'), ('■', TEAM[1], 'Torre Crepúsculo')]
+    if any(m['inhibs']): lg.append(('◆', (220, 220, 220), 'Inhibidor'))
+    lg += [('⬢', (220, 220, 220), 'Nexo'), ('●', (255, 210, 120), 'Campamento de jungla'), ('○', (120, 220, 120), 'Matorral (oculta)'), ('○', (200, 200, 200), 'Roca (bloquea)')]
+    if m.get('walls'): lg.append(('▬', (170, 150, 120), 'Muro de jungla (bloquea el paso)'))
+    if m.get('pits'): lg.append(('○', (206, 147, 216), 'Foso (Dragón abajo · Señor arriba)'))
     if m['altars']: lg.append(('○', (255, 215, 90), 'Altar (captura 6 s)'))
     if m['relics']: lg.append(('●', (105, 240, 174), 'Reliquia de vida (60 s)'))
     if m['epic']: lg.append(('○', (206, 147, 216), 'Objetivo épico'))

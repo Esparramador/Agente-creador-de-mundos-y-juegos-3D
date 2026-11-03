@@ -2,8 +2,9 @@
 // Determinista con semilla; no usa el DOM, así que se prueba en Node (tests/).
 import { CHAMPIONS, ITEMS } from './data.js';
 import { KITS, SUMMONERS, castSummoner } from './kits.js';
-import { buildMap } from './maps.js';
+import { buildMap, wallCircles } from './maps.js';
 import { botThink } from './ai.js';
+import { findPath, segmentBlocked } from './nav.js';
 import {
   TICK, NEUTRAL, rng, dist, dist2, norm, clamp, recalcStats, addBuff, hasBuff, getBuff, removeBuff, applyCC, hasCC,
   canMove, canAct, canCast, canAttack, dealDamage, heal, abilityValue, effectiveCd, xpToNext, respawnTime,
@@ -16,18 +17,27 @@ const RES_TYPE = { 'Maná': 'mana', 'Furia': 'fury', 'Energía': 'energy', 'Muni
 const ROLE_OF = c => /Jungla/.test(c.role) ? 'jungle' : c.class === 'Soporte' ? 'support' : c.class === 'Tirador' ? 'bot' : /Mid/.test(c.role) ? 'mid' : 'top';
 const DRAGON_TYPES = ['Ceniza', 'Marea', 'Raíz', 'Forja'];
 const FACTION_BONUS = { 'Horda de Colmillo Rojo': 'adPct', 'Bosque Onírico': 'ah', 'Orden del Sol Partido': 'armorPct', 'Concilio de la Torre Gris': 'apPct' };
+// Valores por defecto de las reglas de tiempo (segundos) cuando el mapa no los fija en `rules` (maps.js)
+const RULE_DEFAULTS = { epicFirst: { dragon: 300, herald: 480, lord: 1200, avatar: 600 }, dragonRespawn: 300, heraldUntil: 1185, lordRespawn: 360, avatarRespawn: 240, firstWave: 65 };
 
 export class Game {
   constructor(o = {}) {
     this.opts = o; this.rand = rng(o.seed || 12345);
     this.map = buildMap(o.mapId || 'grieta_ceniza'); this.rules = this.map.rules;
     this.t = 0; this.units = []; this.projectiles = []; this.zones = []; this.fx = []; this.events = []; this.timers = [];
+    // obstáculos: rocas + muros (cadenas de círculos; `wall:true` para que el render los distinga de las rocas)
     this.obstacles = this.map.rocks.map(([x, y, r]) => ({ x, y, r, perm: true }));
+    for (const poly of this.map.walls || []) for (const [x, y, r] of wallCircles(poly, this.map.wr)) this.obstacles.push({ x, y, r, perm: true, wall: true, col: '#3a3632' });
+    this.obstaclesVersion = 0; this.nav = null;
     this.brushes = this.map.brushes.map(([x, y, r]) => ({ x, y, r }));
     this.nextId = 1; this.over = false; this.winner = null; this.difficulty = o.difficulty || 'normal';
     this.teamBonus = [{}, {}]; this.dragons = [[], []]; this.lordUntil = [0, 0]; this.avatarUntil = [0, 0];
     this.kills = [0, 0]; this.towersDown = [0, 0]; this.points = [0, 0]; this.firstBlood = false;
-    this.goldHistory = [[], []]; this.wave = 0; this.nextWave = this.rules.aram ? 30 : 65; this.feed = [];
+    // tiempos de épicos y de la primera oleada: del mapa (maps.js `rules`); expuestos para el HUD (render.js)
+    this.epicFirst = { ...RULE_DEFAULTS.epicFirst, ...(this.rules.epicFirst || {}) };
+    this.heraldUntil = this.rules.heraldUntil ?? RULE_DEFAULTS.heraldUntil;
+    this.epicNext = { ...this.epicFirst };
+    this.goldHistory = [[], []]; this.wave = 0; this.nextWave = this.rules.firstWave ?? RULE_DEFAULTS.firstWave; this.feed = [];
     this.visible = [new Set(), new Set()]; this.visTimer = 0; this.aiTimer = 0; this.secTimer = 0;
     this.epic = {}; this.altars = (this.map.altars || []).map(([name, x, y]) => ({ name, x, y, owner: null, prog: 0, by: null }));
     this.relics = (this.map.relics || []).map(([x, y]) => ({ x, y, next: 60 }));
@@ -43,7 +53,13 @@ export class Game {
     const b = this.map.bounds;
     return [clamp(x, 100, this.map.W - 100), clamp(y, b ? b.y0 : 100, b ? b.y1 : this.map.H - 100)];
   }
-  addObstacle(x, y, r, t, col) { const o = { x, y, r, col }; this.obstacles.push(o); this.after(t, () => { this.obstacles = this.obstacles.filter(z => z !== o); }); }
+  addObstacle(x, y, r, t, col) { const o = { x, y, r, col }; this.obstacles.push(o); this.obstaclesVersion++; this.after(t, () => { this.obstacles = this.obstacles.filter(z => z !== o); this.obstaclesVersion++; }); }
+  // ruta hasta (x, y) si el camino recto choca con un obstáculo; null = ir recto
+  routeTo(u, x, y) {
+    if (u.kind !== 'champ' && u.kind !== 'pet') return null;
+    if (!segmentBlocked(this, u.x, u.y, x, y, u.r * 0.6)) return null;
+    const r = findPath(this, u, { x, y }); return r && r.length ? r : null;
+  }
   unstick(u) { for (const o of this.obstacles) { const d = Math.hypot(u.x - o.x, u.y - o.y); if (d < o.r + u.r) { const [nx, ny] = norm(u.x - o.x, u.y - o.y); u.x = o.x + nx * (o.r + u.r + 1); u.y = o.y + ny * (o.r + u.r + 1); } } }
   minutes() { return this.t / 60; }
 
@@ -99,7 +115,7 @@ export class Game {
     }[c.type];
     const mult = 1 + 0.08 * Math.floor(this.minutes() / 3);
     c.units = D.map(([hp, ad, name, r], i) => this.makeUnit('monster', NEUTRAL, c.x + (i ? Math.cos(i * 2) * 120 : 0), c.y + (i ? Math.sin(i * 2) * 120 : 0),
-      { r, name, camp: c, home: { x: c.x, y: c.y }, base: { maxHp: hp * mult, ad: ad * mult, armor: 10, mr: 10, as: 0.7, range: 150, ms: 360 },
+      { r, name, camp: c, ctype: c.type, home: { x: c.x, y: c.y }, base: { maxHp: hp * mult, ad: ad * mult, armor: 10, mr: 10, as: 0.7, range: 150, ms: 360 },
         gold: { golem: 100, bestia: 100, lobos: i ? 16 : 55, aves: i ? 10 : 45, roca: 50, sapo: 80 }[c.type], xp: { golem: 200, bestia: 200, lobos: i ? 25 : 95, aves: i ? 20 : 75, roca: 90, sapo: 150 }[c.type], big: !i }));
   }
   buildTeams(o) {
@@ -215,6 +231,9 @@ export class Game {
     if (!u.alive) return; [x, y] = this.clampToMap(x, y);
     if (u.channel && !u.channel.noCancel) { if (u.channel.recall || u.channel.cancelable !== false) u.channel = null; }
     u.moveTo = { x, y }; u.target = null; u.attackMove = attackMove; u.windup = null;
+    // si el camino recto choca con un muro, seguir la ruta del buscador (nav.js); el destino pasa a ser su último punto
+    u.route = this.routeTo(u, x, y); u.routeVer = this.obstaclesVersion;
+    if (u.route) { const [lx, ly] = u.route[u.route.length - 1]; u.moveTo = { x: lx, y: ly }; }
   }
   cmdAttack(u, t) { if (!u.alive || !t || !t.alive || t.team === u.team) return; if (u.channel && u.channel.recall) u.channel = null; u.target = t; u.moveTo = null; u.attackMove = false; }
   cmdStop(u) { u.moveTo = null; u.target = null; u.windup = null; }
@@ -365,6 +384,8 @@ export class Game {
       for (const c of this.champs) if (c.team === team) this.giveGold(c, 50);
       if (killer && killer.kind === 'champ') this.giveGold(killer, 150, true);
       this.emit('announce', { txt: `Torre ${s.team === 0 ? 'de Aurora' : 'de Crepúsculo'} destruida`, team });
+      // reglas Wild Rift (mapas sin inhibidor): la torre base caída abre el carril a los súper-súbditos
+      if (s.tier === 3 && !this.map.inhibs[s.team].length) this.emit('announce', { txt: '¡Torre base destruida! Súper-súbditos en camino', team });
     }
     if (s.kind === 'inhib') { s.respawnAt = this.t + 300; this.emit('announce', { txt: '¡Inhibidor destruido! Súper-súbditos en camino', team }); }
     if (s.kind === 'nexus') this.endGame(team);
@@ -391,22 +412,23 @@ export class Game {
     const mates = this.champs.filter(c => c.team === team);
     if (v.epicType === 'dragon') {
       this.dragons[team].push(v.dragonType); mates.forEach(c => this.giveGold(c, 75)); this.addTerrain(v.dragonType);
-      this.epicNext.dragon = this.t + 300; this.emit('announce', { txt: `${team ? 'Crepúsculo' : 'Aurora'} mata al ${v.name}${this.dragons[team].length === 4 ? ' — ¡ALMA DE DRAGÓN!' : ''}`, team });
+      this.epicNext.dragon = this.t + (this.rules.dragonRespawn ?? RULE_DEFAULTS.dragonRespawn); this.emit('announce', { txt: `${team ? 'Crepúsculo' : 'Aurora'} mata al ${v.name}${this.dragons[team].length === 4 ? ' — ¡ALMA DE DRAGÓN!' : ''}`, team });
     }
     if (v.epicType === 'herald') {
       mates.forEach(c => this.giveGold(c, 200)); this.epicNext.herald = 1e9;
       const lane = this.map.lanes[team].mid; const start = lane.reduce((b, p) => (Math.hypot(p[0] - v.x, p[1] - v.y) < Math.hypot(b[0] - v.x, b[1] - v.y) ? p : b));
       this.spawnMinion(team, 'mid', 'ram', start); this.emit('announce', { txt: '¡El ariete del Heraldo avanza por el centro!', team });
     }
-    if (v.epicType === 'lord') { mates.forEach(c => this.giveGold(c, 300)); this.lordUntil[team] = this.t + 180; this.epicNext.lord = this.t + 360; this.emit('announce', { txt: `${team ? 'Crepúsculo' : 'Aurora'} obtiene la mejora del Señor de la Ceniza`, team }); }
-    if (v.epicType === 'avatar') { this.avatarUntil[team] = this.t + 30; this.epicNext.avatar = this.t + 240; this.emit('announce', { txt: '¡Puntos dobles durante 30 s!', team }); }
+    if (v.epicType === 'lord') { mates.forEach(c => this.giveGold(c, 300)); this.lordUntil[team] = this.t + 180; this.epicNext.lord = this.t + (this.rules.lordRespawn ?? RULE_DEFAULTS.lordRespawn); this.emit('announce', { txt: `${team ? 'Crepúsculo' : 'Aurora'} obtiene la mejora del Señor de la Ceniza`, team }); }
+    if (v.epicType === 'avatar') { this.avatarUntil[team] = this.t + 30; this.epicNext.avatar = this.t + (this.rules.avatarRespawn ?? RULE_DEFAULTS.avatarRespawn); this.emit('announce', { txt: '¡Puntos dobles durante 30 s!', team }); }
     this.epic[v.epicType] = null; this.recalcTeamBonus();
   }
   addTerrain(type) {
     const n = this.dragons[0].length + this.dragons[1].length, W = this.map.W, H = this.map.H;
-    const spots = [[6200, 6200], [7800, 7800], [5400, 7000], [8600, 7000]], [x, y] = spots[(n - 1) % 4];
+    // puntos en el río y en los pasillos de jungla, a ≥ 300 u de los muros (lo comprueba game.test.mjs)
+    const spots = this.map.terrainSpots || [[6200, 6200], [7800, 7800], [5300, 7900], [6100, 8700]], [x, y] = spots[(n - 1) % spots.length];
     if (type === 'Ceniza' || type === 'Raíz') { this.brushes.push({ x, y, r: 230 }, { x: W - x, y: H - y, r: 230 }); }
-    if (type === 'Forja') { this.obstacles.push({ x, y, r: 160, perm: true }, { x: W - x, y: H - y, r: 160, perm: true }); }
+    if (type === 'Forja') { this.obstacles.push({ x, y, r: 160, perm: true }, { x: W - x, y: H - y, r: 160, perm: true }); this.obstaclesVersion++; }
     if (type === 'Marea') { for (const [a, b] of [[x, y], [W - x, H - y]]) spawnZone(this, { x: a, y: b, r: 260, team: -1, t: 1e9, kind: 'tide', col: '#4fc3f7' }); }
   }
 
@@ -415,8 +437,10 @@ export class Game {
     this.wave++;
     const k = Math.floor(this.t / 90);
     for (const team of [0, 1]) for (const lane of Object.keys(this.map.lanes[team])) {
+      // súper-súbditos: con inhibidores (Puente), cuando cae el inhibidor; sin ellos (Grieta, Wild Rift), cuando cae la torre base (tier 3)
       const enemyInhib = this.units.find(u => u.kind === 'inhib' && u.team !== team && u.lane === lane);
-      const sup = enemyInhib && !enemyInhib.alive;
+      const enemyBase = enemyInhib ? null : this.units.find(u => u.kind === 'tower' && u.team !== team && u.lane === lane && u.tier === 3);
+      const sup = enemyInhib ? !enemyInhib.alive : !!enemyBase && !enemyBase.alive;
       const types = ['melee', 'melee', 'melee', ...(this.wave % 3 === 0 ? ['siege'] : []), ...(sup ? ['super'] : []), 'caster', 'caster', 'caster'];
       types.forEach((ty, i) => this.after(i * 0.7, () => this.spawnMinion(team, lane, ty, null, k)));
     }
@@ -489,14 +513,15 @@ export class Game {
     if (g.t >= 65) for (const c of this.champs) this.giveGold(c, 2.04);
     // campamentos
     for (const c of this.camps) {
-      if (c.units.length && c.units.every(u => !u.alive)) { c.units = []; c.next = g.t + (c.type === 'golem' || c.type === 'bestia' ? 300 : 135); this.units = this.units.filter(u => u.alive || u.camp !== c); }
+      if (c.units.length && c.units.every(u => !u.alive)) { c.units = []; c.clears = (c.clears || 0) + 1; c.next = g.t + (c.type === 'golem' || c.type === 'bestia' ? 300 : 135); this.units = this.units.filter(u => u.alive || u.camp !== c); }
       if (!c.units.length && g.t >= c.next) this.spawnCamp(c);
     }
     // épicos
-    const e = this.map.epic; this.epicNext = this.epicNext || { dragon: 300, herald: 480, lord: 1200, avatar: 600 };
+    // tiempos en this.epicFirst / this.heraldUntil (de maps.js `rules`); epicNext lleva la cuenta de la siguiente aparición
+    const e = this.map.epic;
     if (e.dragon && !this.epic.dragon && g.t >= this.epicNext.dragon) this.spawnEpic('dragon');
-    if (e.herald && !this.epic.herald && g.t >= this.epicNext.herald && g.t < 1185 && !(this.epic.lord)) this.spawnEpic('herald');
-    if (e.herald && this.epic.herald && g.t >= 1185) { this.epic.herald.alive = false; this.epic.herald = null; }
+    if (e.herald && !this.epic.herald && g.t >= this.epicNext.herald && g.t < this.heraldUntil && !(this.epic.lord)) this.spawnEpic('herald');
+    if (e.herald && this.epic.herald && g.t >= this.heraldUntil) { this.epic.herald.alive = false; this.epic.herald = null; this.units = this.units.filter(u => u.epicType !== 'herald' || u.alive); }
     if (e.lord && !this.epic.lord && g.t >= this.epicNext.lord && !this.epic.herald) this.spawnEpic('lord');
     if (e.avatar && !this.epic.avatar && g.t >= this.epicNext.avatar) this.spawnEpic('avatar');
     // inhibidores reaparecen
@@ -562,7 +587,15 @@ export class Game {
     if (fear && fear.src) { const [dx, dy] = norm(u.x - fear.src.x, u.y - fear.src.y); this.moveStep(u, u.x + dx * 100, u.y + dy * 100); return; }
     if (taunt && taunt.src && taunt.src.alive) { u.target = taunt.src; u.moveTo = null; }
     if (!canMove(u) && !canAttack(u)) return;
-    this.updateCombatMovement(u);
+    this.updateCombatMovement(u, think);
+  }
+  // avanza por u[key] (lista de puntos de nav.js) hacia (tx, ty); si no hay ruta, va recto
+  followRoute(u, key, tx, ty) {
+    const r = u[key];
+    if (r && r.length) {
+      const [wx, wy] = r[0]; this.moveStep(u, wx, wy);
+      if (Math.hypot(u.x - wx, u.y - wy) < 60) { r.shift(); if (!r.length) u[key] = null; }
+    } else this.moveStep(u, tx, ty);
   }
   updateChampion(u, think) {
     const g = this;
@@ -637,7 +670,7 @@ export class Game {
     if (m.aggro) { m.target = m.aggro; return; }
     if (m.camp) { for (const o of m.camp.units) if (o.aggro && o !== m && o.alive) { m.aggro = o.aggro; m.target = o.aggro; } }
   }
-  updateCombatMovement(u) {
+  updateCombatMovement(u, think) {
     const t = u.target;
     if (t && (!t.alive || t.untargetable || (t.structure && !this.isStructureTargetable(t)) || (u.team !== NEUTRAL && !this.isVisibleTo(u.team, t) && t.kind !== 'monster'))) { u.target = null; u.windup = null; }
     if (u.attackCd > 0) u.attackCd -= TICK;
@@ -649,7 +682,12 @@ export class Game {
         return;
       }
       u.windup = null;
-      if (canMove(u) && u.st.ms > 0) this.moveStep(u, t.x, t.y);
+      if (canMove(u) && u.st.ms > 0) {
+        // persecución: cada «think» (0,25 s) se recalcula la ruta si hay un muro entre medias
+        if (think && (u.kind === 'champ' || u.kind === 'pet')) { u.chase = this.routeTo(u, t.x, t.y); u.chaseTarget = t; }
+        if (u.chaseTarget !== t) u.chase = null;
+        this.followRoute(u, 'chase', t.x, t.y);
+      }
       return;
     }
     if (u.kind === 'minion' && canMove(u)) {
@@ -658,8 +696,9 @@ export class Game {
       this.moveStep(u, wp[0], wp[1]); return;
     }
     if (u.moveTo && canMove(u)) {
-      this.moveStep(u, u.moveTo.x, u.moveTo.y);
-      if (Math.hypot(u.x - u.moveTo.x, u.y - u.moveTo.y) < 8) u.moveTo = null;
+      if (u.route && u.routeVer !== this.obstaclesVersion) { u.route = this.routeTo(u, u.moveTo.x, u.moveTo.y); u.routeVer = this.obstaclesVersion; }
+      this.followRoute(u, 'route', u.moveTo.x, u.moveTo.y);
+      if (Math.hypot(u.x - u.moveTo.x, u.y - u.moveTo.y) < 8) { u.moveTo = null; u.route = null; }
     }
   }
   moveStep(u, tx, ty) {
@@ -669,7 +708,9 @@ export class Game {
     let nx = u.x + dx * step, ny = u.y + dy * step;
     const flying = u.buffs.some(b => b.flying);
     if (!flying) for (const o of this.obstacles) {
-      const od = Math.hypot(nx - o.x, ny - o.y), min = o.r + u.r * 0.6;
+      const min = o.r + u.r * 0.6;
+      if (Math.abs(nx - o.x) >= min || Math.abs(ny - o.y) >= min) continue; // descarte rápido (hay ~340 círculos de muro)
+      const od = Math.hypot(nx - o.x, ny - o.y);
       if (od < min) { // deslizar por la tangente
         const [ox, oy] = norm(nx - o.x, ny - o.y); nx = o.x + ox * min; ny = o.y + oy * min;
         const tx2 = -oy, ty2 = ox, s = Math.sign(tx2 * dx + ty2 * dy) || 1; nx += tx2 * s * step * 0.5; ny += ty2 * s * step * 0.5;

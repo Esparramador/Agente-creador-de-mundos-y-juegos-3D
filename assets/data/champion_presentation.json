@@ -1,0 +1,2505 @@
+[
+  {
+    "id": "brannoc",
+    "name": "Brannoc",
+    "title": "El Yunque Viviente",
+    "tipoAtaque": "melee",
+    "arma": "Martillo de forja a dos manos",
+    "cuerpo": "Enano bajo y ancho (1,9 m), armadura de placas con yunque al pecho",
+    "color": "#ffb74d",
+    "clase": "Tanque",
+    "raza": "Enano",
+    "rol": "Top / Soporte",
+    "faccion": "Clanes de Hondaforja",
+    "recurso": "Maná",
+    "dificultad": 1,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "estela",
+          "color": "#ffb74d",
+          "name": "Martillazo Sísmico"
+        },
+        "W": {
+          "kind": "aura",
+          "color": "#ffb74d",
+          "name": "Templar Acero"
+        },
+        "E": {
+          "kind": "estela",
+          "color": "#ffb74d",
+          "name": "Carga de Forja"
+        },
+        "R": {
+          "kind": "glifo",
+          "color": "#ffb74d",
+          "name": "Ruptura de la Montaña"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#ffb74d"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Yunque Viviente",
+        "modelo": "champ_brannoc"
+      }
+    ],
+    "lore": "Herrero-guardián que se fundió a sí mismo con su yunque para cerrar la Puerta de Hondaforja.",
+    "pasiva": {
+      "name": "Piel de Yunque",
+      "desc": "Cada 8 s gana un escudo del 8% de vida máx. que se refresca si no recibe daño en 4 s."
+    },
+    "Q": {
+      "name": "Martillazo Sísmico",
+      "type": "Línea",
+      "desc": "Golpea el suelo; daña y ralentiza un 40% 1,5 s.",
+      "cooldown": [
+        9,
+        8.5,
+        8,
+        7.5,
+        7
+      ],
+      "cost": 50,
+      "base": [
+        70,
+        110,
+        150,
+        190,
+        230
+      ],
+      "ratio": {
+        "ad": 0.6
+      },
+      "range": 600
+    },
+    "W": {
+      "name": "Templar Acero",
+      "type": "Autobuff",
+      "desc": "+20/25/30/35/40 armadura y RM durante 4 s; refleja 15 de daño por golpe.",
+      "cooldown": [
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "cost": 60,
+      "base": [
+        15,
+        15,
+        15,
+        15,
+        15
+      ],
+      "ratio": {
+        "armor": 0.1
+      },
+      "range": 0
+    },
+    "E": {
+      "name": "Carga de Forja",
+      "type": "Embestida",
+      "desc": "Embiste hacia delante y empuja al primer enemigo 250 u.",
+      "cooldown": [
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "cost": 70,
+      "base": [
+        60,
+        95,
+        130,
+        165,
+        200
+      ],
+      "ratio": {
+        "hp_bonus": 0.04
+      },
+      "range": 450
+    },
+    "R": {
+      "name": "Ruptura de la Montaña",
+      "type": "Área",
+      "desc": "Tras 0,75 s levanta 3 pilares en un área: derriba 1,25 s y bloquea el paso 3 s.",
+      "cooldown": [
+        130,
+        115,
+        100
+      ],
+      "cost": 100,
+      "base": [
+        150,
+        250,
+        350
+      ],
+      "ratio": {
+        "ap": 0.6
+      },
+      "range": 700
+    }
+  },
+  {
+    "id": "morgra",
+    "name": "Morgra",
+    "title": "Madre de la Horda",
+    "tipoAtaque": "melee",
+    "arma": "Tótem-maza de guerra",
+    "cuerpo": "Orca corpulenta (2,4 m), piel verde, tótem ancestral en el pecho",
+    "color": "#8bc34a",
+    "clase": "Tanque",
+    "raza": "Orco",
+    "rol": "Jungla",
+    "faccion": "Horda de Colmillo Rojo",
+    "recurso": "Furia",
+    "dificultad": 2,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "glifo",
+          "color": "#8bc34a",
+          "name": "Tótem de Rugido"
+        },
+        "W": {
+          "kind": "aura",
+          "color": "#8bc34a",
+          "name": "Piel Tatuada"
+        },
+        "E": {
+          "kind": "estela",
+          "color": "#8bc34a",
+          "name": "Garra del Jabalí"
+        },
+        "R": {
+          "kind": "estela",
+          "color": "#8bc34a",
+          "name": "Estampida de la Horda"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#8bc34a"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Madre de la Horda",
+        "modelo": "champ_morgra"
+      }
+    ],
+    "lore": "Chamana de guerra que lleva en el pecho el tótem de sus antepasados.",
+    "pasiva": {
+      "name": "Sangre Ancestral",
+      "desc": "Por debajo del 40% de vida gana 30% de tenacidad y 2% de vida máx. por segundo durante 3 s (CD 60 s)."
+    },
+    "Q": {
+      "name": "Tótem de Rugido",
+      "type": "Área",
+      "desc": "Planta un tótem que provoca a los enemigos cercanos durante 1 s.",
+      "cooldown": [
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "cost": 0,
+      "base": [
+        60,
+        90,
+        120,
+        150,
+        180
+      ],
+      "ratio": {
+        "ap": 0.5
+      },
+      "range": 350
+    },
+    "W": {
+      "name": "Piel Tatuada",
+      "type": "Autobuff",
+      "desc": "Reduce el daño recibido 15/18/21/24/27% durante 3 s.",
+      "cooldown": [
+        16,
+        15,
+        14,
+        13,
+        12
+      ],
+      "cost": 0,
+      "base": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 0
+    },
+    "E": {
+      "name": "Garra del Jabalí",
+      "type": "Objetivo",
+      "desc": "Golpe que inflige daño y gana 30% vel. movimiento hacia campeones.",
+      "cooldown": [
+        8,
+        7.5,
+        7,
+        6.5,
+        6
+      ],
+      "cost": 0,
+      "base": [
+        50,
+        80,
+        110,
+        140,
+        170
+      ],
+      "ratio": {
+        "hp_bonus": 0.05
+      },
+      "range": 200
+    },
+    "R": {
+      "name": "Estampida de la Horda",
+      "type": "Embestida",
+      "desc": "Invoca espíritus de jabalí que cargan en línea, lanzan por los aires 1 s y la acompañan.",
+      "cooldown": [
+        120,
+        105,
+        90
+      ],
+      "cost": 0,
+      "base": [
+        200,
+        300,
+        400
+      ],
+      "ratio": {
+        "ap": 0.8
+      },
+      "range": 1000
+    }
+  },
+  {
+    "id": "ossuar",
+    "name": "Ossuar",
+    "title": "Osario Errante",
+    "tipoAtaque": "melee",
+    "arma": "Costilla-garfio y escudo de cráneos",
+    "cuerpo": "Gólem de huesos (2,7 m), hombros de calaveras, columna visible",
+    "color": "#b0bec5",
+    "clase": "Tanque",
+    "raza": "No-muerto",
+    "rol": "Soporte",
+    "faccion": "Reino Velado",
+    "recurso": "Maná",
+    "dificultad": 2,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "proyectil",
+          "color": "#b0bec5",
+          "name": "Garfio de Costillas"
+        },
+        "W": {
+          "kind": "aura",
+          "color": "#b0bec5",
+          "name": "Coraza de Hueso"
+        },
+        "E": {
+          "kind": "glifo",
+          "color": "#b0bec5",
+          "name": "Tumba Abierta"
+        },
+        "R": {
+          "kind": "glifo",
+          "color": "#b0bec5",
+          "name": "Cripta Sellada"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#b0bec5"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Osario Errante",
+        "modelo": "champ_ossuar"
+      }
+    ],
+    "lore": "Gólem de huesos de mil guerreros caídos que busca descanso para cada uno de ellos.",
+    "pasiva": {
+      "name": "Cosecha Ósea",
+      "desc": "Cuando muere una unidad enemiga cercana obtiene 1 hueso (máx. 30): +1 armadura y RM por hueso."
+    },
+    "Q": {
+      "name": "Garfio de Costillas",
+      "type": "Proyectil",
+      "desc": "Lanza una costilla que atrae al primer enemigo hacia Ossuar.",
+      "cooldown": [
+        18,
+        16,
+        14,
+        12,
+        10
+      ],
+      "cost": 80,
+      "base": [
+        80,
+        130,
+        180,
+        230,
+        280
+      ],
+      "ratio": {
+        "ap": 0.5
+      },
+      "range": 1000
+    },
+    "W": {
+      "name": "Coraza de Hueso",
+      "type": "Escudo aliado",
+      "desc": "Escuda a un aliado por 60/90/120/150/180 (+10% vida bonus).",
+      "cooldown": [
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "cost": 60,
+      "base": [
+        60,
+        90,
+        120,
+        150,
+        180
+      ],
+      "ratio": {
+        "hp_bonus": 0.1
+      },
+      "range": 600
+    },
+    "E": {
+      "name": "Tumba Abierta",
+      "type": "Área",
+      "desc": "Crea un área que inmoviliza 1 s tras 0,5 s de retraso.",
+      "cooldown": [
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "cost": 70,
+      "base": [
+        50,
+        85,
+        120,
+        155,
+        190
+      ],
+      "ratio": {
+        "ap": 0.4
+      },
+      "range": 650
+    },
+    "R": {
+      "name": "Cripta Sellada",
+      "type": "Área",
+      "desc": "Encierra un área de 400 u. durante 2,5 s: nadie entra ni sale.",
+      "cooldown": [
+        140,
+        120,
+        100
+      ],
+      "cost": 100,
+      "base": [
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 700
+    }
+  },
+  {
+    "id": "kaelith",
+    "name": "Kaelith",
+    "title": "Filo del Alba",
+    "tipoAtaque": "melee",
+    "arma": "Espada larga y escudo del sol partido",
+    "cuerpo": "Humana atlética (2,2 m), armadura dorada con capa rota",
+    "color": "#ffe082",
+    "clase": "Luchador",
+    "raza": "Humano",
+    "rol": "Top",
+    "faccion": "Orden del Sol Partido",
+    "recurso": "Maná",
+    "dificultad": 2,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "estela",
+          "color": "#ffe082",
+          "name": "Corte Solar"
+        },
+        "W": {
+          "kind": "aura",
+          "color": "#ffe082",
+          "name": "Égida"
+        },
+        "E": {
+          "kind": "estela",
+          "color": "#ffe082",
+          "name": "Paso del Juicio"
+        },
+        "R": {
+          "kind": "estela",
+          "color": "#ffe082",
+          "name": "Sentencia del Alba"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#ffe082"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Filo del Alba",
+        "modelo": "champ_kaelith"
+      }
+    ],
+    "lore": "Paladina expulsada de su orden por negarse a quemar una aldea; ahora juzga con su propia espada.",
+    "pasiva": {
+      "name": "Juramento Roto",
+      "desc": "Cada 3er ataque inflige 4% de vida máx. del objetivo como daño verdadero."
+    },
+    "Q": {
+      "name": "Corte Solar",
+      "type": "Línea",
+      "desc": "Tajo frontal; si golpea a un campeón, se puede relanzar una vez.",
+      "cooldown": [
+        8,
+        7.5,
+        7,
+        6.5,
+        6
+      ],
+      "cost": 40,
+      "base": [
+        40,
+        70,
+        100,
+        130,
+        160
+      ],
+      "ratio": {
+        "ad": 0.75
+      },
+      "range": 300
+    },
+    "W": {
+      "name": "Égida",
+      "type": "Autobuff",
+      "desc": "Bloquea el siguiente hechizo o ataque básico de campeón (1,5 s).",
+      "cooldown": [
+        18,
+        16,
+        14,
+        12,
+        10
+      ],
+      "cost": 60,
+      "base": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 0
+    },
+    "E": {
+      "name": "Paso del Juicio",
+      "type": "Desplazamiento",
+      "desc": "Avanza 350 u.; el siguiente ataque aturde 0,75 s.",
+      "cooldown": [
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "cost": 50,
+      "base": [
+        50,
+        75,
+        100,
+        125,
+        150
+      ],
+      "ratio": {
+        "ad": 0.5
+      },
+      "range": 350
+    },
+    "R": {
+      "name": "Sentencia del Alba",
+      "type": "Objetivo",
+      "desc": "Salta sobre un campeón; daño aumentado en un 1% por cada 1% de vida que le falte.",
+      "cooldown": [
+        100,
+        85,
+        70
+      ],
+      "cost": 100,
+      "base": [
+        150,
+        275,
+        400
+      ],
+      "ratio": {
+        "ad_bonus": 1.0
+      },
+      "range": 600
+    }
+  },
+  {
+    "id": "tharok",
+    "name": "Tharok",
+    "title": "Hacha del Norte",
+    "tipoAtaque": "melee",
+    "arma": "Hacha de arena a dos manos",
+    "cuerpo": "Orco de arena (2,4 m), cicatrices, hombreras de hueso",
+    "color": "#ef5350",
+    "clase": "Luchador",
+    "raza": "Orco",
+    "rol": "Jungla",
+    "faccion": "Horda de Colmillo Rojo",
+    "recurso": "Furia",
+    "dificultad": 1,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "glifo",
+          "color": "#ef5350",
+          "name": "Torbellino"
+        },
+        "W": {
+          "kind": "glifo",
+          "color": "#ef5350",
+          "name": "Grito de Guerra"
+        },
+        "E": {
+          "kind": "estela",
+          "color": "#ef5350",
+          "name": "Salto Brutal"
+        },
+        "R": {
+          "kind": "aura",
+          "color": "#ef5350",
+          "name": "Ira Indomable"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#ef5350"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Hacha del Norte",
+        "modelo": "champ_tharok"
+      }
+    ],
+    "lore": "El campeón de arena más temido de la Horda. Nunca ha perdido un combate a hachazos.",
+    "pasiva": {
+      "name": "Frenesí",
+      "desc": "Cada ataque da 8% de vel. ataque durante 4 s (acumula 5 veces)."
+    },
+    "Q": {
+      "name": "Torbellino",
+      "type": "Área",
+      "desc": "Gira durante 1,5 s dañando a su alrededor; se cura un 30% del daño a campeones.",
+      "cooldown": [
+        10,
+        9,
+        8,
+        7,
+        6
+      ],
+      "cost": 0,
+      "base": [
+        90,
+        140,
+        190,
+        240,
+        290
+      ],
+      "ratio": {
+        "ad": 1.0
+      },
+      "range": 250
+    },
+    "W": {
+      "name": "Grito de Guerra",
+      "type": "Área",
+      "desc": "Reduce el daño de los enemigos cercanos un 20% durante 3 s.",
+      "cooldown": [
+        16,
+        15,
+        14,
+        13,
+        12
+      ],
+      "cost": 0,
+      "base": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 400
+    },
+    "E": {
+      "name": "Salto Brutal",
+      "type": "Desplazamiento",
+      "desc": "Salta a una zona y ralentiza un 50% 1 s.",
+      "cooldown": [
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "cost": 0,
+      "base": [
+        60,
+        95,
+        130,
+        165,
+        200
+      ],
+      "ratio": {
+        "ad_bonus": 0.6
+      },
+      "range": 600
+    },
+    "R": {
+      "name": "Ira Indomable",
+      "type": "Autobuff",
+      "desc": "Durante 5 s su vida no baja de 1.",
+      "cooldown": [
+        110,
+        95,
+        80
+      ],
+      "cost": 0,
+      "base": [
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 0
+    }
+  },
+  {
+    "id": "yssra",
+    "name": "Yssra",
+    "title": "Reina de las Mareas",
+    "tipoAtaque": "melee",
+    "arma": "Tridente de coral",
+    "cuerpo": "Sirénida bípeda (2,2 m), escamas turquesa, aletas en los antebrazos",
+    "color": "#26c6da",
+    "clase": "Luchador",
+    "raza": "Sirénida",
+    "rol": "Mid / Top",
+    "faccion": "Abismo de Coral",
+    "recurso": "Maná",
+    "dificultad": 3,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "estela",
+          "color": "#26c6da",
+          "name": "Tridente"
+        },
+        "W": {
+          "kind": "aura",
+          "color": "#26c6da",
+          "name": "Burbuja"
+        },
+        "E": {
+          "kind": "estela",
+          "color": "#26c6da",
+          "name": "Ola Rompiente"
+        },
+        "R": {
+          "kind": "glifo",
+          "color": "#26c6da",
+          "name": "Maremoto"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#26c6da"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Reina de las Mareas",
+        "modelo": "champ_yssra"
+      }
+    ],
+    "lore": "Heredera del trono sumergido, sube a la superficie para reclamar las costas robadas.",
+    "pasiva": {
+      "name": "Corriente",
+      "desc": "Las habilidades dejan un charco 3 s; dentro, Yssra gana 20% vel. movimiento y 10 de regeneración."
+    },
+    "Q": {
+      "name": "Tridente",
+      "type": "Línea",
+      "desc": "Estocada de 2 golpes: el 1º físico, el 2º mágico.",
+      "cooldown": [
+        7,
+        6.5,
+        6,
+        5.5,
+        5
+      ],
+      "cost": 45,
+      "base": [
+        45,
+        70,
+        95,
+        120,
+        145
+      ],
+      "ratio": {
+        "ad": 0.5,
+        "ap": 0.5
+      },
+      "range": 475
+    },
+    "W": {
+      "name": "Burbuja",
+      "type": "Escudo",
+      "desc": "Escudo de 70-230 que ralentiza a los atacantes un 30%.",
+      "cooldown": [
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "cost": 70,
+      "base": [
+        70,
+        110,
+        150,
+        190,
+        230
+      ],
+      "ratio": {
+        "ap": 0.4
+      },
+      "range": 0
+    },
+    "E": {
+      "name": "Ola Rompiente",
+      "type": "Desplazamiento",
+      "desc": "Surfea 500 u. y lanza por los aires 0,5 s a los enemigos que atraviesa.",
+      "cooldown": [
+        16,
+        15,
+        14,
+        13,
+        12
+      ],
+      "cost": 60,
+      "base": [
+        60,
+        90,
+        120,
+        150,
+        180
+      ],
+      "ratio": {
+        "ap": 0.6
+      },
+      "range": 500
+    },
+    "R": {
+      "name": "Maremoto",
+      "type": "Área",
+      "desc": "Inunda un área enorme: daña, ralentiza un 60% y toda el área cuenta como charco.",
+      "cooldown": [
+        120,
+        110,
+        100
+      ],
+      "cost": 100,
+      "base": [
+        200,
+        325,
+        450
+      ],
+      "ratio": {
+        "ap": 0.75,
+        "ad_bonus": 0.5
+      },
+      "range": 900
+    }
+  },
+  {
+    "id": "vaelor",
+    "name": "Vaelor",
+    "title": "Archimago de Ceniza",
+    "tipoAtaque": "magic",
+    "arma": "Bastón de ceniza con brasa",
+    "cuerpo": "Elfo alto y delgado (2,2 m), túnica gris quemada, ojos de brasa",
+    "color": "#ff7043",
+    "clase": "Mago",
+    "raza": "Elfo de Ceniza",
+    "rol": "Mid",
+    "faccion": "Concilio de la Torre Gris",
+    "recurso": "Maná",
+    "dificultad": 2,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "proyectil",
+          "color": "#ff7043",
+          "name": "Lanza Ígnea"
+        },
+        "W": {
+          "kind": "muro",
+          "color": "#ff7043",
+          "name": "Muro de Ceniza"
+        },
+        "E": {
+          "kind": "glifo",
+          "color": "#ff7043",
+          "name": "Combustión"
+        },
+        "R": {
+          "kind": "glifo",
+          "color": "#ff7043",
+          "name": "Lluvia de Meteoros"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#ff7043"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Archimago de Ceniza",
+        "modelo": "champ_vaelor"
+      }
+    ],
+    "lore": "Último superviviente de la ciudad élfica que él mismo calcinó al perder el control de su magia.",
+    "pasiva": {
+      "name": "Rescoldo",
+      "desc": "Las habilidades queman al objetivo un 2% de su vida máx. durante 3 s."
+    },
+    "Q": {
+      "name": "Lanza Ígnea",
+      "type": "Proyectil",
+      "desc": "Proyectil que daña al primer enemigo y explota en un área pequeña.",
+      "cooldown": [
+        6,
+        5.5,
+        5,
+        4.5,
+        4
+      ],
+      "cost": 55,
+      "base": [
+        80,
+        120,
+        160,
+        200,
+        240
+      ],
+      "ratio": {
+        "ap": 0.7
+      },
+      "range": 900
+    },
+    "W": {
+      "name": "Muro de Ceniza",
+      "type": "Muro",
+      "desc": "Crea un muro de fuego de 600 u. durante 3 s; ralentiza un 40%.",
+      "cooldown": [
+        18,
+        17,
+        16,
+        15,
+        14
+      ],
+      "cost": 80,
+      "base": [
+        60,
+        95,
+        130,
+        165,
+        200
+      ],
+      "ratio": {
+        "ap": 0.4
+      },
+      "range": 800
+    },
+    "E": {
+      "name": "Combustión",
+      "type": "Objetivo",
+      "desc": "Detona las quemaduras del objetivo; si estaba quemándose, aturde 1,25 s.",
+      "cooldown": [
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "cost": 70,
+      "base": [
+        70,
+        105,
+        140,
+        175,
+        210
+      ],
+      "ratio": {
+        "ap": 0.6
+      },
+      "range": 650
+    },
+    "R": {
+      "name": "Lluvia de Meteoros",
+      "type": "Área",
+      "desc": "Canaliza 2 s: cae un meteoro cada 0,4 s en el área.",
+      "cooldown": [
+        110,
+        95,
+        80
+      ],
+      "cost": 100,
+      "base": [
+        300,
+        450,
+        600
+      ],
+      "ratio": {
+        "ap": 1.2
+      },
+      "range": 1300
+    }
+  },
+  {
+    "id": "nyxe",
+    "name": "Nyxe",
+    "title": "Tejesueños",
+    "tipoAtaque": "magic",
+    "arma": "Varita de polvo de hada",
+    "cuerpo": "Hada menuda (1,7 m), alas de mariposa translúcidas, flota a un palmo del suelo",
+    "color": "#ea80fc",
+    "clase": "Mago",
+    "raza": "Feérico",
+    "rol": "Mid / Soporte",
+    "faccion": "Bosque Onírico",
+    "recurso": "Maná",
+    "dificultad": 3,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "proyectil",
+          "color": "#ea80fc",
+          "name": "Mariposas Oníricas"
+        },
+        "W": {
+          "kind": "glifo",
+          "color": "#ea80fc",
+          "name": "Somnolencia"
+        },
+        "E": {
+          "kind": "estela",
+          "color": "#ea80fc",
+          "name": "Paso Fae"
+        },
+        "R": {
+          "kind": "glifo",
+          "color": "#ea80fc",
+          "name": "Pesadilla Compartida"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#ea80fc"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Tejesueños",
+        "modelo": "champ_nyxe"
+      }
+    ],
+    "lore": "Hada que roba pesadillas a los niños... y a veces se las devuelve a los adultos.",
+    "pasiva": {
+      "name": "Polvo de Hada",
+      "desc": "Cada 4ª habilidad lanzada es gratuita y gana 50 de alcance."
+    },
+    "Q": {
+      "name": "Mariposas Oníricas",
+      "type": "Proyectil",
+      "desc": "Lanza 3 mariposas que persiguen al enemigo más cercano.",
+      "cooldown": [
+        7,
+        6.5,
+        6,
+        5.5,
+        5
+      ],
+      "cost": 60,
+      "base": [
+        30,
+        45,
+        60,
+        75,
+        90
+      ],
+      "ratio": {
+        "ap": 0.3
+      },
+      "range": 700
+    },
+    "W": {
+      "name": "Somnolencia",
+      "type": "Área",
+      "desc": "Tras 1,5 s duerme 1,5 s a los enemigos del área (el daño despierta).",
+      "cooldown": [
+        16,
+        15,
+        14,
+        13,
+        12
+      ],
+      "cost": 80,
+      "base": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 800
+    },
+    "E": {
+      "name": "Paso Fae",
+      "type": "Desplazamiento",
+      "desc": "Parpadea 400 u. y se vuelve invisible 1 s.",
+      "cooldown": [
+        18,
+        16,
+        14,
+        12,
+        10
+      ],
+      "cost": 60,
+      "base": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 400
+    },
+    "R": {
+      "name": "Pesadilla Compartida",
+      "type": "Objetivo",
+      "desc": "Encierra a un campeón 2 s en un sueño: no ve a nadie; al salir sufre daño.",
+      "cooldown": [
+        120,
+        100,
+        80
+      ],
+      "cost": 100,
+      "base": [
+        200,
+        300,
+        400
+      ],
+      "ratio": {
+        "ap": 0.8
+      },
+      "range": 700
+    }
+  },
+  {
+    "id": "zerath",
+    "name": "Zerath",
+    "title": "El Hambre Profunda",
+    "tipoAtaque": "magic",
+    "arma": "Garras del vacío (sin arma)",
+    "cuerpo": "Silueta humanoide hecha de vacío (2,3 m), bordes que se deshacen en humo",
+    "color": "#7c4dff",
+    "clase": "Mago",
+    "raza": "Espíritu del Vacío",
+    "rol": "Mid / Top",
+    "faccion": "La Grieta",
+    "recurso": "Ninguno (vida)",
+    "dificultad": 3,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "glifo",
+          "color": "#7c4dff",
+          "name": "Mano del Vacío"
+        },
+        "W": {
+          "kind": "rayo",
+          "color": "#7c4dff",
+          "name": "Absorber"
+        },
+        "E": {
+          "kind": "aura",
+          "color": "#7c4dff",
+          "name": "Fase"
+        },
+        "R": {
+          "kind": "glifo",
+          "color": "#7c4dff",
+          "name": "Singularidad"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#7c4dff"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "El Hambre Profunda",
+        "modelo": "champ_zerath"
+      }
+    ],
+    "lore": "Fragmento consciente del vacío que aprendió a imitar la forma humana devorando recuerdos.",
+    "pasiva": {
+      "name": "Devorar",
+      "desc": "Las habilidades cuestan 5% de vida actual; cada asesinato o asistencia da +5 PH permanente."
+    },
+    "Q": {
+      "name": "Mano del Vacío",
+      "type": "Área",
+      "desc": "Tras 0,5 s, garras emergen del suelo y ralentizan un 60%.",
+      "cooldown": [
+        8,
+        7.5,
+        7,
+        6.5,
+        6
+      ],
+      "cost": 0,
+      "base": [
+        70,
+        110,
+        150,
+        190,
+        230
+      ],
+      "ratio": {
+        "ap": 0.6
+      },
+      "range": 800
+    },
+    "W": {
+      "name": "Absorber",
+      "type": "Drenaje",
+      "desc": "Canaliza 3 s sobre un objetivo: daño por segundo y se cura el 60%.",
+      "cooldown": [
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "cost": 0,
+      "base": [
+        40,
+        60,
+        80,
+        100,
+        120
+      ],
+      "ratio": {
+        "ap": 0.25
+      },
+      "range": 500
+    },
+    "E": {
+      "name": "Fase",
+      "type": "Autobuff",
+      "desc": "Se vuelve inalcanzable 1 s.",
+      "cooldown": [
+        22,
+        20,
+        18,
+        16,
+        14
+      ],
+      "cost": 0,
+      "base": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 0
+    },
+    "R": {
+      "name": "Singularidad",
+      "type": "Área",
+      "desc": "Crea un agujero negro de 2,5 s que atrae continuamente al centro.",
+      "cooldown": [
+        130,
+        115,
+        100
+      ],
+      "cost": 0,
+      "base": [
+        250,
+        375,
+        500
+      ],
+      "ratio": {
+        "ap": 0.9
+      },
+      "range": 750
+    }
+  },
+  {
+    "id": "lyra",
+    "name": "Lyra Vientoalto",
+    "title": "Flecha del Cielo",
+    "tipoAtaque": "ranged",
+    "arma": "Arco largo élfico",
+    "cuerpo": "Elfa esbelta (2,2 m), capa de hojas, carcaj a la espalda",
+    "color": "#aed581",
+    "clase": "Tirador",
+    "raza": "Elfo Silvano",
+    "rol": "Carril inferior (tirador)",
+    "faccion": "Bosque Onírico",
+    "recurso": "Maná",
+    "dificultad": 1,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "estela",
+          "color": "#aed581",
+          "name": "Flecha Perforante"
+        },
+        "W": {
+          "kind": "glifo",
+          "color": "#aed581",
+          "name": "Lluvia de Flechas"
+        },
+        "E": {
+          "kind": "estela",
+          "color": "#aed581",
+          "name": "Voltereta"
+        },
+        "R": {
+          "kind": "proyectil",
+          "color": "#aed581",
+          "name": "Saeta Celeste"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#aed581"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Flecha del Cielo",
+        "modelo": "champ_lyra"
+      }
+    ],
+    "lore": "Exploradora élfica capaz de acertar a un halcón en vuelo a un kilómetro de distancia.",
+    "pasiva": {
+      "name": "Ojo de Halcón",
+      "desc": "Atacar al mismo objetivo 3 veces seguidas da 30% de vel. ataque durante 3 s."
+    },
+    "Q": {
+      "name": "Flecha Perforante",
+      "type": "Línea",
+      "desc": "Disparo cargado que atraviesa a todos los enemigos (-10% daño por objetivo).",
+      "cooldown": [
+        9,
+        8,
+        7,
+        6,
+        5
+      ],
+      "cost": 50,
+      "base": [
+        40,
+        75,
+        110,
+        145,
+        180
+      ],
+      "ratio": {
+        "ad": 1.1
+      },
+      "range": 1100
+    },
+    "W": {
+      "name": "Lluvia de Flechas",
+      "type": "Área",
+      "desc": "Ralentiza un 30% y daña en un área circular.",
+      "cooldown": [
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "cost": 70,
+      "base": [
+        60,
+        95,
+        130,
+        165,
+        200
+      ],
+      "ratio": {
+        "ad_bonus": 0.6
+      },
+      "range": 900
+    },
+    "E": {
+      "name": "Voltereta",
+      "type": "Desplazamiento",
+      "desc": "Rueda 300 u.; el siguiente ataque tiene +100 de alcance.",
+      "cooldown": [
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "cost": 40,
+      "base": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 300
+    },
+    "R": {
+      "name": "Saeta Celeste",
+      "type": "Proyectil global",
+      "desc": "Flecha que cruza el mapa; aturde según la distancia (1-3,5 s).",
+      "cooldown": [
+        100,
+        90,
+        80
+      ],
+      "cost": 100,
+      "base": [
+        200,
+        325,
+        450
+      ],
+      "ratio": {
+        "ap": 1.0
+      },
+      "range": 99999
+    }
+  },
+  {
+    "id": "gearix",
+    "name": "Gearix",
+    "title": "Ingeniera Loca",
+    "tipoAtaque": "ranged",
+    "arma": "Escopeta-cañón de seis balas",
+    "cuerpo": "Gnoma pequeña (1,7 m) con mochila mecánica y gafas de soldar",
+    "color": "#ffd54f",
+    "clase": "Tirador",
+    "raza": "Gnomo",
+    "rol": "Carril inferior (tirador)",
+    "faccion": "Consorcio de Engranajes",
+    "recurso": "Munición (6 balas)",
+    "dificultad": 2,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "glifo",
+          "color": "#ffd54f",
+          "name": "Torreta Portátil"
+        },
+        "W": {
+          "kind": "glifo",
+          "color": "#ffd54f",
+          "name": "Granada de Humo"
+        },
+        "E": {
+          "kind": "estela",
+          "color": "#ffd54f",
+          "name": "Retroceso"
+        },
+        "R": {
+          "kind": "estela",
+          "color": "#ffd54f",
+          "name": "Gran Cañón"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#ffd54f"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Ingeniera Loca",
+        "modelo": "champ_gearix"
+      }
+    ],
+    "lore": "Genio expulsada de cuatro academias por 'exceso de explosiones'. Le parece una crítica injusta.",
+    "pasiva": {
+      "name": "Cargador",
+      "desc": "Cada 6º ataque es un disparo de escopeta en cono con 150% de daño."
+    },
+    "Q": {
+      "name": "Torreta Portátil",
+      "type": "Invocación",
+      "desc": "Despliega una torreta (máx. 2) que ataca 8 s.",
+      "cooldown": [
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "cost": 0,
+      "base": [
+        20,
+        30,
+        40,
+        50,
+        60
+      ],
+      "ratio": {
+        "ad": 0.3
+      },
+      "range": 500
+    },
+    "W": {
+      "name": "Granada de Humo",
+      "type": "Área",
+      "desc": "Ciega a los enemigos del área 1,5 s (sus ataques fallan).",
+      "cooldown": [
+        16,
+        15,
+        14,
+        13,
+        12
+      ],
+      "cost": 0,
+      "base": [
+        50,
+        80,
+        110,
+        140,
+        170
+      ],
+      "ratio": {
+        "ap": 0.5
+      },
+      "range": 700
+    },
+    "E": {
+      "name": "Retroceso",
+      "type": "Desplazamiento",
+      "desc": "Dispara hacia delante y sale despedida 400 u. hacia atrás.",
+      "cooldown": [
+        16,
+        14,
+        12,
+        10,
+        8
+      ],
+      "cost": 0,
+      "base": [
+        40,
+        70,
+        100,
+        130,
+        160
+      ],
+      "ratio": {
+        "ad_bonus": 0.5
+      },
+      "range": 400
+    },
+    "R": {
+      "name": "Gran Cañón",
+      "type": "Línea",
+      "desc": "Tras 1 s de carga, rayo que daña un 50% más a objetivos con poca vida.",
+      "cooldown": [
+        90,
+        75,
+        60
+      ],
+      "cost": 0,
+      "base": [
+        250,
+        400,
+        550
+      ],
+      "ratio": {
+        "ad_bonus": 1.5
+      },
+      "range": 1500
+    }
+  },
+  {
+    "id": "sable",
+    "name": "Sable",
+    "title": "La Sombra sin Nombre",
+    "tipoAtaque": "melee",
+    "arma": "Dagas gemelas",
+    "cuerpo": "Humana enjuta (2,2 m), capucha y velo, sin rostro visible",
+    "color": "#90a4ae",
+    "clase": "Asesino",
+    "raza": "Humano",
+    "rol": "Mid / Jungla",
+    "faccion": "Hermandad del Velo",
+    "recurso": "Energía",
+    "dificultad": 3,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "proyectil",
+          "color": "#90a4ae",
+          "name": "Daga Sombría"
+        },
+        "W": {
+          "kind": "humo",
+          "color": "#90a4ae",
+          "name": "Velo"
+        },
+        "E": {
+          "kind": "glifo",
+          "color": "#90a4ae",
+          "name": "Abanico de Cuchillas"
+        },
+        "R": {
+          "kind": "estela",
+          "color": "#90a4ae",
+          "name": "Ejecución"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#90a4ae"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "La Sombra sin Nombre",
+        "modelo": "champ_sable"
+      }
+    ],
+    "lore": "Nadie conoce su verdadero nombre, ni siquiera la Hermandad que la entrenó.",
+    "pasiva": {
+      "name": "Marca Mortal",
+      "desc": "Golpear a un campeón aislado (sin aliados en 600 u.) inflige un 25% de daño extra."
+    },
+    "Q": {
+      "name": "Daga Sombría",
+      "type": "Proyectil",
+      "desc": "Lanza una daga; si impacta, puede teletransportarse detrás del objetivo.",
+      "cooldown": [
+        8,
+        7.5,
+        7,
+        6.5,
+        6
+      ],
+      "cost": 50,
+      "base": [
+        60,
+        95,
+        130,
+        165,
+        200
+      ],
+      "ratio": {
+        "ad_bonus": 0.8
+      },
+      "range": 700
+    },
+    "W": {
+      "name": "Velo",
+      "type": "Sigilo",
+      "desc": "Invisible 2 s y +20% vel. movimiento.",
+      "cooldown": [
+        20,
+        18,
+        16,
+        14,
+        12
+      ],
+      "cost": 60,
+      "base": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 0
+    },
+    "E": {
+      "name": "Abanico de Cuchillas",
+      "type": "Área",
+      "desc": "Cuchillas a su alrededor; ralentizan un 30%.",
+      "cooldown": [
+        6,
+        5.5,
+        5,
+        4.5,
+        4
+      ],
+      "cost": 40,
+      "base": [
+        50,
+        75,
+        100,
+        125,
+        150
+      ],
+      "ratio": {
+        "ad_bonus": 0.6
+      },
+      "range": 300
+    },
+    "R": {
+      "name": "Ejecución",
+      "type": "Objetivo",
+      "desc": "Marca a un campeón; tras 3 s la marca explota con el 30% del daño infligido.",
+      "cooldown": [
+        90,
+        75,
+        60
+      ],
+      "cost": 0,
+      "base": [
+        100,
+        175,
+        250
+      ],
+      "ratio": {
+        "ad_bonus": 1.0
+      },
+      "range": 625
+    }
+  },
+  {
+    "id": "rakhar",
+    "name": "Rakhar",
+    "title": "Garra Escarlata",
+    "tipoAtaque": "melee",
+    "arma": "Garras escarlatas",
+    "cuerpo": "Bestial cuadrúpedo-bípedo (2,0 m), lomo arqueado, cola larga",
+    "color": "#ff5722",
+    "clase": "Asesino",
+    "raza": "Bestial (felino)",
+    "rol": "Jungla",
+    "faccion": "Tribus de las Dunas",
+    "recurso": "Ninguno",
+    "dificultad": 2,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "estela",
+          "color": "#ff5722",
+          "name": "Zarpazo"
+        },
+        "W": {
+          "kind": "glifo",
+          "color": "#ff5722",
+          "name": "Rugido"
+        },
+        "E": {
+          "kind": "estela",
+          "color": "#ff5722",
+          "name": "Abalanzarse"
+        },
+        "R": {
+          "kind": "aura",
+          "color": "#ff5722",
+          "name": "Cacería"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#ff5722"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "felino",
+        "nombre": "Garra Escarlata (felino)",
+        "modelo": "champ_rakhar"
+      },
+      {
+        "id": "lagarto",
+        "nombre": "Garra Escarlata (lagarto)",
+        "modelo": "champ_rakhar_lagarto"
+      }
+    ],
+    "lore": "Cazador del desierto que prefiere presas que puedan defenderse.",
+    "pasiva": {
+      "name": "Instinto de Caza",
+      "desc": "Ve a los campeones enemigos por debajo del 50% de vida a 1500 u. y gana 15% vel. movimiento hacia ellos."
+    },
+    "Q": {
+      "name": "Zarpazo",
+      "type": "Objetivo",
+      "desc": "3 zarpazos rápidos; el 3º inflige el doble.",
+      "cooldown": [
+        7,
+        6.5,
+        6,
+        5.5,
+        5
+      ],
+      "cost": 0,
+      "base": [
+        30,
+        45,
+        60,
+        75,
+        90
+      ],
+      "ratio": {
+        "ad_bonus": 0.5
+      },
+      "range": 175
+    },
+    "W": {
+      "name": "Rugido",
+      "type": "Área",
+      "desc": "Asusta 0,75 s a los enemigos cercanos.",
+      "cooldown": [
+        18,
+        17,
+        16,
+        15,
+        14
+      ],
+      "cost": 0,
+      "base": [
+        40,
+        65,
+        90,
+        115,
+        140
+      ],
+      "ratio": {
+        "ad_bonus": 0.4
+      },
+      "range": 325
+    },
+    "E": {
+      "name": "Abalanzarse",
+      "type": "Desplazamiento",
+      "desc": "Salta sobre un objetivo; se reinicia con asesinatos o asistencias.",
+      "cooldown": [
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "cost": 0,
+      "base": [
+        60,
+        90,
+        120,
+        150,
+        180
+      ],
+      "ratio": {
+        "ad_bonus": 0.7
+      },
+      "range": 650
+    },
+    "R": {
+      "name": "Cacería",
+      "type": "Autobuff",
+      "desc": "6 s: +40% vel. movimiento, se vuelve invisible fuera de combate y su próximo ataque es crítico.",
+      "cooldown": [
+        100,
+        85,
+        70
+      ],
+      "cost": 0,
+      "base": [
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 0
+    }
+  },
+  {
+    "id": "elowen",
+    "name": "Elowen",
+    "title": "Voz del Bosque",
+    "tipoAtaque": "magic",
+    "arma": "Rama viva (báculo que florece)",
+    "cuerpo": "Dríade (2,1 m), piel de corteza, cabello de hojas y flores",
+    "color": "#66bb6a",
+    "clase": "Soporte",
+    "raza": "Dríade",
+    "rol": "Soporte",
+    "faccion": "Bosque Onírico",
+    "recurso": "Maná",
+    "dificultad": 1,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "proyectil",
+          "color": "#66bb6a",
+          "name": "Raíces Atadoras"
+        },
+        "W": {
+          "kind": "cura",
+          "color": "#66bb6a",
+          "name": "Savia Vital"
+        },
+        "E": {
+          "kind": "aura",
+          "color": "#66bb6a",
+          "name": "Corteza"
+        },
+        "R": {
+          "kind": "glifo",
+          "color": "#66bb6a",
+          "name": "Renacer del Bosque"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#66bb6a"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Voz del Bosque",
+        "modelo": "champ_elowen"
+      }
+    ],
+    "lore": "Espíritu del roble más antiguo, despertado para curar la tierra herida por la guerra.",
+    "pasiva": {
+      "name": "Florecer",
+      "desc": "Las curaciones dejan una flor que da 15 de vida extra al aliado que la pisa."
+    },
+    "Q": {
+      "name": "Raíces Atadoras",
+      "type": "Proyectil",
+      "desc": "Inmoviliza 1,25 s al primer enemigo.",
+      "cooldown": [
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "cost": 60,
+      "base": [
+        70,
+        110,
+        150,
+        190,
+        230
+      ],
+      "ratio": {
+        "ap": 0.5
+      },
+      "range": 1000
+    },
+    "W": {
+      "name": "Savia Vital",
+      "type": "Curación",
+      "desc": "Cura a un aliado y a sí misma 70-230 (+35% PH).",
+      "cooldown": [
+        10,
+        9.5,
+        9,
+        8.5,
+        8
+      ],
+      "cost": 80,
+      "base": [
+        70,
+        110,
+        150,
+        190,
+        230
+      ],
+      "ratio": {
+        "ap": 0.35
+      },
+      "range": 700
+    },
+    "E": {
+      "name": "Corteza",
+      "type": "Escudo aliado",
+      "desc": "El aliado gana 20 de armadura y RM y su próximo ataque inmoviliza.",
+      "cooldown": [
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "cost": 60,
+      "base": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "ratio": {},
+      "range": 700
+    },
+    "R": {
+      "name": "Renacer del Bosque",
+      "type": "Área aliada",
+      "desc": "Gran área de curación durante 3 s; los aliados que mueran en ella reviven con un 20% de vida (1 vez).",
+      "cooldown": [
+        160,
+        140,
+        120
+      ],
+      "cost": 100,
+      "base": [
+        150,
+        250,
+        350
+      ],
+      "ratio": {
+        "ap": 0.6
+      },
+      "range": 900
+    }
+  },
+  {
+    "id": "aurik",
+    "name": "Aurik",
+    "title": "Heraldo Dorado",
+    "tipoAtaque": "magic",
+    "arma": "Lanza-estandarte dorada",
+    "cuerpo": "Dracónido (2,3 m), escamas doradas, alas plegadas, cuernos cortos",
+    "color": "#ffca28",
+    "clase": "Soporte",
+    "raza": "Dracónido",
+    "rol": "Soporte",
+    "faccion": "Orden del Sol Partido",
+    "recurso": "Maná",
+    "dificultad": 2,
+    "anims": {
+      "Idle": "Idle",
+      "Run": "Run",
+      "Attack": "Attack",
+      "Cast": "Cast",
+      "Death": "Death",
+      "Cast_Q": "Cast_Q",
+      "Cast_W": "Cast_W",
+      "Cast_E": "Cast_E",
+      "Cast_R": "Cast_R"
+    },
+    "animsOpcionales": [
+      "Cast_Q",
+      "Cast_W",
+      "Cast_E",
+      "Cast_R"
+    ],
+    "vfx": {
+      "spawn": {
+        "kind": "columna",
+        "color": "equipo"
+      },
+      "cast": {
+        "Q": {
+          "kind": "cono",
+          "color": "#ffca28",
+          "name": "Aliento Solar"
+        },
+        "W": {
+          "kind": "estela",
+          "color": "#ffca28",
+          "name": "Ala Protectora"
+        },
+        "E": {
+          "kind": "glifo",
+          "color": "#ffca28",
+          "name": "Rugido Dracónico"
+        },
+        "R": {
+          "kind": "aura",
+          "color": "#ffca28",
+          "name": "Forma Dragón"
+        }
+      },
+      "death": {
+        "kind": "fragmentos",
+        "color": "#ffca28"
+      }
+    },
+    "aspectos": [
+      {
+        "id": "base",
+        "nombre": "Heraldo Dorado",
+        "modelo": "champ_aurik"
+      }
+    ],
+    "lore": "Dragón joven que adoptó forma humanoide para servir a la orden que salvó su huevo.",
+    "pasiva": {
+      "name": "Escamas de Oro",
+      "desc": "Los aliados cercanos ganan 5 de armadura; el doble si Aurik está en forma de dragón."
+    },
+    "Q": {
+      "name": "Aliento Solar",
+      "type": "Cono",
+      "desc": "Cono de fuego dorado que ralentiza un 30%.",
+      "cooldown": [
+        9,
+        8.5,
+        8,
+        7.5,
+        7
+      ],
+      "cost": 60,
+      "base": [
+        60,
+        95,
+        130,
+        165,
+        200
+      ],
+      "ratio": {
+        "ap": 0.5
+      },
+      "range": 550
+    },
+    "W": {
+      "name": "Ala Protectora",
+      "type": "Desplazamiento aliado",
+      "desc": "Vuela hacia un aliado y ambos ganan un escudo de 60-200.",
+      "cooldown": [
+        16,
+        15,
+        14,
+        13,
+        12
+      ],
+      "cost": 70,
+      "base": [
+        60,
+        95,
+        130,
+        165,
+        200
+      ],
+      "ratio": {
+        "ap": 0.3
+      },
+      "range": 800
+    },
+    "E": {
+      "name": "Rugido Dracónico",
+      "type": "Área",
+      "desc": "Aturde 0,75 s a los enemigos cercanos.",
+      "cooldown": [
+        16,
+        15,
+        14,
+        13,
+        12
+      ],
+      "cost": 70,
+      "base": [
+        50,
+        80,
+        110,
+        140,
+        170
+      ],
+      "ratio": {
+        "ap": 0.4
+      },
+      "range": 300
+    },
+    "R": {
+      "name": "Forma Dragón",
+      "type": "Transformación",
+      "desc": "8 s: vuela (ignora terreno), +300 de vida y su Q pasa a ser una línea de 900 u.",
+      "cooldown": [
+        140,
+        120,
+        100
+      ],
+      "cost": 100,
+      "base": [
+        100,
+        150,
+        200
+      ],
+      "ratio": {
+        "ap": 0.3
+      },
+      "range": 0
+    }
+  }
+]

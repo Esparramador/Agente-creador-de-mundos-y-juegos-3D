@@ -12,11 +12,15 @@ export class Renderer {
     this.cam = { x: game.player ? game.player.x : game.map.W / 2, y: game.player ? game.player.y : game.map.H / 2, zoom: 1, locked: true };
     this.fog = document.createElement('canvas'); this.texts = []; this.lastEvent = 0; this.pings = []; this.clickFx = [];
     this.hudRects = []; this.mini = null; this.announce = []; this.feedSeen = 0;
+    this.extraDraw = null; // extraDraw(ctx, k): gancho de touch.js (joystick y puntería) al final del HUD
+    this.setDpr(1);
   }
+  /** Relación de píxeles del lienzo HUD: el canvas mide W×dpr píxeles; el HUD dibuja en px CSS (this.W × this.H). main.js lo llama en cada resize. */
+  setDpr(dpr) { this.dpr = dpr || 1; this.W = this.c.clientWidth || innerWidth; this.H = this.c.clientHeight || innerHeight; }
   setWorld3D(r3d) { this.r3d = r3d; }
-  get scale() { return 0.42 * this.cam.zoom * (this.c.height / 900); }
-  w2s(x, y) { if (this.r3d) return this.r3d.project(x, y); const s = this.scale; return [(x - this.cam.x) * s + this.c.width / 2, (y - this.cam.y) * s + this.c.height / 2]; }
-  s2w(x, y) { if (this.r3d) return this.r3d.unproject(x, y); const s = this.scale; return [(x - this.c.width / 2) / s + this.cam.x, (y - this.c.height / 2) / s + this.cam.y]; }
+  get scale() { return 0.42 * this.cam.zoom * (this.H / 900); }
+  w2s(x, y) { if (this.r3d) return this.r3d.project(x, y); const s = this.scale; return [(x - this.cam.x) * s + this.W / 2, (y - this.cam.y) * s + this.H / 2]; }
+  s2w(x, y) { if (this.r3d) return this.r3d.unproject(x, y); const s = this.scale; return [(x - this.W / 2) / s + this.cam.x, (y - this.H / 2) / s + this.cam.y]; }
   teamCol(team) { return team === 2 ? '#bcaaa4' : TEAM_COL[this.s.colorblind ? 'colorblind' : 'normal'][team]; }
   relCol(u) { const p = this.g.player; if (p && u === p) return '#66ff66'; return this.teamCol(u.team); }
 
@@ -37,13 +41,13 @@ export class Renderer {
   }
 
   draw(dt, hover) {
-    const { ctx, g } = this, c = this.c; const p = g.player;
+    const { ctx, g } = this; const p = g.player;
     if (p && (this.cam.locked || this.centerHeld) && (p.alive || this.centerHeld)) { this.cam.x = p.x; this.cam.y = p.y; }
     this.consumeEvents();
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    if (this.r3d) { const team = p ? p.team : 0; this.r3d.render(dt, this.cam, team, hover); ctx.clearRect(0, 0, c.width, c.height); this.drawOverlay3D(dt, team, hover); this.drawHUD(hover); return; }
-    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, c.width, c.height);
-    const s = this.scale; ctx.save(); ctx.translate(c.width / 2, c.height / 2); ctx.scale(s, s); ctx.translate(-this.cam.x, -this.cam.y);
+    ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    if (this.r3d) { const team = p ? p.team : 0; this.r3d.render(dt, this.cam, team, hover); ctx.clearRect(0, 0, this.W, this.H); this.drawOverlay3D(dt, team, hover); this.drawHUD(hover); return; }
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, this.W, this.H);
+    const s = this.scale; ctx.save(); ctx.translate(this.W / 2, this.H / 2); ctx.scale(s, s); ctx.translate(-this.cam.x, -this.cam.y);
     this.drawMap(ctx);
     this.drawZones(ctx);
     const team = p ? p.team : 0;
@@ -75,7 +79,7 @@ export class Renderer {
     for (const u of g.units) {
       if (!u.alive || u.kind === 'ward') continue;
       if (!(u.structure || u.team === team || g.isVisibleTo(team, u))) continue;
-      const [x, y, ok] = r3.project(u.x, u.y, r3.headHeight(u)); if (!ok || x < -50 || y < -50 || x > this.c.width + 50 || y > this.c.height + 50) continue;
+      const [x, y, ok] = r3.project(u.x, u.y, r3.headHeight(u)); if (!ok || x < -50 || y < -50 || x > this.W + 50 || y > this.H + 50) continue;
       const w = u.kind === 'champ' ? 90 : u.structure ? 110 : u.epicType ? 130 : u.kind === 'monster' && u.big ? 60 : 40, h = u.kind === 'champ' ? 9 : u.structure || u.epicType ? 8 : 4;
       this.hpBar2(u, x, y, w, h);
       ctx.textAlign = 'center';
@@ -200,8 +204,8 @@ export class Renderer {
     if (u.kind === 'champ' && u.resMax) { ctx.fillStyle = { mana: '#2979ff', energy: '#ffee58', fury: '#ff7043' }[u.resType] || '#888'; ctx.fillRect(x - w / 2, y + h + 2, w * u.res / u.resMax, 8); }
   }
   drawFog(team) {
-    const g = this.g, c = this.c, f = this.fog, p = g.player;
-    if (f.width !== c.width || f.height !== c.height) { f.width = c.width; f.height = c.height; }
+    const g = this.g, f = this.fog, p = g.player;
+    if (f.width !== this.W || f.height !== this.H) { f.width = this.W; f.height = this.H; } // niebla en px CSS: drawImage ya va escalado por dpr
     const fc = f.getContext('2d'); fc.globalCompositeOperation = 'source-over'; fc.clearRect(0, 0, f.width, f.height);
     fc.fillStyle = 'rgba(0,0,10,0.55)'; fc.fillRect(0, 0, f.width, f.height); fc.globalCompositeOperation = 'destination-out';
     const s = this.scale; const near = p && hasCC(p, 'nearsight');
@@ -217,53 +221,56 @@ export class Renderer {
 
   // ---------------- HUD ----------------
   drawHUD(hover) {
-    const { ctx, g } = this, c = this.c, p = g.player; this.hudRects = [];
-    const k = this.s.uiScale || 1; ctx.save(); ctx.font = '14px sans-serif';
+    const { ctx, g } = this, p = g.player; this.hudRects = [];
+    const k = (this.s.uiScale || 1) * (this.s.mobile ? 1.15 : 1), mob = !!this.s.mobile; ctx.save(); ctx.font = '14px sans-serif';
     // marcador superior
-    ctx.fillStyle = '#000000b0'; ctx.fillRect(c.width / 2 - 200 * k, 0, 400 * k, 46 * k);
+    ctx.fillStyle = '#000000b0'; ctx.fillRect(this.W / 2 - 200 * k, 0, 400 * k, 46 * k);
     ctx.textAlign = 'center'; ctx.font = `bold ${22 * k}px sans-serif`;
-    ctx.fillStyle = this.teamCol(0); ctx.fillText(`${g.kills[0]}`, c.width / 2 - 120 * k, 31 * k);
-    ctx.fillStyle = this.teamCol(1); ctx.fillText(`${g.kills[1]}`, c.width / 2 + 120 * k, 31 * k);
-    ctx.fillStyle = '#fff'; const mm = Math.floor(g.t / 60), ss = Math.floor(g.t % 60); ctx.fillText(`${mm}:${String(ss).padStart(2, '0')}`, c.width / 2, 31 * k);
+    ctx.fillStyle = this.teamCol(0); ctx.fillText(`${g.kills[0]}`, this.W / 2 - 120 * k, 31 * k);
+    ctx.fillStyle = this.teamCol(1); ctx.fillText(`${g.kills[1]}`, this.W / 2 + 120 * k, 31 * k);
+    ctx.fillStyle = '#fff'; const mm = Math.floor(g.t / 60), ss = Math.floor(g.t % 60); ctx.fillText(`${mm}:${String(ss).padStart(2, '0')}`, this.W / 2, 31 * k);
     ctx.font = `${13 * k}px sans-serif`; ctx.fillStyle = '#ccc';
-    ctx.fillText(`🗼${g.towersDown[0]}  🐉${g.dragons[0].length}`, c.width / 2 - 60 * k, 38 * k); ctx.fillText(`🗼${g.towersDown[1]}  🐉${g.dragons[1].length}`, c.width / 2 + 60 * k, 38 * k);
+    ctx.fillText(`🗼${g.towersDown[0]}  🐉${g.dragons[0].length}`, this.W / 2 - 60 * k, 38 * k); ctx.fillText(`🗼${g.towersDown[1]}  🐉${g.dragons[1].length}`, this.W / 2 + 60 * k, 38 * k);
     if (g.altars.length) {
-      const w = 300 * k, x0 = c.width / 2 - w / 2, y0 = 52 * k, max = g.rules.winPoints;
+      const w = 300 * k, x0 = this.W / 2 - w / 2, y0 = 52 * k, max = g.rules.winPoints;
       ctx.fillStyle = '#000a'; ctx.fillRect(x0 - 4, y0 - 4, w + 8, 30 * k);
       ctx.fillStyle = this.teamCol(0); ctx.fillRect(x0, y0, w / 2 * g.points[0] / max, 10 * k); ctx.fillStyle = this.teamCol(1); ctx.fillRect(x0 + w / 2, y0, w / 2 * g.points[1] / max, 10 * k);
-      ctx.fillStyle = '#fff'; ctx.font = `${12 * k}px sans-serif`; ctx.fillText(`${Math.floor(g.points[0])} — ${Math.floor(g.points[1])}  (meta ${max})`, c.width / 2, y0 + 23 * k);
+      ctx.fillStyle = '#fff'; ctx.font = `${12 * k}px sans-serif`; ctx.fillText(`${Math.floor(g.points[0])} — ${Math.floor(g.points[1])}  (meta ${max})`, this.W / 2, y0 + 23 * k);
     }
     // arriba derecha: KDA, CS, objetivos
     if (p) {
-      ctx.textAlign = 'right'; ctx.fillStyle = '#000a'; ctx.fillRect(c.width - 270 * k, 0, 270 * k, 70 * k); ctx.fillStyle = '#fff'; ctx.font = `${15 * k}px sans-serif`;
-      ctx.fillText(`KDA ${p.stats.k}/${p.stats.d}/${p.stats.a}   CS ${p.stats.cs}   Visión ${p.stats.wards}`, c.width - 10, 22 * k);
+      // en móvil va abajo a la izquierda (zona del joystick, que se dibuja encima): arriba a la derecha están los botones y la barra compacta
+      const ky = mob ? this.H - 70 * k : 0, kx = mob ? 0 : this.W - 270 * k, tx = kx + 270 * k - 10;
+      ctx.textAlign = 'right'; ctx.fillStyle = '#000a'; ctx.fillRect(kx, ky, 270 * k, 70 * k); ctx.fillStyle = '#fff'; ctx.font = `${15 * k}px sans-serif`;
+      ctx.fillText(`KDA ${p.stats.k}/${p.stats.d}/${p.stats.a}   CS ${p.stats.cs}   Visión ${p.stats.wards}`, tx, ky + 22 * k);
       const obj = []; const en = g.epicNext || {};
       for (const [key, name] of [['dragon', 'Dragón'], ['herald', 'Heraldo'], ['lord', 'Señor'], ['avatar', 'Avatar']]) {
         if (!g.map.epic[key]) continue;
-        if (g.epic[key] && g.epic[key].alive) obj.push(`${name}: ¡vivo!`); else if (en[key] != null && en[key] < 1e8 && (key !== 'herald' || g.t < 1185)) obj.push(`${name}: ${fmt(Math.max(0, en[key] - g.t))}`);
-        else if (en[key] == null) obj.push(`${name}: ${fmt({ dragon: 300, herald: 480, lord: 1200, avatar: 600 }[key] - g.t)}`);
+        if (g.epic[key] && g.epic[key].alive) obj.push(`${name}: ¡vivo!`); else if (en[key] != null && en[key] < 1e8 && (key !== 'herald' || g.t < (g.heraldUntil ?? 1185))) obj.push(`${name}: ${fmt(Math.max(0, en[key] - g.t))}`);
+        else if (en[key] == null) obj.push(`${name}: ${fmt((g.epicFirst?.[key] ?? { dragon: 300, herald: 480, lord: 1200, avatar: 600 }[key]) - g.t)}`);
       }
-      ctx.font = `${13 * k}px sans-serif`; ctx.fillStyle = '#ffcc80'; ctx.fillText(obj.join('   '), c.width - 10, 44 * k);
-      if (g.teamBonus[p.team].lord) { ctx.fillStyle = '#ce93d8'; ctx.fillText('Mejora del Señor activa', c.width - 10, 62 * k); }
-      else if (g.teamBonus[p.team].soul) { ctx.fillStyle = '#ffd54f'; ctx.fillText(`Alma de ${g.teamBonus[p.team].soul}`, c.width - 10, 62 * k); }
+      ctx.font = `${13 * k}px sans-serif`; ctx.fillStyle = '#ffcc80'; ctx.fillText(obj.join('   '), tx, ky + 44 * k, 262 * k);
+      if (g.teamBonus[p.team].lord) { ctx.fillStyle = '#ce93d8'; ctx.fillText('Mejora del Señor activa', tx, ky + 62 * k); }
+      else if (g.teamBonus[p.team].soul) { ctx.fillStyle = '#ffd54f'; ctx.fillText(`Alma de ${g.teamBonus[p.team].soul}`, tx, ky + 62 * k); }
     }
     // anuncios
     let ay = 110 * k;
     for (const a of this.announce) { a.age += 1 / 60; }
     this.announce = this.announce.filter(a => a.age < (a.small ? 5 : 4)).slice(-6);
     ctx.textAlign = 'center';
-    for (const a of this.announce.filter(a => !a.small).slice(-2)) { ctx.font = `bold ${24 * k}px sans-serif`; ctx.fillStyle = '#000a'; const w = ctx.measureText(a.txt).width + 30; ctx.fillRect(c.width / 2 - w / 2, ay - 26 * k, w, 36 * k); ctx.fillStyle = a.team === 2 ? '#e1bee7' : this.teamCol(a.team); ctx.fillText(a.txt, c.width / 2, ay); ay += 42 * k; }
+    for (const a of this.announce.filter(a => !a.small).slice(-2)) { ctx.font = `bold ${24 * k}px sans-serif`; ctx.fillStyle = '#000a'; const w = ctx.measureText(a.txt).width + 30; ctx.fillRect(this.W / 2 - w / 2, ay - 26 * k, w, 36 * k); ctx.fillStyle = a.team === 2 ? '#e1bee7' : this.teamCol(a.team); ctx.fillText(a.txt, this.W / 2, ay); ay += 42 * k; }
     ctx.textAlign = 'right'; let fy = 100 * k;
-    for (const a of this.announce.filter(a => a.small)) { ctx.font = `${14 * k}px sans-serif`; ctx.fillStyle = '#000a'; const w = ctx.measureText(a.txt).width + 16; ctx.fillRect(c.width - w - 6, fy - 16 * k, w, 22 * k); ctx.fillStyle = this.teamCol(a.team); ctx.fillText(a.txt, c.width - 12, fy); fy += 26 * k; }
+    for (const a of this.announce.filter(a => a.small)) { ctx.font = `${14 * k}px sans-serif`; ctx.fillStyle = '#000a'; const w = ctx.measureText(a.txt).width + 16; ctx.fillRect(this.W - w - 6, fy - 16 * k, w, 22 * k); ctx.fillStyle = this.teamCol(a.team); ctx.fillText(a.txt, this.W - 12, fy); fy += 26 * k; }
     this.drawMinimap(k);
-    if (p) this.drawBar(p, k);
-    if (p && !p.alive) { ctx.fillStyle = '#0008'; ctx.fillRect(0, 0, c.width, c.height); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = `bold ${34 * k}px sans-serif`;
-      ctx.fillText(`Reapareces en ${Math.ceil(p.respawnAt - g.t)} s`, c.width / 2, c.height / 2 - 40); ctx.font = `${16 * k}px sans-serif`; ctx.fillText('Puedes comprar en la tienda (P) mientras estás muerto', c.width / 2, c.height / 2 - 10); }
+    if (p) { if (mob) this.drawBarMobile(p, k); else this.drawBar(p, k); }
+    if (p && !p.alive) { ctx.fillStyle = '#0008'; ctx.fillRect(0, 0, this.W, this.H); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = `bold ${34 * k}px sans-serif`;
+      ctx.fillText(`Reapareces en ${Math.ceil(p.respawnAt - g.t)} s`, this.W / 2, this.H / 2 - 40); ctx.font = `${16 * k}px sans-serif`; ctx.fillText(mob ? 'Puedes comprar en la tienda mientras estás muerto' : 'Puedes comprar en la tienda (P) mientras estás muerto', this.W / 2, this.H / 2 - 10); }
+    if (this.extraDraw) this.extraDraw(ctx, k);
     ctx.restore();
   }
   drawBar(p, k) {
-    const { ctx, g } = this, c = this.c;
-    const W = 640 * k, H = 112 * k, x0 = c.width / 2 - W / 2, y0 = c.height - H - 6;
+    const { ctx, g } = this;
+    const W = 640 * k, H = 112 * k, x0 = this.W / 2 - W / 2, y0 = this.H - H - 6;
     ctx.fillStyle = '#101418e6'; ctx.strokeStyle = '#c9a227'; ctx.lineWidth = 2; ctx.fillRect(x0, y0, W, H); ctx.strokeRect(x0, y0, W, H);
     // retrato
     ctx.fillStyle = CLASS_COL[p.data.class]; ctx.beginPath(); ctx.arc(x0 + 50 * k, y0 + 50 * k, 38 * k, 0, 7); ctx.fill(); ctx.strokeStyle = '#66ff66'; ctx.lineWidth = 4; ctx.stroke();
@@ -338,13 +345,43 @@ export class Renderer {
     if (r.act === 'shop') lines = ['Abrir tienda (P)'];
     if (!lines.length) return;
     ctx.font = `${12 * k}px sans-serif`; const w = Math.min(520 * k, Math.max(...lines.map(l => ctx.measureText(l).width)) + 20); const h = lines.length * 18 * k + 12;
-    const x = Math.min(this.c.width - w - 4, this.mouse.x + 12), y = this.mouse.y - h - 12;
+    const x = Math.min(this.W - w - 4, this.mouse.x + 12), y = this.mouse.y - h - 12;
     ctx.fillStyle = '#0b0f13f0'; ctx.strokeStyle = '#c9a227'; ctx.fillRect(x, y, w, h); ctx.strokeRect(x, y, w, h); ctx.fillStyle = '#eee'; ctx.textAlign = 'left';
     lines.forEach((l, i) => { ctx.fillStyle = i === 0 ? '#ffd54f' : '#ddd'; ctx.fillText(l, x + 10, y + 20 * k + i * 18 * k, w - 16); });
   }
+  /** HUD móvil (Wild Rift): panel compacto arriba-centro con retrato, nivel, vida/recurso, objetos y oro; las habilidades son botones DOM (touch.js). */
+  drawBarMobile(p, k) {
+    const { ctx, g } = this;
+    const W = 320 * k, H = 60 * k, x0 = this.W / 2 - W / 2, y0 = 50 * k + (g.altars.length ? 32 * k : 0);
+    ctx.fillStyle = '#101418d9'; ctx.strokeStyle = '#c9a227'; ctx.lineWidth = 1.5; ctx.fillRect(x0, y0, W, H); ctx.strokeRect(x0, y0, W, H);
+    // retrato y nivel
+    ctx.fillStyle = CLASS_COL[p.data.class]; ctx.beginPath(); ctx.arc(x0 + 26 * k, y0 + 30 * k, 20 * k, 0, 7); ctx.fill(); ctx.strokeStyle = '#66ff66'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.font = `bold ${18 * k}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText(p.name[0], x0 + 26 * k, y0 + 36 * k);
+    ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(x0 + 42 * k, y0 + 46 * k, 9 * k, 0, 7); ctx.fill(); ctx.fillStyle = '#ffd54f'; ctx.font = `bold ${10 * k}px sans-serif`; ctx.fillText(p.level, x0 + 42 * k, y0 + 49.5 * k);
+    // vida y recurso
+    const bw = 150 * k, bx = x0 + 56 * k, by = y0 + 10 * k;
+    ctx.fillStyle = '#000'; ctx.fillRect(bx, by, bw, 12 * k); ctx.fillStyle = '#43a047'; ctx.fillRect(bx, by, bw * p.hp / p.st.maxHp, 12 * k);
+    const sh = p.buffs.reduce((s, b) => s + (b.shield > 0 ? b.shield : 0), 0); if (sh) { ctx.fillStyle = '#eee'; ctx.fillRect(bx + bw * p.hp / p.st.maxHp, by, Math.min(bw * (1 - p.hp / p.st.maxHp), bw * sh / p.st.maxHp), 12 * k); }
+    ctx.fillStyle = '#fff'; ctx.font = `bold ${9 * k}px sans-serif`; ctx.fillText(`${Math.ceil(p.hp)} / ${Math.ceil(p.st.maxHp)}`, bx + bw / 2, by + 9.5 * k);
+    if (p.resMax) { ctx.fillStyle = '#000'; ctx.fillRect(bx, by + 14 * k, bw, 7 * k); ctx.fillStyle = { mana: '#2979ff', energy: '#fdd835', fury: '#ff7043' }[p.resType]; ctx.fillRect(bx, by + 14 * k, bw * p.res / p.resMax, 7 * k); }
+    if (p.level < 18) { ctx.fillStyle = '#7e57c2'; ctx.fillRect(bx, by + 23 * k, bw * p.xp / (280 + 100 * (p.level - 1)), 3 * k); }
+    ctx.textAlign = 'left'; ctx.fillStyle = '#ffd54f'; ctx.font = `bold ${12 * k}px sans-serif`; ctx.fillText(`${Math.floor(p.gold)} oro`, bx, y0 + 50 * k);
+    ctx.fillStyle = '#aed581'; ctx.font = `${10 * k}px sans-serif`; ctx.fillText(`Guardián ${p.wardCharges}`, bx + 70 * k, y0 + 50 * k);
+    // objetos 3×2
+    for (let i = 0; i < 6; i++) {
+      const ix = x0 + 216 * k + (i % 3) * 32 * k, iy = y0 + 6 * k + Math.floor(i / 3) * 26 * k, s = 24 * k, it = p.items[i];
+      ctx.fillStyle = '#1c2228'; ctx.fillRect(ix, iy, s, 22 * k); ctx.strokeStyle = '#555'; ctx.lineWidth = 1; ctx.strokeRect(ix, iy, s, 22 * k);
+      if (it) { ctx.fillStyle = itemCol(it); ctx.fillRect(ix + 2, iy + 2, s - 4, 22 * k - 4); ctx.fillStyle = '#fff'; ctx.font = `bold ${8 * k}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText(it.name.slice(0, 4), ix + s / 2, iy + 14 * k); this.hudRects.push({ x: ix, y: iy, w: s, h: 22 * k, act: 'item', i }); }
+    }
+    // buffs y CC debajo del panel
+    let bxx = x0; ctx.font = `${9 * k}px sans-serif`; ctx.textAlign = 'left';
+    for (const b of p.buffs.filter(b => b.t < 1e8 && BUFF_NAMES[b.key]).slice(0, 6)) { const t = `${BUFF_NAMES[b.key]} ${Math.ceil(b.t)}s`; const w = ctx.measureText(t).width + 8; ctx.fillStyle = '#000c'; ctx.fillRect(bxx, y0 + H + 3, w, 14 * k); ctx.fillStyle = '#b2ff59'; ctx.fillText(t, bxx + 4, y0 + H + 3 + 10 * k); bxx += w + 4; }
+    for (const cc of p.cc) { const t = `${CC_NAMES[cc.kind] || cc.kind} ${cc.t.toFixed(1)}s`; const w = ctx.measureText(t).width + 8; ctx.fillStyle = '#400c'; ctx.fillRect(bxx, y0 + H + 3, w, 14 * k); ctx.fillStyle = '#ff8a80'; ctx.fillText(t, bxx + 4, y0 + H + 3 + 10 * k); bxx += w + 4; }
+  }
   drawMinimap(k) {
-    const { ctx, g } = this, c = this.c, m = g.map; const p = g.player; const team = p ? p.team : 0;
-    const size = 220 * k * (this.s.minimapScale || 1), sx = size / Math.max(m.W, m.H), x0 = c.width - size - 8, y0 = c.height - size * (m.H / Math.max(m.W, m.H)) - 8;
+    const { ctx, g } = this, m = g.map; const p = g.player; const team = p ? p.team : 0;
+    const mob = !!this.s.mobile, size = (mob ? 150 : 220) * k * (this.s.minimapScale || 1), sx = size / Math.max(m.W, m.H);
+    const x0 = mob ? 8 : this.W - size - 8, y0 = mob ? 8 : this.H - size * (m.H / Math.max(m.W, m.H)) - 8;
     const hh = m.H * sx; this.mini = { x0, y0, sx, w: m.W * sx, h: hh };
     ctx.fillStyle = '#000'; ctx.fillRect(x0 - 3, y0 - 3, m.W * sx + 6, hh + 6); ctx.fillStyle = m.bg; ctx.fillRect(x0, y0, m.W * sx, hh);
     ctx.strokeStyle = m.laneCol; ctx.lineWidth = 6 * k; for (const lane of Object.values(m.lanes[0])) { ctx.beginPath(); lane.forEach(([x, y], i) => i ? ctx.lineTo(x0 + x * sx, y0 + y * sx) : ctx.moveTo(x0 + x * sx, y0 + y * sx)); ctx.stroke(); }
@@ -359,7 +396,7 @@ export class Renderer {
     }
     for (const pg of this.pings) { ctx.strokeStyle = '#ffeb3b'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x0 + pg.x * sx, y0 + pg.y * sx, 8 + (pg.age % 1) * 8, 0, 7); ctx.stroke(); }
     // rectángulo de cámara
-    const cs = [[0, 0], [c.width, 0], [c.width, c.height], [0, c.height]].map(([px, py]) => this.s2w(px, py));
+    const cs = [[0, 0], [this.W, 0], [this.W, this.H], [0, this.H]].map(([px, py]) => this.s2w(px, py));
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.beginPath(); cs.forEach(([a, b], i) => i ? ctx.lineTo(x0 + a * sx, y0 + b * sx) : ctx.moveTo(x0 + a * sx, y0 + b * sx)); ctx.closePath(); ctx.stroke();
   }
 }

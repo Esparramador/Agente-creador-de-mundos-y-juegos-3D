@@ -6,13 +6,19 @@ import { SUMMONERS } from './kits.js';
 import { BUILDS } from './ai.js';
 import { TICK, dist } from './core.js';
 import { World3D } from './render3d.js';
+import { initTouch } from './touch.js';
+import { montarFichas } from './fichas.js';
+import { initVfx } from './vfx.js';
 
 // ---------------- ajustes (localStorage) ----------------
 const DEFAULT_KEYS = { castQ: 'KeyQ', castW: 'KeyW', castE: 'KeyE', castR: 'KeyR', sum0: 'KeyD', sum1: 'KeyF', ward: 'Digit4', recall: 'KeyB', shop: 'KeyP',
   score: 'Tab', lock: 'KeyY', center: 'Space', attackMove: 'KeyA', stop: 'KeyS', ping: 'KeyG' };
 const ACTION_NAMES = { castQ: 'Habilidad Q', castW: 'Habilidad W', castE: 'Habilidad E', castR: 'Definitiva R', sum0: 'Invocador 1', sum1: 'Invocador 2', ward: 'Guardián',
   recall: 'Volver a base', shop: 'Tienda', score: 'Marcador', lock: 'Bloquear cámara', center: 'Centrar cámara', attackMove: 'Movimiento con ataque', stop: 'Detenerse', ping: 'Señal (+clic)' };
-const S = Object.assign({ quickCast: true, colorblind: false, uiScale: 1, volume: 0.4, minimapScale: 1, keys: { ...DEFAULT_KEYS } }, JSON.parse(localStorage.getItem('cdc_settings') || '{}'));
+const S = Object.assign({ quickCast: true, colorblind: false, uiScale: 1, volume: 0.4, minimapScale: 1, touch: 'auto', vfx: 'alto', keys: { ...DEFAULT_KEYS } }, JSON.parse(localStorage.getItem('cdc_settings') || '{}'));
+// touch: 'auto' | 'on' | 'off' (controles táctiles); vfx: 'alto' | 'bajo' | 'off' (efectos, lo lee vfx.js); ?touch=1 fuerza el modo móvil (pruebas)
+const TOUCH_FORCED = new URLSearchParams(location.search).get('touch') === '1';
+function esMovil() { return TOUCH_FORCED || S.touch === 'on' || (S.touch === 'auto' && typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches); }
 S.keys = { ...DEFAULT_KEYS, ...S.keys };
 const save = () => localStorage.setItem('cdc_settings', JSON.stringify(S));
 
@@ -39,6 +45,8 @@ const MODES = [
 ];
 const CLASS_COL = { Tanque: '#8d6e63', Luchador: '#e57373', Mago: '#9575cd', Tirador: '#81c784', Asesino: '#546e7a', Soporte: '#4dd0e1' };
 const state = { mode: 'grieta_ceniza', diff: 'normal', champ: null, rerolls: 2 };
+// Ficha de campeón (G): botón flotante y doble clic en la tarjeta; guarda el aspecto elegido por campeón
+const fichas = montarFichas({ onElegir: (id, skin) => { state.champ = id; state.skin = skin; renderMenu(); } });
 
 function renderMenu() {
   $('maps').innerHTML = MODES.map(m => `<div class="card map-card ${state.mode === m.id ? 'sel' : ''}" data-map="${m.id}"><b>${m.name}</b><div class="muted">${m.desc}</div></div>`).join('');
@@ -70,9 +78,11 @@ function renderDetail() {
 }
 
 // ---------------- partida ----------------
-let G = null, R = null, paused = false, tutorial = null;
+let G = null, R = null, paused = false, tutorial = null, touch = null;
 const canvas = $('game');
-function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+let dpr = 1;
+// el lienzo HUD mide innerWidth×dpr píxeles (nítido en móvil, tope 2); el renderer dibuja en px CSS vía setDpr
+function resize() { dpr = Math.min(devicePixelRatio || 1, 2); canvas.width = Math.round(innerWidth * dpr); canvas.height = Math.round(innerHeight * dpr); if (R) R.setDpr(dpr); }
 addEventListener('resize', resize); resize();
 
 function startGame() {
@@ -81,7 +91,15 @@ function startGame() {
   const sums = mapId === 'puente_niebla' ? ['flash', 'snowball'] : [$('sum0').value, $('sum1').value];
   G = new Game({ mapId, difficulty: tut ? 'facil' : state.diff, picks: { 0: [state.champ] }, playerSummoners: sums, seed: (Date.now() % 1e9) | 0 });
   window.G = G;
-  R = new Renderer(canvas, G, S);
+  if (fichas.skins[state.champ]) G.player.skin = fichas.skins[state.champ];   // Rakhar: 'felino' | 'lagarto'
+  S.mobile = esMovil(); document.body.classList.toggle('mobile', S.mobile); // ANTES de World3D y Renderer: ambos leen settings.mobile
+  R = new Renderer(canvas, G, S); R.setDpr(dpr);
+  if (S.mobile) {
+    if (touch) touch.destroy();
+    touch = initTouch({ canvas, root: $('touchUI'), S, getG: () => G, getR: () => R, cast, summoner, say, toggleShop: on => UI.toggleShop(on), toggleScore: on => { $('score').classList.toggle('on', on); if (on) renderScore(); }, togglePause, ping: (x, y) => { R.pings.push({ x, y, age: 0 }); tone(990, 0.15); }, zoomLimits: () => [R.r3d ? 0.6 : 0.8, R.r3d ? 1.6 : 1.15] });
+    S.touchForce = TOUCH_FORCED;
+    try { const lk = screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape'); if (lk && lk.catch) lk.catch(() => {}); } catch (e) { /* sin bloqueo de orientación */ }
+  }
   tutorial = tut ? { steps: [
     ['Haz clic derecho en el suelo para moverte y sobre un enemigo para atacarlo', false],
     ['Lanza una habilidad con Q, W, E o R (sube rangos con Ctrl+tecla o con el botón +)', false],
@@ -101,10 +119,11 @@ function startGame() {
   if (S.render3d !== false) {
     try { r3d = new World3D($('world'), G, S); } catch (e) { console.warn('WebGL no disponible, uso 2D', e); r3d = null; }
   }
+  if (S.mobile && touch) touch.refresh();
   if (r3d) {
     $('loadInfo').insertAdjacentHTML('afterbegin', '<p id="loadBar" class="muted">Cargando modelos 3D…</p>');
     r3d.load((n, tot, name) => { const b = $('loadBar'); if (b) b.textContent = `Cargando modelos 3D… ${n}/${tot} (${name})`; })
-      .then(() => { R.setWorld3D(r3d); window.__cdc.r3d = r3d; setTimeout(go, Math.max(0, 1200 - (performance.now() - t0))); })
+      .then(() => { R.setWorld3D(r3d); window.__cdc.r3d = r3d; window.__cdc.vfx = initVfx(r3d, G, S); setTimeout(go, Math.max(0, 1200 - (performance.now() - t0))); })
       .catch(e => { console.warn('Fallo al cargar modelos 3D, uso 2D', e); $('world').style.display = 'none'; setTimeout(go, 300); });
   } else { $('world').style.display = 'none'; setTimeout(go, 1500); }
 }
@@ -171,34 +190,40 @@ function aimFor(kind) {
   return aim;
 }
 let pending = null; // lanzamiento normal (no rápido)
-function cast(key) {
+/** Lanza una habilidad. `aim` opcional (táctil): con él no hay lanzamiento normal/pendiente, sale directo. */
+function cast(key, aim) {
   const p = G.player; if (!p || !p.alive) return;
   const kab = p.kit[key];
-  if (!p.ranks[key]) return say('Habilidad sin aprender (Ctrl+' + key + ')');
+  if (!p.ranks[key]) return say(S.mobile ? 'Habilidad sin aprender (mantén pulsado el botón)' : 'Habilidad sin aprender (Ctrl+' + key + ')');
+  if (aim) return doCast(key, aim);
   if (!S.quickCast && kab.t !== 'self' && !(p.recast[key] > G.t)) { pending = { kind: 'ab', key }; R.rangeHint = kab.range || p.ab[key].range; return; }
   doCast(key);
 }
-function doCast(key) {
-  const p = G.player, kab = p.kit[key];
-  const ok = G.cmdCast(p, key, aimFor(kab));
+function doCast(key, aim) {
+  const p = G.player, kab = p.kit[key]; aim = aim || aimFor(kab);
+  const ok = G.cmdCast(p, key, aim);
   if (!ok) { const cd = p.cds[key] || 0; say(cd > 0 ? `En enfriamiento (${cd.toFixed(1)} s)` : !G.costOk(p, key) ? 'Recurso insuficiente' : kab.t === 'unit' ? 'Sin objetivo válido en alcance' : 'No se puede lanzar ahora'); }
   else if (tutorial) tutorial.steps[1][1] = true;
 }
-function summoner(i) {
+/** Hechizo de invocador i. `aim` opcional (táctil); Castigo busca el monstruo/súbdito más cercano al punto. */
+function summoner(i, aim) {
   const p = G.player; if (!p || !p.alive) return; const sid = p.summoners[i], sp = SUMMONERS[sid];
-  const aim = aimFor(sp);
-  if (sid === 'smite') aim.unit = hover && hover.team !== p.team && !hover.structure && hover.kind !== 'champ' ? hover : nearestTo(mouse.wx, mouse.wy, 400, u => u.team !== p.team && (u.kind === 'monster' || u.kind === 'minion'));
+  const given = !!aim; aim = aim || aimFor(sp);
+  if (sid === 'smite') aim.unit = !given && hover && hover.team !== p.team && !hover.structure && hover.kind !== 'champ' ? hover : nearestTo(aim.x, aim.y, 400, u => u.team !== p.team && (u.kind === 'monster' || u.kind === 'minion'));
   if (!G.cmdSummoner(p, i, aim)) say(p.sumCd[i] > 0 ? `${sp.name} en enfriamiento (${Math.ceil(p.sumCd[i])} s)` : `${sp.name}: sin objetivo válido`);
 }
 function say(txt) { if (G.player) R.texts.push({ x: G.player.x, y: G.player.y - 150, txt, col: '#ffcdd2', age: 0 }); }
 
 // ---------------- entrada ----------------
 canvas.addEventListener('contextmenu', e => e.preventDefault());
+// en móvil, touch.js lleva los punteros táctiles; esta bandera neutraliza los mousedown/mousemove sintéticos que algún navegador emite tras un toque
+let touchActive = false;
+canvas.addEventListener('pointerdown', e => { if (e.pointerType === 'touch') { touchActive = true; if (S.mobile) e.preventDefault(); } else if (e.pointerType === 'mouse') touchActive = false; });
 // posición del ratón en el mundo y unidad bajo el cursor, al momento (no solo una vez por fotograma)
 function updateMouseWorld() { if (!R) return; [mouse.wx, mouse.wy] = R.s2w(mouse.x, mouse.y); hover = pickUnit(mouse.wx, mouse.wy); }
-canvas.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; updateMouseWorld(); if (held.left && onMinimap(mouse.x, mouse.y)) { const [x, y] = miniToWorld(mouse.x, mouse.y); R.cam.locked = false; R.cam.x = x; R.cam.y = y; } });
+canvas.addEventListener('mousemove', e => { if (touchActive) return; mouse.x = e.clientX; mouse.y = e.clientY; updateMouseWorld(); if (held.left && onMinimap(mouse.x, mouse.y)) { const [x, y] = miniToWorld(mouse.x, mouse.y); R.cam.locked = false; R.cam.x = x; R.cam.y = y; } });
 canvas.addEventListener('mousedown', e => {
-  if (!G) return; const p = G.player; mouse.x = e.clientX; mouse.y = e.clientY; updateMouseWorld();
+  if (!G || touchActive) return; const p = G.player; mouse.x = e.clientX; mouse.y = e.clientY; updateMouseWorld();
   if (e.button === 2) { if (pending) { pending = null; R.rangeHint = 0; return; } held.right = true; held.rightT = performance.now(); rightClick(false); return; }
   if (e.button !== 0) return;
   held.left = true;
@@ -241,7 +266,7 @@ addEventListener('keyup', e => {
   if (e.code.startsWith('Arrow')) held[e.code] = false;
 });
 function edgeScroll(dt) {
-  if (!R || R.cam.locked || R.centerHeld) return; const sp = 2200 * dt, m = 12;
+  if (!R || R.cam.locked || R.centerHeld || S.mobile) return; // sin desplazamiento por borde en móvil const sp = 2200 * dt, m = 12;
   let dx = 0, dy = 0;
   if (mouse.x < m || held.ArrowLeft) dx = -1; if (mouse.x > canvas.width - m || held.ArrowRight) dx = 1;
   if (mouse.y < m || held.ArrowUp) dy = -1; if (mouse.y > canvas.height - m || held.ArrowDown) dy = 1;
@@ -284,7 +309,9 @@ function renderOptions() {
    <label><input type="checkbox" id="oCb" ${S.colorblind ? 'checked' : ''}> Modo daltónico (azul / naranja)</label><br>
    <label>Escala de interfaz <input type="range" id="oUi" min="0.75" max="1.25" step="0.05" value="${S.uiScale}"> ${Math.round(S.uiScale * 100)}%</label><br>
    <label>Volumen <input type="range" id="oVol" min="0" max="1" step="0.05" value="${S.volume}"></label><br>
-   <label><input type="checkbox" id="o3d" ${S.render3d !== false ? 'checked' : ''}> Gráficos 3D (modelos glTF; se aplica en la próxima partida)</label>
+   <label><input type="checkbox" id="o3d" ${S.render3d !== false ? 'checked' : ''}> Gráficos 3D (modelos glTF; se aplica en la próxima partida)</label><br>
+   <label>Controles táctiles <select id="oTouch">${[['auto', 'Automático (pantalla táctil)'], ['on', 'Siempre'], ['off', 'Nunca']].map(([v, n]) => `<option value="${v}" ${S.touch === v ? 'selected' : ''}>${n}</option>`).join('')}</select> <span class="muted">(próxima partida)</span></label><br>
+   <label>Efectos visuales <select id="oVfx">${[['alto', 'Alto'], ['bajo', 'Bajo'], ['off', 'Desactivados']].map(([v, n]) => `<option value="${v}" ${S.vfx === v ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
    <h2>Teclas <span class="muted">(clic y pulsa la nueva tecla)</span></h2>
    <table>${Object.keys(DEFAULT_KEYS).map(a => `<tr><td>${ACTION_NAMES[a]}</td><td><button data-bind="${a}">${rebinding === a ? '…pulsa una tecla…' : S.keys[a].replace('Key', '').replace('Digit', '')}</button></td></tr>`).join('')}</table>
    <p><button id="oReset">Restaurar teclas</button></p>`;
@@ -293,6 +320,8 @@ function renderOptions() {
   $('oUi').oninput = e => { S.uiScale = +e.target.value; save(); };
   $('oVol').oninput = e => { S.volume = +e.target.value; save(); };
   $('o3d').onchange = e => { S.render3d = e.target.checked; save(); };
+  $('oTouch').onchange = e => { S.touch = e.target.value; save(); };
+  $('oVfx').onchange = e => { S.vfx = e.target.value; save(); };
   $('oReset').onclick = () => { S.keys = { ...DEFAULT_KEYS }; save(); renderOptions(); };
   document.querySelectorAll('[data-bind]').forEach(b => b.onclick = () => { rebinding = b.dataset.bind; renderOptions(); });
   const dups = Object.values(S.keys).filter((v, i, a) => a.indexOf(v) !== i);
@@ -300,6 +329,8 @@ function renderOptions() {
   if ($('surrBtn')) $('surrBtn').disabled = !G || G.t < 15 * 60;
 }
 $('resumeBtn').onclick = () => togglePause();
+// en móvil el marcador se cierra tocando fuera de su panel (el botón ☰ queda bajo el velo)
+$('score').addEventListener('click', e => { if (S.mobile && e.target === $('score')) $('score').classList.remove('on'); });
 $('quitBtn').onclick = () => location.reload();
 $('surrBtn').onclick = () => {
   const p = G.player, mates = G.champs.filter(c => c.team === p.team), need = Math.ceil(0.8 * mates.length);
@@ -356,4 +387,4 @@ function showEnd() {
 $('play').onclick = () => { if (state.champ) startGame(); };
 renderMenu();
 // acceso para pruebas automatizadas
-window.__cdc = { state, startGame, renderMenu, get G() { return G; }, get R() { return R; }, cast, summoner, togglePause, UI, S };
+window.__cdc = { state, startGame, renderMenu, get G() { return G; }, get R() { return R; }, get touch() { return touch; }, cast, summoner, togglePause, UI, S };

@@ -293,3 +293,29 @@ Que cada jugador encuentre su campeón: el muro inamovible, la asesina en la som
 ## Acceptance Criteria
 - `python3 tools/build_design.py --check` termina sin errores.
 - Las 6 clases están cubiertas, cada campeón tiene Q/W/E/R y una pasiva, y los CD nunca suben con el rango.
+
+## Ficha y presentación
+
+> Sección GENERADA (agente G) desde `PRESENTATION` en `tools/champions_src.py`. Datos vivos en `assets/data/champion_presentation.json`; la ficha de selección es `game/src/fichas.js` y los efectos `game/src/vfx.js`.
+
+Tipo de ataque: **cuerpo a cuerpo** si el alcance base es < 200 u.; a distancia **físico** o **mágico** según el daño. Clips obligatorios del modelo definitivo: `Idle, Run, Attack, Cast, Death` (`Cast_Q..R` opcionales).
+
+| Campeón | Tipo de ataque | Arma | Cuerpo | Aspectos | Color FX | Efectos Q / W / E / R |
+|---|---|---|---|---|---|---|
+| **Brannoc** | Cuerpo a cuerpo | Martillo de forja a dos manos | Enano bajo y ancho (1,9 m), armadura de placas con yunque al pecho | Yunque Viviente (`champ_brannoc`) | `#ffb74d` | estela / aura / estela / glifo |
+| **Morgra** | Cuerpo a cuerpo | Tótem-maza de guerra | Orca corpulenta (2,4 m), piel verde, tótem ancestral en el pecho | Madre de la Horda (`champ_morgra`) | `#8bc34a` | glifo / aura / estela / estela |
+| **Ossuar** | Cuerpo a cuerpo | Costilla-garfio y escudo de cráneos | Gólem de huesos (2,7 m), hombros de calaveras, columna visible | Osario Errante (`champ_ossuar`) | `#b0bec5` | proyectil / aura / glifo / glifo |
+| **Kaelith** | Cuerpo a cuerpo | Espada larga y escudo del sol partido | Humana atlética (2,2 m), armadura dorada con capa rota | Filo del Alba (`champ_kaelith`) | `#ffe082` | estela / aura / estela / estela |
+| **Tharok** | Cuerpo a cuerpo | Hacha de arena a dos manos | Orco de arena (2,4 m), cicatrices, hombreras de hueso | Hacha del Norte (`champ_tharok`) | `#ef5350` | glifo / glifo / estela / aura |
+| **Yssra** | Cuerpo a cuerpo | Tridente de coral | Sirénida bípeda (2,2 m), escamas turquesa, aletas en los antebrazos | Reina de las Mareas (`champ_yssra`) | `#26c6da` | estela / aura / estela / glifo |
+| **Vaelor** | A distancia (mágico) | Bastón de ceniza con brasa | Elfo alto y delgado (2,2 m), túnica gris quemada, ojos de brasa | Archimago de Ceniza (`champ_vaelor`) | `#ff7043` | proyectil / muro / glifo / glifo |
+| **Nyxe** | A distancia (mágico) | Varita de polvo de hada | Hada menuda (1,7 m), alas de mariposa translúcidas, flota a un palmo del suelo | Tejesueños (`champ_nyxe`) | `#ea80fc` | proyectil / glifo / estela / glifo |
+| **Zerath** | A distancia (mágico) | Garras del vacío (sin arma) | Silueta humanoide hecha de vacío (2,3 m), bordes que se deshacen en humo | El Hambre Profunda (`champ_zerath`) | `#7c4dff` | glifo / rayo / aura / glifo |
+| **Lyra Vientoalto** | A distancia (físico) | Arco largo élfico | Elfa esbelta (2,2 m), capa de hojas, carcaj a la espalda | Flecha del Cielo (`champ_lyra`) | `#aed581` | estela / glifo / estela / proyectil |
+| **Gearix** | A distancia (físico) | Escopeta-cañón de seis balas | Gnoma pequeña (1,7 m) con mochila mecánica y gafas de soldar | Ingeniera Loca (`champ_gearix`) | `#ffd54f` | glifo / glifo / estela / estela |
+| **Sable** | Cuerpo a cuerpo | Dagas gemelas | Humana enjuta (2,2 m), capucha y velo, sin rostro visible | La Sombra sin Nombre (`champ_sable`) | `#90a4ae` | proyectil / humo / glifo / estela |
+| **Rakhar** | Cuerpo a cuerpo | Garras escarlatas | Bestial cuadrúpedo-bípedo (2,0 m), lomo arqueado, cola larga | Garra Escarlata (felino) (`champ_rakhar`), Garra Escarlata (lagarto) (`champ_rakhar_lagarto`) | `#ff5722` | estela / glifo / estela / aura |
+| **Elowen** | A distancia (mágico) | Rama viva (báculo que florece) | Dríade (2,1 m), piel de corteza, cabello de hojas y flores | Voz del Bosque (`champ_elowen`) | `#66bb6a` | proyectil / cura / aura / glifo |
+| **Aurik** | A distancia (mágico) | Lanza-estandarte dorada | Dracónido (2,3 m), escamas doradas, alas plegadas, cuernos cortos | Heraldo Dorado (`champ_aurik`) | `#ffca28` | cono / estela / glifo / aura |
+
+Efectos de `vfx.js`: aparición = columna de luz del color del equipo + escala desde 0 (`back.out`); reaparición = anillo expansivo; muerte = caída + desvanecido + fragmentos del color del campeón; lanzamiento = estela (cuerpo a cuerpo), proyectil con cola (distancia) o glifo bajo los pies (mágico); épicos = rugido con sacudida de cámara; torre = derrumbe; dragón = tinte por elemento.

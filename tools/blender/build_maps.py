@@ -12,7 +12,8 @@ Salida por mapa:
     design/levels/renders/<id>_persp.png        vista en perspectiva
 Coordenadas: juego (x, y) -> Blender (x*0.01, -y*0.01, z). Al exportar con +Y arriba queda three.js (x, z=y).
 Todo lo jugable está a z=0. El relieve (acantilados, abismos, río) es decorativo y queda fuera de las zonas
-donde la simulación deja caminar, salvo el lecho del río, que baja solo unos centímetros.
+donde la simulación deja caminar, salvo el lecho del río (−0,12 m) y los fosos épicos (−0,2 m).
+Los muros de la jungla (`walls` en el JSON, la misma polilínea que los círculos de colisión) son crestas de +1,6 m.
 """
 import bpy, bmesh, json, math, os, sys, random
 import numpy as np
@@ -24,7 +25,8 @@ S = 0.01
 def lin(c): return tuple((v / 255) ** 2.2 if v > 1 else v ** 2.2 for v in c)
 PAL = {
     'grieta_ceniza': dict(ground=(58, 52, 44), ground2=(74, 64, 50), lane=(118, 102, 80), lane_edge=(70, 60, 48), river=(40, 33, 30), cliff=(70, 64, 60), cliff_top=(46, 42, 38),
-                          base=(120, 116, 108), foliage=[(60, 92, 48), (84, 104, 52), (98, 82, 46)], trunk=(60, 44, 32), rock=(96, 90, 82), glow=(255, 110, 30), water=None),
+                          base=(120, 116, 108), foliage=[(60, 92, 48), (84, 104, 52), (98, 82, 46)], trunk=(60, 44, 32), rock=(96, 90, 82), glow=(255, 110, 30), water=(36, 70, 78),
+                          bone=(214, 204, 184), fog=(120, 60, 170)),
     'puente_niebla': dict(ground=(196, 206, 216), ground2=(170, 184, 198), lane=(116, 128, 140), lane_edge=(88, 98, 110), river=None, cliff=(150, 170, 190), cliff_top=(220, 230, 240),
                           base=(150, 158, 168), foliage=[(52, 86, 76), (70, 104, 92)], trunk=(70, 56, 46), rock=(140, 150, 162), glow=(120, 200, 255), water=None, abyss=(10, 16, 24)),
     'ruinas_eclipse': dict(ground=(44, 36, 58), ground2=(58, 50, 66), lane=(92, 80, 110), lane_edge=(60, 52, 76), river=(34, 28, 50), cliff=(64, 56, 78), cliff_top=(48, 70, 52),
@@ -58,7 +60,10 @@ def mat_vc(name, rough=0.9, metal=0.0, alpha=1.0, emission=None):
     m = bpy.data.materials.new(name); m.use_nodes = True; nt = m.node_tree; bs = nt.nodes['Principled BSDF']
     ca = nt.nodes.new('ShaderNodeVertexColor'); ca.layer_name = 'Color'; nt.links.new(ca.outputs['Color'], bs.inputs['Base Color'])
     bs.inputs['Roughness'].default_value = rough; bs.inputs['Metallic'].default_value = metal
-    if alpha < 1: bs.inputs['Alpha'].default_value = alpha; m.blend_method = 'BLEND'
+    if alpha < 1:
+        bs.inputs['Alpha'].default_value = alpha
+        try: m.blend_method = 'BLEND'
+        except Exception: pass  # Blender ≥ 4.2: el modo de mezcla se deduce del nodo
     if emission: bs.inputs['Emission Color'].default_value = (*lin(emission), 1); bs.inputs['Emission Strength'].default_value = 3.0
     return m
 
@@ -66,7 +71,10 @@ def mat_flat(name, col, rough=0.5, metal=0.0, emission=None, alpha=1.0):
     m = bpy.data.materials.new(name); m.use_nodes = True; bs = m.node_tree.nodes['Principled BSDF']
     bs.inputs['Base Color'].default_value = (*lin(col), 1); bs.inputs['Roughness'].default_value = rough; bs.inputs['Metallic'].default_value = metal
     if emission: bs.inputs['Emission Color'].default_value = (*lin(emission), 1); bs.inputs['Emission Strength'].default_value = 4.0
-    if alpha < 1: bs.inputs['Alpha'].default_value = alpha; m.blend_method = 'BLEND'
+    if alpha < 1:
+        bs.inputs['Alpha'].default_value = alpha
+        try: m.blend_method = 'BLEND'
+        except Exception: pass  # Blender ≥ 4.2: el modo de mezcla se deduce del nodo
     return m
 
 class Builder:
@@ -136,6 +144,18 @@ def build_terrain(mid, m, P, coll, mat):
     for c in m['camps']:
         dc = np.hypot(gx - c[1], gy - c[2]); cl = (1 - smooth(260, 380, dc)) * 0.6
         col = col * (1 - cl[..., None]) + np.array(lin(P['lane_edge'])) * cl[..., None]
+    # muros de la jungla (la misma polilínea que los círculos de colisión de la simulación): cresta de +1,6 m con borde suave.
+    # El borde empieza en wr+20: un campeón puede acercarse hasta wr + 27 u del eje, donde la pendiente aún es ~0.
+    wr = m.get('wr') or 0
+    if m.get('walls'):
+        dw = poly_dist(gx, gy, m['walls']); wall = 1 - smooth(wr + 20, wr + 200, dw)
+        z += 1.6 * wall
+    # fosos épicos: hundidos −0,2 m (el anillo de muro los rodea; la boca queda a nivel del río)
+    for k, (px, py, pr) in (m.get('pits') or {}).items():
+        dp = np.hypot(gx - px, gy - py); pit = 1 - smooth(pr - 140, pr - 20, dp)
+        z -= 0.2 * pit
+        pc = np.array(lin(P['river'])) if k == 'dragon' else np.array(lin(P['cliff'])) * 0.6
+        col = col * (1 - pit[..., None] * 0.7) + pc * pit[..., None] * 0.7
     # relieve exterior: acantilados (o abismo en el Puente)
     rise = smooth(80, 700, outside)
     if m['bounds']:
@@ -179,9 +199,41 @@ def scatter_border(m, rng, n, inner=150, outer=1300):
         pts.append((x, y))
     return pts
 
-def build_decor(mid, m, P, coll, mat_vc_decor, mat_glow, mat_water):
-    rng = random.Random(42); D = Builder(f'{mid}_decorado'); G = Builder(f'{mid}_brillo')
+def wall_samples(polys, step):
+    """Puntos (x, y) cada `step` u a lo largo de las polilíneas de muro."""
+    pts = []
+    for poly in polys:
+        for (ax, ay), (bx, by) in zip(poly[:-1], poly[1:]):
+            L = math.hypot(bx - ax, by - ay); n = max(1, int(L / step))
+            for k in range(n + 1): t = k / n; pts.append((ax + (bx - ax) * t, ay + (by - ay) * t))
+    return pts
+
+def build_decor(mid, m, P, coll, mat_vc_decor, mat_glow, mat_water, mat_fog=None):
+    rng = random.Random(42); D = Builder(f'{mid}_decorado'); G = Builder(f'{mid}_brillo'); F = Builder(f'{mid}_niebla')
     fol = [lin(c) for c in P['foliage']]
+    # crestas de los muros: rocas y árboles muertos encima (z = 1,6 m), nunca en la zona transitable
+    for (x, y) in wall_samples(m.get('walls') or [], 330):
+        k = rng.random(); s = rng.uniform(0.45, 0.9)
+        D.add(ico, P['rock'], loc=(x * S, -y * S, 1.6 + s * 0.3), scale=(s, s, s * 0.7), rot=rng.random() * 6, displace=0.18, subdiv=1)
+        if mid == 'grieta_ceniza' and k < 0.3:
+            D.add(cyl, P['trunk'], loc=(x * S, -y * S, 1.6), scale=(s, s, s), seg=5, r1=0.16, r2=0.05, h=2.4)
+            for b in range(2): D.add(cyl, P['trunk'], loc=(x * S, -y * S, 1.6 + s * (1.1 + b * 0.5)), rot=rng.random() * 6, scale=(s * 0.6, s * 0.6, s * 0.6), seg=4, r1=0.05, r2=0.02, h=1.1)
+    # fosos: anillo de rocas sobre el muro; Dragón con grietas de lava emisivas; Señor con huesos y niebla morada
+    for k, (px, py, pr) in (m.get('pits') or {}).items():
+        for i in range(14):
+            a = rng.random() * 6.28; d = rng.uniform(pr - 40, pr + 60); rr = rng.uniform(0.5, 1.1)
+            D.add(ico, P['rock'], loc=((px + math.cos(a) * d) * S, -(py + math.sin(a) * d) * S, 1.6 + rr * 0.3), scale=(rr, rr, rr * 0.8), displace=0.2, subdiv=1)
+        if k == 'dragon':
+            for i in range(26):
+                a = rng.random() * 6.28; d = math.sqrt(rng.random()) * (pr - 200)
+                G.add(box, P['glow'], loc=((px + math.cos(a) * d) * S, -(py + math.sin(a) * d) * S, -0.19), rot=rng.random() * 3.14, sx=rng.uniform(0.6, 2.0), sy=0.06, sz=0.03)
+        if k == 'lord':
+            for i in range(30):
+                a = rng.random() * 6.28; d = math.sqrt(rng.random()) * (pr - 220)
+                D.add(cyl, P.get('bone', (214, 204, 184)), loc=((px + math.cos(a) * d) * S, -(py + math.sin(a) * d) * S, -0.17), rot=rng.random() * 3.14, seg=5, r1=0.05, r2=0.04, h=rng.uniform(0.4, 1.0), scale=(1, 1, 1))
+            for i in range(6):
+                a = i / 6 * 6.28 + rng.random(); d = rng.uniform(80, pr - 350); rr = rng.uniform(1.8, 2.8)
+                F.add(ico, P.get('fog', (120, 60, 170)), loc=((px + math.cos(a) * d) * S, -(py + math.sin(a) * d) * S, 0.5), scale=(rr, rr, rr * 0.35), displace=0.3, subdiv=1, jitter=0.15)
     # rocas de la simulación (obstáculos reales): misma posición y radio
     for (x, y, r) in m['rocks']:
         D.add(ico, P['rock'], loc=(x * S, -y * S, r * S * 0.35), scale=(r * S, r * S, r * S * 0.75), rot=rng.random() * 6, displace=0.18, subdiv=2)
@@ -216,8 +268,8 @@ def build_decor(mid, m, P, coll, mat_vc_decor, mat_glow, mat_water):
     for c in m['camps']:
         for i in range(9):
             a = i / 9 * 6.28; D.add(box, P['lane_edge'], loc=((c[1] + math.cos(a) * 330) * S, -(c[2] + math.sin(a) * 330) * S, 0), rot=a, sx=0.5, sy=0.3, sz=0.12)
-    # fosos de objetivos épicos: círculo de runas brillantes
-    for k, pos in (m['epic'] or {}).items():
+    # fosos de objetivos épicos: círculo de runas brillantes (Heraldo y Señor comparten foso: una sola vez)
+    for k, pos in {tuple(p): p for p in (m['epic'] or {}).values()}.items():
         x, y = pos
         for i in range(16):
             a = i / 16 * 6.28; G.add(box, P['glow'], loc=((x + math.cos(a) * 520) * S, -(y + math.sin(a) * 520) * S, 0.0), rot=a, sx=0.35, sy=0.12, sz=0.04)
@@ -259,6 +311,8 @@ def build_decor(mid, m, P, coll, mat_vc_decor, mat_glow, mat_water):
             if 0 < x < m['W'] and 0 < y < m['H']: continue
             D.add(cyl, P['rock'], loc=(x * S, -y * S, 0), seg=8, r1=0.5, r2=0.45, h=4.5); D.add(box, P['rock'], loc=(x * S, -y * S, 4.5), sx=1.3, sy=1.3, sz=0.3)
     D.obj(mat_vc_decor, coll); G.obj(mat_glow, coll)
+    if len(F.bm.faces) and mat_fog: F.obj(mat_fog, coll)
+    else: F.bm.free()
     if P.get('water') and m['river']:
         (ax, ay), (bx, by) = m['river']; L = math.hypot(bx - ax, by - ay)
         bpy.ops.mesh.primitive_plane_add(size=1, location=((ax + bx) / 2 * S, -(ay + by) / 2 * S, -0.03))
@@ -293,8 +347,9 @@ def build(mid, do_render=True):
     terrain_mat = mat_vc('Terreno', rough=0.95); decor_mat = mat_vc('Decorado', rough=0.85)
     glow_mat = mat_flat('Brillo', P['glow'], rough=0.4, emission=P['glow'])
     water_mat = mat_flat('Agua', P['water'] or (60, 90, 140), rough=0.1, metal=0.1, alpha=0.7)
+    fog_mat = mat_vc('Niebla', rough=1.0, alpha=0.35)
     build_terrain(mid, m, P, coll, terrain_mat)
-    build_decor(mid, m, P, coll, decor_mat, glow_mat, water_mat)
+    build_decor(mid, m, P, coll, decor_mat, glow_mat, water_mat, fog_mat)
     blend_dir = os.path.join(ROOT, 'art', 'blender', 'maps'); os.makedirs(blend_dir, exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(blend_dir, f'{mid}.blend'))
     out = os.path.join(ROOT, 'game', 'assets', 'models', 'src', f'map_{mid}.glb')

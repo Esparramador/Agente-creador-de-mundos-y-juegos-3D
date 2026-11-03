@@ -13,15 +13,17 @@ Cada mapa es un tablero táctico distinto: guerra de desgaste en la Grieta, pele
 |---|---|---|---|
 | Torre exterior | 5000 (×0,7 en ARAM) | 152 (+9/min) | +40% de daño por cada golpe seguido a un campeón; prioriza al campeón que ataca a un aliado |
 | Torre interior | 3600 | 170 | Solo es atacable si cayó la exterior |
-| Torre de inhibidor | 3300 | 170 | — |
-| Inhibidor | 4000 | — | Al caer, el rival genera súper-súbditos; reaparece a los 5 min |
-| Torres de Nexo (2) | 2700 | 180 | — |
+| Torre base (T3) | 3300 | 170 | En la Grieta (reglas Wild Rift) no hay inhibidor: al caer, el rival genera **súper-súbditos** en ese carril mientras siga caída (no reaparece) y se abren las torres de Nexo |
+| Inhibidor | 4000 | — | Solo en el Puente. Al caer, el rival genera súper-súbditos; reaparece a los 5 min |
+| Torres de Nexo (2) | 2700 | 180 | Atacables cuando cae cualquier torre base (Grieta) o el inhibidor (Puente) |
 | Nexo | 5500 | — | Destruirlo = victoria |
 
 **Súbditos:**
-- Una oleada cada 30 s desde el minuto 1:05, con 3 cuerpo a cuerpo y 3 a distancia.
+- Una oleada cada 30 s desde la primera (`rules.firstWave`: 1:05 en la Grieta y las Ruinas, 0:30 en el Puente; ver `match-flow.md` para la fuente), con 3 cuerpo a cuerpo y 3 a distancia.
 - Cada 3ª oleada incluye además un súbdito de asedio.
 - Su vida y su daño crecen cada 90 s.
+
+**Tiempos en datos, no en código.** Cada mapa fija sus tiempos en `rules` (`game/src/maps.js`): `epicFirst` (primera aparición de cada épico, en segundos), `dragonRespawn`, `heraldUntil`, `lordRespawn`, `avatarRespawn` y `firstWave`. `world.js` los lee y los expone como `game.epicFirst` y `game.heraldUntil` para el HUD (`render.js`).
 
 **Base (Fuente):** cura un 8% por segundo y dispara láseres de 1000 de daño verdadero a los enemigos que entran.
 
@@ -31,15 +33,18 @@ Cada mapa es un tablero táctico distinto: guerra de desgaste en la Grieta, pele
 *Ruinas de una capital élfica calcinada, partidas por un río de lava enfriada.*
 
 - **Tamaño:** 14 000 × 14 000 u.
-- **Distribución:** 3 carriles (superior, central e inferior), un río en diagonal y 4 cuadrantes de jungla.
+- **Distribución:** 3 carriles (superior, central e inferior), un río en diagonal y 4 cuadrantes de jungla cerrados por **muros** (ver más abajo).
 - **Roles:** Superior (Luchador/Tanque), Jungla, Central (Mago/Asesino) y el carril inferior con Tirador + Soporte.
-- **Estructuras:** 11 torres y 3 inhibidores por equipo.
+- **Estructuras (reglas Wild Rift):** 3 torres por carril (exterior, interior y base) + 2 torres de Nexo y el Nexo; **sin inhibidores**. Al caer la torre base de un carril llegan súper-súbditos por ese carril y las torres de Nexo pasan a ser atacables.
 - **Jungla:** 12 campamentos (6 por lado), con reaparición entre 2:15 y 5 min.
+- **Muros (`walls` en `maps.js`, lado Aurora + reflejo):** polilíneas de grosor `wr = 110` convertidas en cadenas de círculos de colisión (`wallCircles`, uno cada 132 u; 320 en total). Separan carril superior/jungla superior (x = 2450, dos huecos), jungla/carril central (dos muros paralelos al mid a 1060 u, un hueco cada uno y un paso de 1273 u sobre el río), jungla inferior/carril inferior (y = 11650, dos huecos) y forman los dos fosos (arco de 240°, r = 750, boca de 120° hacia el río). Huecos ≥ 560 u; ningún muro a < 300 u de carriles, campamentos, estructuras, fuentes ni de los puntos de terreno del Dragón (prueba en `game.test.mjs`).
+- **Navegación (`game/src/nav.js`):** rejilla de 200 u (70 × 70), celda bloqueada si un obstáculo (radio + 45) la toca, A\* octil sin cortar esquinas y ruta simplificada por *string pulling*. Solo se calcula cuando la recta al destino choca con un muro (`cmdMove` y la persecución de campeones y mascotas, cada 0,25 s); los súbditos siguen sus carriles y los monstruos su correa como antes. La rejilla se reconstruye cuando cambia `game.obstaclesVersion` (rocas temporales, Forja). Los destellos y los desplazamientos sí cruzan muros (igual que las rocas).
+- **Limitación documentada:** los muros **no bloquean la visión**. La visión sigue siendo por radio y matorral; un campeón ve al otro lado de un muro. Se dejará para cuando la jugada lo pida (se necesitaría un trazado de rayos contra los círculos en `updateVision`).
   - **Golem de Ceniza (bonus azul):** +10 de AH y +5 de maná/s durante 2 min.
   - **Bestia Ígnea (bonus rojo):** los ataques queman y ralentizan durante 2 min.
   - Lobos, aves, roca y sapo de río: oro y XP.
-- **Objetivos épicos:**
-  - **Dragón Elemental** (minuto 5, cada 5 min). Cada dragón es de uno de 4 tipos y da una mejora permanente a su equipo:
+- **Objetivos épicos (tiempos Wild Rift, en `rules`):**
+  - **Dragón Elemental** (primero a las 6:00; vuelve 4:30 después de morir) en el **foso del río inferior** (9700, 9700). Cada dragón es de uno de 4 tipos y da una mejora permanente a su equipo:
 
     | Dragón | Mejora | Cambio de terreno |
     |---|---|---|
@@ -49,8 +54,8 @@ Cada mapa es un tablero táctico distinto: guerra de desgaste en la Grieta, pele
     | Forja | +6% de AH | Rocas que bloquean |
 
     Con 4 dragones el equipo obtiene el **Alma** del tipo dominante.
-  - **Heraldo de Forja** (minuto 8 a 19:45). Al matarlo deja un ojo que, al usarse, invoca un ariete contra las torres (2000 de daño).
-  - **Señor de la Ceniza** (desde el minuto 20, cada 6 min). Da 3 min de mejora: súbditos potenciados y +40 AD/PH.
+  - **Heraldo de Forja** (6:00) en el **foso del río superior** (4300, 4300), el foso del Señor. Si sigue vivo a las 11:00 se retira para dejar paso al Señor. Al matarlo deja un ojo que, al usarse, invoca un ariete contra las torres (2000 de daño).
+  - **Señor de la Ceniza** (desde las 11:00; vuelve 6 min después de morir) en el foso superior. Da 3 min de mejora: súbditos potenciados y +40 AD/PH.
 - **Duración objetivo:** 25-35 min.
 
 ### Mapa 2 — Puente de la Niebla (5v5 ARAM)
@@ -98,7 +103,7 @@ Diseño de nivel detallado, planos y renders de Blender: `design/levels/`.
 `combat-core.md` y `progression-economy.md`. Los diseños de nivel detallados (blockout) se harán con `/team-level`.
 
 ## Tuning Knobs
-Tiempos de aparición de los objetivos, vida de las estructuras, puntos por altar y oro inicial del ARAM.
+Tiempos de aparición de los objetivos y de la primera oleada (`rules` de cada mapa en `maps.js`; rangos sensatos: dragón 300–420 s, Señor 600–900 s, primera oleada 12–90 s), vida de las estructuras, puntos por altar, oro inicial del ARAM, trazado y grosor de los muros (`walls`, `wr` 90–140: más grosor = pasos más estrechos) y la rejilla de navegación (`CELL` 150–250 y `MARGIN` en `nav.js`; con celdas mayores un hueco de 560 u podría cerrarse).
 
 ## Visual/Audio Requirements
 Cada mapa tiene su paleta:
@@ -109,6 +114,9 @@ Cada mapa tiene su paleta:
 Las capturas de altar y los objetivos épicos tienen un anuncio de voz global.
 
 ## Acceptance Criteria
+- En la Grieta no existe ningún inhibidor; al caer la torre base de un carril, la siguiente oleada rival de ese carril lleva un súper-súbdito y se anuncia «¡Torre base destruida! Súper-súbditos en camino» (`game.test.mjs`).
+- Dragón a los 360 s en (9700, 9700) y 270 s después de morir; Heraldo a los 360 s en (4300, 4300) y retirado a los 660 s cuando aparece el Señor (`game.test.mjs`).
+- Muros: ningún círculo a < 300 u de carriles, campamentos, estructuras, fuentes ni terreno de dragón; huecos ≥ 500 u; hay camino desde la base a los 12 campamentos, a los dos fosos y a la base rival; un campeón rodea un muro con `cmdMove` y en persecución; el bot jungla limpia sus 6 campamentos en < 240 s (`game.test.mjs`).
 - En la Grieta, una partida de bots normal contra normal dura de media entre 25 y 35 min (prueba de *soak* de 20 partidas).
 - En el Puente, ningún campeón supera el 60% de victorias en 200 partidas simuladas entre bots.
 - En las Ruinas, quien controla 2 de los 3 altares desde el minuto 5 gana al menos el 70% de las veces (confirma que el objetivo importa).

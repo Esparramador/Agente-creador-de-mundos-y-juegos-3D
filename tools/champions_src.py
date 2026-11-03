@@ -135,3 +135,51 @@ dict(id="aurik",name="Aurik",title="Heraldo Dorado",race="Dracónido",faction="O
             A("E","Rugido Dracónico","Área","Aturde 0,75 s a los enemigos cercanos.",[16,15,14,13,12],70,[50,80,110,140,170],{"ap":0.4},300),
             A("R","Forma Dragón","Transformación","8 s: vuela (ignora terreno), +300 de vida y su Q pasa a ser una línea de 900 u.",[140,120,100],100,[100,150,200],{"ap":0.3},0)]),
 ]
+
+# ---------------------------------------------------------------------------------------------
+# Ficha y presentación (agente G). Campos NUEVOS: no cambian nada de lo anterior.
+# `python3 tools/build_design.py` los vuelca en assets/data/champion_presentation.json,
+# en game/src/data.js (PRESENTATION) y en la sección «Ficha y presentación» del roster.
+# arma / cuerpo: lo que tiene que modelar D; color: tinte de los efectos (glifo, estela, proyectil).
+# aspectos: lista de (id, nombre, modelo glTF definitivo). Rakhar tiene dos cuerpos.
+PRESENTATION = {
+ "brannoc": dict(arma="Martillo de forja a dos manos", cuerpo="Enano bajo y ancho (1,9 m), armadura de placas con yunque al pecho", color="#ffb74d",
+                 aspectos=[("base", "Yunque Viviente", "champ_brannoc")]),
+ "morgra":  dict(arma="Tótem-maza de guerra", cuerpo="Orca corpulenta (2,4 m), piel verde, tótem ancestral en el pecho", color="#8bc34a",
+                 aspectos=[("base", "Madre de la Horda", "champ_morgra")]),
+ "ossuar":  dict(arma="Costilla-garfio y escudo de cráneos", cuerpo="Gólem de huesos (2,7 m), hombros de calaveras, columna visible", color="#b0bec5",
+                 aspectos=[("base", "Osario Errante", "champ_ossuar")]),
+ "kaelith": dict(arma="Espada larga y escudo del sol partido", cuerpo="Humana atlética (2,2 m), armadura dorada con capa rota", color="#ffe082",
+                 aspectos=[("base", "Filo del Alba", "champ_kaelith")]),
+ "tharok":  dict(arma="Hacha de arena a dos manos", cuerpo="Orco de arena (2,4 m), cicatrices, hombreras de hueso", color="#ef5350",
+                 aspectos=[("base", "Hacha del Norte", "champ_tharok")]),
+ "yssra":   dict(arma="Tridente de coral", cuerpo="Sirénida bípeda (2,2 m), escamas turquesa, aletas en los antebrazos", color="#26c6da",
+                 aspectos=[("base", "Reina de las Mareas", "champ_yssra")]),
+ "vaelor":  dict(arma="Bastón de ceniza con brasa", cuerpo="Elfo alto y delgado (2,2 m), túnica gris quemada, ojos de brasa", color="#ff7043",
+                 aspectos=[("base", "Archimago de Ceniza", "champ_vaelor")]),
+ "nyxe":    dict(arma="Varita de polvo de hada", cuerpo="Hada menuda (1,7 m), alas de mariposa translúcidas, flota a un palmo del suelo", color="#ea80fc",
+                 aspectos=[("base", "Tejesueños", "champ_nyxe")]),
+ "zerath":  dict(arma="Garras del vacío (sin arma)", cuerpo="Silueta humanoide hecha de vacío (2,3 m), bordes que se deshacen en humo", color="#7c4dff",
+                 aspectos=[("base", "El Hambre Profunda", "champ_zerath")]),
+ "lyra":    dict(arma="Arco largo élfico", cuerpo="Elfa esbelta (2,2 m), capa de hojas, carcaj a la espalda", color="#aed581",
+                 aspectos=[("base", "Flecha del Cielo", "champ_lyra")]),
+ "gearix":  dict(arma="Escopeta-cañón de seis balas", cuerpo="Gnoma pequeña (1,7 m) con mochila mecánica y gafas de soldar", color="#ffd54f",
+                 aspectos=[("base", "Ingeniera Loca", "champ_gearix")]),
+ "sable":   dict(arma="Dagas gemelas", cuerpo="Humana enjuta (2,2 m), capucha y velo, sin rostro visible", color="#90a4ae",
+                 aspectos=[("base", "La Sombra sin Nombre", "champ_sable")]),
+ "rakhar":  dict(arma="Garras escarlatas", cuerpo="Bestial cuadrúpedo-bípedo (2,0 m), lomo arqueado, cola larga", color="#ff5722",
+                 aspectos=[("felino", "Garra Escarlata (felino)", "champ_rakhar"), ("lagarto", "Garra Escarlata (lagarto)", "champ_rakhar_lagarto")]),
+ "elowen":  dict(arma="Rama viva (báculo que florece)", cuerpo="Dríade (2,1 m), piel de corteza, cabello de hojas y flores", color="#66bb6a",
+                 aspectos=[("base", "Voz del Bosque", "champ_elowen")]),
+ "aurik":   dict(arma="Lanza-estandarte dorada", cuerpo="Dracónido (2,3 m), escamas doradas, alas plegadas, cuernos cortos", color="#ffca28",
+                 aspectos=[("base", "Heraldo Dorado", "champ_aurik")]),
+}
+
+# efecto de lanzamiento según el tipo de habilidad (vfx.js lo interpreta); 'auto' = el del tipo de ataque
+VFX_BY_ABILITY_TYPE = {
+ "Línea": "estela", "Embestida": "estela", "Desplazamiento": "estela", "Desplazamiento aliado": "estela",
+ "Proyectil": "proyectil", "Proyectil global": "proyectil", "Cono": "cono",
+ "Área": "glifo", "Área aliada": "glifo", "Invocación": "glifo", "Muro": "muro",
+ "Autobuff": "aura", "Escudo": "aura", "Escudo aliado": "aura", "Transformación": "aura", "Sigilo": "humo",
+ "Objetivo": "auto", "Curación": "cura", "Drenaje": "rayo",
+}

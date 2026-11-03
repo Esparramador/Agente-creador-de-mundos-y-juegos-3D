@@ -9,13 +9,14 @@
     ],
     "lanes": 3,
     "towers_per_lane": 3,
-    "inhibitors": 3,
+    "inhibitors": 0,
     "nexus": true,
     "objectives": [
-      "Dragón Elemental (min 5, cada 5 min)",
-      "Heraldo de Forja (min 8)",
-      "Señor de la Ceniza (min 20)"
+      "Dragón Elemental (min 6, 4:30 tras morir)",
+      "Heraldo de Forja (min 6, en el foso del Señor hasta el min 11)",
+      "Señor de la Ceniza (min 11, cada 6 min)"
     ],
+    "super_minions": "Al caer la torre base de un carril (reglas Wild Rift, sin inhibidores)",
     "jungle_camps": 12,
     "target_minutes": [
       25,
